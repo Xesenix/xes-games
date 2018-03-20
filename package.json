@@ -1,0 +1,97 @@
+{
+	"name": "xes-games",
+	"version": "0.0.0",
+	"description": "",
+	"main": "src/main.js",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/Xesenix/xes-games"
+	},
+	"scripts": {
+		"analyze": "cross-env ANALYZE=true npm run build:prod",
+		"tdd": "cross-env BABEL_ENV=test ENV=test karma start",
+		"test": "cross-env BABEL_ENV=test ENV=test karma start --single-run",
+		"start": "http-server ./dist/demo",
+		"serve": "cross-env ENV=development HMR=true webpack-dev-server --config webpack.config.js",
+		"build:dev": "cross-env ENV=development parallel-webpack --config webpack.config.js",
+		"build:prod": "cross-env ENV=production webpack --config webpack.config.js",
+		"xi18n": "ts-node ./scripts/extract.ts",
+		"game-00:analyze": "cross-env APP=game-00 npm run analyze",
+		"game-00:tdd": "cross-env APP=game-00 npm run tdd",
+		"game-00:test": "cross-env APP=game-00 npm run test",
+		"game-00:start": "cross-env APP=game-00 npm run start",
+		"game-00:serve": "cross-env APP=game-00 npm run serve",
+		"game-00:build:dev": "cross-env APP=game-00 npm run build:dev",
+		"game-00:build:prod": "cross-env APP=game-00 npm run build:prod",
+		"game-00:xi18n": "cross-env APP=game-00 ts-node ./scripts/extract.ts",
+		"report-coverage": "cat ./coverage/lcov.info | coveralls"
+	},
+	"apps": {
+		"game-00": {
+			"rootDir": "src/game-00",
+			"outDir": "dist/game-00",
+			"main": [
+				"main.ts"
+			],
+			"moduleImportPaths": [
+				"src"
+			],
+			"test": "main.test.ts",
+			"templateData": {
+				"title": "Phaser 3 Game Test"
+			},
+			"assets": [
+				"assets"
+			],
+			"stylesImportPaths": [
+				"styles"
+			],
+			"vendor": []
+		}
+	},
+	"author": "Xesenix",
+	"license": "ISC",
+	"devDependencies": {
+		"@types/inversify": "^2.0.33",
+		"@types/react": "^16.0.38",
+		"@types/react-dom": "^16.0.4",
+		"@types/react-hot-loader": "^3.0.6",
+		"@types/react-test-renderer": "^16.0.1",
+		"@types/redux": "^3.6.0",
+		"@types/redux-logger": "^3.0.5",
+		"@types/tinycolor2": "^1.4.0",
+		"@types/typescript": "^2.0.0",
+		"bootstrap-sass": "^3.3.7",
+		"coveralls": "^3.0.0",
+		"cross-env": "^5.1.3",
+		"font-awesome": "^4.7.0",
+		"gettext-extractor": "^3.2.1",
+		"glslify": "^6.1.1",
+		"http-server": "^0.11.1",
+		"inversify": "^4.11.1",
+		"inversify-vanillajs-helpers": "^2.0.0",
+		"mkdirp": "^0.5.1",
+		"node-gettext": "^2.0.0",
+		"node-sass": "^4.7.2",
+		"parallel-webpack": "^2.3.0",
+		"path-exists": "^3.0.0",
+		"po-gettext-loader": "^0.1.1",
+		"react-hot-loader": "^4.0.0",
+		"react-test-renderer": "^16.2.0",
+		"redux": "^3.7.2",
+		"redux-logger": "^3.0.6",
+		"reflect-metadata": "^0.1.12",
+		"rxjs": "^5.5.7",
+		"ts-node": "^5.0.1",
+		"typescript": "^2.7.2"
+	},
+	"dependencies": {
+		"phaser": "^3.2.0",
+		"react": "^16.2.0",
+		"react-dom": "^16.2.0",
+		"xes-webpack-core": "^0.1.7"
+	},
+	"engines": {
+		"node": ">= 8.0.0"
+	}
+}
