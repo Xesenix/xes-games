@@ -4,15 +4,20 @@ import { hot } from 'react-hot-loader';
 import './game-tile.scss';
 
 export interface IGameTileProps {
-	state: string;
+	state: { x: number, y: number, v: number };
 }
 
 export interface IGameTileState {
 }
 
 class GameTile extends React.Component<IGameTileProps, IGameTileState> {
+	public shouldComponentUpdate({ state }) {
+		return this.props.state.v !== state.v;
+	}
 	public render(): any {
-		return (<div className="tile" data-state={this.props.state}></div>);
+		const { x, y, v } = this.props.state;
+
+		return (<div className="tile" data-state={v}>{v}<span className="label">{x},{y}</span></div>);
 	}
 }
 

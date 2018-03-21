@@ -92,14 +92,25 @@ export class AppModule extends Container {
 		const renderer: ReactRenderer = this.get<IRenderer>('ui:renderer');
 		// console.log(React);
 
-		let board = new Array<Array<string>>(10);
-		board.fill('0');
-		board = board.map(() => (new Array<string>(10)).fill('0'));
+		const sizeX = 30;
+		const sizeY = 20;
+		let board = new Array<Array<{ x: number, y: number, v: number }>>(sizeY);
+		board.fill(0);
+		board = board.map(() => (new Array<{ x: number, y: number }>(sizeX)).fill({ x: 0, y: 0, }));
 
-		setInterval(() => {
-			board = board.map(row => row.map(() => Math.floor(Math.random() * 3).toString()));
-			renderer.setOutlet(<GameBoard state={ board }></GameBoard>);
-			requestAnimationFrame(() => renderer.render());
-		}, 1000);
+		let recursion = () => {
+			// console.time('board')
+			board = board.map((row, y) => row.map(({ v = 0 }, x) => ({ x, y, v: (v + x + y) % 5 })));
+			// console.timeEnd('board')
+			// console.time('outlet')
+			renderer.setOutlet(<GameBoard sizeX={sizeX} sizeY={sizeY} state={ board }/>);
+			// console.timeEnd('outlet')
+			// console.time('render');
+			renderer.render();
+			// console.timeEnd('render');
+			setTimeout(() => requestAnimationFrame(recursion), 500);
+		};
+
+		requestAnimationFrame(recursion);
 	}
 }
