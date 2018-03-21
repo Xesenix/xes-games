@@ -71,7 +71,18 @@ export class AppModule extends Container {
 		this.bind<IDictionary>('environment').toConstantValue(new FlatDictionary({}));
 	}
 
+	public banner() {
+		console.log('%c  ★★★ Black Dragon Framework ★★★  ',
+			'display: block; line-height: 3rem; border-bottom: 5px double #a02060; font-family: fantasy; font-size: 2rem; color: #f02060; background-color: #000;'
+		);
+		console.log(`%c  author: ${ process.env.APP.templateData.author.padEnd(37) }\n%c    game: ${ process.env.APP.templateData.title.padEnd(37) }`,
+			'line-height: 1.25rem; font-family: Consolas; font-weight: bold; font-size: 1.25rem; color: #a060d0; background-color: #000;',
+			'line-height: 1.25rem; font-family: Consolas; font-weight: bold; font-size: 1.25rem; color: #a060d0; background-color: #000; border-bottom: 1px solid #600080;',
+		);
+	}
+
 	public boot() {
+		this.banner();
 		// const uiStateManager = this.get<StateManager>('state:state-manager');
 		const console = this.get<Console>('debug:console');
 
