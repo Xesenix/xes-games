@@ -7,12 +7,14 @@ export interface IRenderer {
 	render(): IRenderer;
 }
 
-@inject(['ui:root'])
+@inject(['ui:root', 'ui:outlet-component'])
 export class ReactRenderer implements IRenderer {
 	private outlets: { [key: string]: any } = {};
 
 	constructor(
 		private uiRoot: HTMLElement,
+		private outlet: React.Component,
+
 	) { }
 
 	public setOutlet(component: any, outlet: string = 'main'): IRenderer {
@@ -27,19 +29,15 @@ export class ReactRenderer implements IRenderer {
 				const element = this.outlets[key];
 				if (!!element) {
 					content.push((
-						<div
-							key={key}
-							style={ { border: '1px solid black', padding: '20px' } }
-						>
-							<div style={ { border: '1px solid black', padding: '5px', background: '#ddd' } }>outlet {key}:</div>
+						<this.outlet key={key}>
 							{ element }
-						</div>
+						</this.outlet>
 					));
 				}
 			}
 		}
 
-		render((<div>{ content }</div>), this.uiRoot);
+		render(content, this.uiRoot);
 
 		return this;
 	}

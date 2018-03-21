@@ -4,14 +4,13 @@ import * as ReactDOM from 'react-dom';
 import { EventEmitter } from 'events';
 import { Container } from 'inversify';
 
-import { GameStatesModule } from 'game/states/states.module';
+import Outlet from 'components/outlet/outlet';
 import { DataStoreModule } from 'lib/data-store/data-store.module';
 import { FlatDictionary } from 'lib/dictionary/flat-dictionary';
 import { IDictionary } from 'lib/dictionary/interfaces';
 import { PhaserModule } from 'lib/phaser/phaser.module';
-import { ReactRenderer } from 'lib/renderer/react-renderer';
+import { IRenderer, ReactRenderer } from 'lib/renderer/react-renderer';
 import { ThemeModule } from 'lib/theme/theme.module';
-import { IRenderer } from 'lib/renderer/react-renderer';
 
 import { IAppDataState, reducer } from './reducer';
 import { UIStatesModule } from './ui-states.module';
@@ -55,11 +54,10 @@ export class AppModule extends Container {
 		// this.load(StateManagerModule());
 		// this.load(UIStatesModule());
 		// this.load(GameStatesModule());
-		console.log('ReactRenderer', ReactRenderer);
 
 		// rendering DOM
 		this.bind<HTMLElement>('ui:root').toConstantValue(document.getElementById('app') as HTMLElement);
-		console.log('ui:root', this.get('ui:root'));
+		this.bind<React.Component>('ui:outlet-component').toConstantValue(Outlet);
 		this.bind<IRenderer>('ui:renderer').to(ReactRenderer).inSingletonScope();
 
 		// setup data store
@@ -71,19 +69,17 @@ export class AppModule extends Container {
 		}));
 
 		this.bind<IDictionary>('environment').toConstantValue(new FlatDictionary({}));
-		console.log('environment', this.get('environment'));
 	}
 
 	public boot() {
 		// const uiStateManager = this.get<StateManager>('state:state-manager');
 		const console = this.get<Console>('debug:console');
 
-		console.trace('Black Dragon Framework');
-
 		// uiStateManager.boot();
 
 		const renderer: ReactRenderer = this.get<IRenderer>('ui:renderer');
-		renderer.setOutlet(<div>HI</div>);
+		// console.log(React);
+		renderer.setOutlet(<React.Fragment>HI</React.Fragment>);
 		renderer.render();
 	}
 }
