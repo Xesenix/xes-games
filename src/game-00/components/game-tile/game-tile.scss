@@ -1,0 +1,19 @@
+.tile {
+	display: inline-grid;
+	justify-content: center;
+	align-items: center;
+	box-shadow: inset 0 0 5px #fff, 0 0 5px #fff;
+	transition: all .5s;
+
+	&[data-state="0"] {
+		background-color: rgba(#ff0080, .5);
+	}
+
+	&[data-state="1"] {
+		background-color: rgba(#2f00ff, .5);
+	}
+
+	&[data-state="2"] {
+		background-color: rgba(#00ffaa, .5);
+	}
+}

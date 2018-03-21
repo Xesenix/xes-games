@@ -4,6 +4,7 @@ import * as ReactDOM from 'react-dom';
 import { EventEmitter } from 'events';
 import { Container } from 'inversify';
 
+import GameBoard from 'components/game-board/game-board';
 import Outlet from 'components/outlet/outlet';
 import { DataStoreModule } from 'lib/data-store/data-store.module';
 import { FlatDictionary } from 'lib/dictionary/flat-dictionary';
@@ -90,7 +91,15 @@ export class AppModule extends Container {
 
 		const renderer: ReactRenderer = this.get<IRenderer>('ui:renderer');
 		// console.log(React);
-		renderer.setOutlet(<React.Fragment>HI</React.Fragment>);
-		renderer.render();
+
+		let board = new Array<Array<string>>(10);
+		board.fill('0');
+		board = board.map(() => (new Array<string>(10)).fill('0'));
+
+		setInterval(() => {
+			board = board.map(row => row.map(() => Math.floor(Math.random() * 3).toString()));
+			renderer.setOutlet(<GameBoard state={ board }></GameBoard>);
+			requestAnimationFrame(() => renderer.render());
+		}, 1000);
 	}
 }
