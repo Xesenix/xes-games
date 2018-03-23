@@ -5,7 +5,7 @@
 	justify-content: center;
 	text-align: center;
 
-	transition: background-color 0s;
+	transition: background 2s;
 	background-color: rgba(#000000, .5);
 
 	&[data-state="0"] {
@@ -13,11 +13,17 @@
 	}
 
 	&[data-state="1"] {
-		background-color: rgba(#2f00ff, .5);
+		background-color: rgba(#000000, 1);
 	}
 
 	&[data-state="2"] {
-		background-color: rgba(#00ffaa, .5);
+		background-color: rgba(#00c040, .75);
+		transition: background 0s;
+	}
+
+	&[data-state="3"] {
+		background-color: rgba(#c04000, .75);
+		transition: background 0s;
 	}
 
 	.label {

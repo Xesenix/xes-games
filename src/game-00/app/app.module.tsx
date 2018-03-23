@@ -4,17 +4,20 @@ import * as ReactDOM from 'react-dom';
 import { EventEmitter } from 'events';
 import { Container } from 'inversify';
 
-import GameBoard from 'components/game-board/game-board';
-import Outlet from 'components/outlet/outlet';
+import GameBoardComponent from 'components/game-board/game-board';
+import OutletComponent from 'components/outlet/outlet';
 import { DataStoreModule } from 'lib/data-store/data-store.module';
 import { FlatDictionary } from 'lib/dictionary/flat-dictionary';
 import { IDictionary } from 'lib/dictionary/interfaces';
 import { PhaserModule } from 'lib/phaser/phaser.module';
 import { IRenderer, ReactRenderer } from 'lib/renderer/react-renderer';
 import { ThemeModule } from 'lib/theme/theme.module';
+import Board from 'lib/game/board/board';
 
 import { IAppDataState, reducer } from './reducer';
 import { UIStatesModule } from './ui-states.module';
+
+import Sokobana, { ARROW_CELL, PLAYER_CELL, WALL_CELL, MOVING_RIGHT_CELL } from 'lib/game/sokobana/algorithm';
 
 /**
  * Main module for application. Defines all dependencies and provides default setup for configuration variables.
@@ -58,7 +61,7 @@ export class AppModule extends Container {
 
 		// rendering DOM
 		this.bind<HTMLElement>('ui:root').toConstantValue(document.getElementById('app') as HTMLElement);
-		this.bind<React.Component>('ui:outlet-component').toConstantValue(Outlet);
+		this.bind<React.Component>('ui:outlet-component').toConstantValue(OutletComponent);
 		this.bind<IRenderer>('ui:renderer').to(ReactRenderer).inSingletonScope();
 
 		// setup data store
@@ -92,25 +95,64 @@ export class AppModule extends Container {
 		const renderer: ReactRenderer = this.get<IRenderer>('ui:renderer');
 		// console.log(React);
 
-		const sizeX = 30;
-		const sizeY = 20;
-		let board = new Array<Array<{ x: number, y: number, v: number }>>(sizeY);
-		board.fill(0);
-		board = board.map(() => (new Array<{ x: number, y: number }>(sizeX)).fill({ x: 0, y: 0, }));
+		let board = new Board(15, 10);
+
+		board.set(4, 5, PLAYER_CELL);
+		board.set(2, 7, PLAYER_CELL);
+		board.set(0, 1, WALL_CELL);
+		board.set(0, 2, WALL_CELL);
+		board.set(0, 3, WALL_CELL);
+		board.set(4, 1, WALL_CELL);
+		board.set(4, 2, WALL_CELL);
+		board.set(4, 3, WALL_CELL);
+		board.set(4, 8, WALL_CELL);
+		board.set(5, 8, WALL_CELL);
+		board.set(6, 7, WALL_CELL);
+		board.set(8, 8, ARROW_CELL | MOVING_RIGHT_CELL);
+
+		console.log(board.get(8, 8, 666), ARROW_CELL, MOVING_RIGHT_CELL);
+
+
 
 		let recursion = () => {
+
+			board = algorithm.move(board);
 			// console.time('board')
-			board = board.map((row, y) => row.map(({ v = 0 }, x) => ({ x, y, v: (v + x + y) % 5 })));
+			// board = board.map((row, y) => row.map(({ v = 0 }, x) => ({ x, y, v: (v + x + y) % 5 })));
 			// console.timeEnd('board')
 			// console.time('outlet')
-			renderer.setOutlet(<GameBoard sizeX={sizeX} sizeY={sizeY} state={ board }/>);
+			renderer.setOutlet(<GameBoardComponent board={ board }/>);
 			// console.timeEnd('outlet')
 			// console.time('render');
 			renderer.render();
 			// console.timeEnd('render');
-			setTimeout(() => requestAnimationFrame(recursion), 500);
 		};
 
 		requestAnimationFrame(recursion);
+
+		const algorithm = new Sokobana();
+
+		document.addEventListener('keydown', (ev) => {
+			console.log('ev', ev);
+			switch(ev.code) {
+				case 'KeyW':
+				case 'ArrowUp':
+					board = algorithm.moveUp(board);
+				break;
+				case 'KeyS':
+				case 'ArrowDown':
+					board = algorithm.moveDown(board);
+				break;
+				case 'KeyA':
+				case 'ArrowLeft':
+					board = algorithm.moveLeft(board);
+				break;
+				case 'KeyD':
+				case 'ArrowRight':
+					board = algorithm.moveRight(board);
+				break;
+			}
+			recursion();
+		});
 	}
 }

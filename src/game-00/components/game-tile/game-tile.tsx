@@ -4,21 +4,21 @@ import { hot } from 'react-hot-loader';
 import './game-tile.scss';
 
 export interface IGameTileProps {
-	state: { x: number, y: number, v: number };
+	state: number;
 }
 
 export interface IGameTileState {
 }
 
-class GameTile extends React.Component<IGameTileProps, IGameTileState> {
+class GameTileComponent extends React.Component<IGameTileProps, IGameTileState> {
 	public shouldComponentUpdate({ state }) {
-		return this.props.state.v !== state.v;
+		return this.props.state !== state;
 	}
 	public render(): any {
-		const { x, y, v } = this.props.state;
+		const v = this.props.state > 0 ? Math.floor(Math.log2(this.props.state >>> 3)) : 0;
 
-		return (<div className="tile" data-state={v}>{v}<span className="label">{x},{y}</span></div>);
+		return (<div className="tile" data-state={v}>{v}</div>);
 	}
 }
 
-export default hot(module)(GameTile);
+export default hot(module)(GameTileComponent);
