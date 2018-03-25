@@ -1,23 +1,25 @@
 import * as React from 'react';
 import { hot } from 'react-hot-loader';
 
+import GameObjectComponent from '../game-object/game-object';
+
 import './game-tile.scss';
+import { IGameBoardObject } from '../../lib/game/board/interface';
 
 export interface IGameTileProps {
-	state: number;
+	objects: IGameBoardObject[];
 }
 
 export interface IGameTileState {
 }
 
 class GameTileComponent extends React.Component<IGameTileProps, IGameTileState> {
-	public shouldComponentUpdate({ state }) {
-		return this.props.state !== state;
-	}
 	public render(): any {
-		const v = this.props.state > 0 ? Math.floor(Math.log2(this.props.state >>> 3)) : 0;
-
-		return (<div className="tile" data-state={v}>{v}</div>);
+		return (<div className="tile">{
+			this.props.objects.map(
+				(o, index: number) => <GameObjectComponent key={index} object={o}/>
+			)
+		}</div>);
 	}
 }
 

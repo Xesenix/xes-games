@@ -18,7 +18,7 @@ class GameBoardComponent extends React.Component<IGameBoardProps, IGameBoardStat
 		const { board } = this.props;
 
 		return (<div className="board" style={{ 'gridTemplateColumns': 'auto '.repeat(board.sizeX)}}>
-			{ board.tiles().map(({ x, y, v }) => <GameTileComponent key={`${x},${y}`} state={ v }/>) }
+			{ board.tiles().map(({ x, y, v }) => <GameTileComponent key={`${x},${y}`} objects={ v }/>) }
 		</div>);
 	}
 }

@@ -16,6 +16,7 @@ module.exports = (config) => {
 			'CANVAS_RENDERER': JSON.stringify(true),
 		}));
 	} else {
+		config.devtool = 'cheap-module-source-map';
 
 		config.externals = {
 			...config.externals,

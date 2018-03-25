@@ -1,0 +1,40 @@
+.object {
+	display: inline-grid;
+
+	align-content: center;
+	justify-content: center;
+	text-align: center;
+
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+
+	transform: translate(0, 0);
+	transition: all 2s;
+
+	&[data-state="0"] {
+		background-color: rgba(#000000, .5);
+	}
+
+	&[data-state="1"] {
+		background-color: rgba(#ff8000, .5);
+	}
+
+	&[data-state="2"] {
+		background-color: rgba(#00c040, .75);
+		transition: background 0s;
+	}
+
+	&[data-state="3"] {
+		background-color: rgba(#c04000, .75);
+		transition: background 0s;
+	}
+
+	.label {
+		display: block;
+		font-size: .75rem;
+		color: #ffffff80;
+	}
+}
