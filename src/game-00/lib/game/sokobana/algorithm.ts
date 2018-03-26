@@ -7,66 +7,66 @@ export const CONTROLLABLE_OBJECT = 0b0010;
 export const MOVABLE_CONTROLLABLE_OBJECT = MOVABLE_OBJECT | CONTROLLABLE_OBJECT;
 
 export default class SokobanaAlgorithm {
-	public moveUp(objects: IGameBoardObject[], board: IGameBoard): IGameBoardObject[] {
-		return objects.map((obj) => {
-			if (obj.type & MOVABLE_CONTROLLABLE_OBJECT) {
-				return {
-					...obj,
-					v: {
-						x: 0,
-						y: -1,
-					},
+	public commandMoveUp(objects: IGameBoardObject[]): void {
+		objects.forEach((obj) => {
+			if (obj.type & CONTROLLABLE_OBJECT) {
+				if (typeof obj.commandMoveUp !== 'undefined') {
+					obj.commandMoveUp();
 				}
 			} else {
-				return obj;
+				if (typeof obj.commandMove !== 'undefined') {
+					obj.commandMove();
+				}
 			}
 		});
 	}
 
-	public moveDown(objects: IGameBoardObject[], board: IGameBoard): IGameBoardObject[] {
-		return objects.map((obj) => {
-			if (obj.type & MOVABLE_CONTROLLABLE_OBJECT) {
-				return {
-					...obj,
-					v: {
-						x: 0,
-						y: 1,
-					},
+	public commandMoveDown(objects: IGameBoardObject[]): void {
+		objects.forEach((obj) => {
+			if (obj.type & CONTROLLABLE_OBJECT) {
+				if (typeof obj.commandMoveDown !== 'undefined') {
+					obj.commandMoveDown();
 				}
 			} else {
-				return obj;
+				if (typeof obj.commandMove !== 'undefined') {
+					obj.commandMove();
+				}
 			}
 		});
 	}
 
-	public moveLeft(objects: IGameBoardObject[], board: IGameBoard): IGameBoardObject[] {
-		return objects.map((obj) => {
-			if (obj.type & MOVABLE_CONTROLLABLE_OBJECT) {
-				return {
-					...obj,
-					v: {
-						x: -1,
-						y: 0,
-					},
+	public commandMoveLeft(objects: IGameBoardObject[]): void {
+		objects.forEach((obj) => {
+			if (obj.type & CONTROLLABLE_OBJECT) {
+				if (typeof obj.commandMoveLeft !== 'undefined') {
+					obj.commandMoveLeft();
 				}
 			} else {
-				return obj;
+				if (typeof obj.commandMove !== 'undefined') {
+					obj.commandMove();
+				}
 			}
 		});
 	}
 
-	public moveRight(objects: IGameBoardObject[], board: IGameBoard): IGameBoardObject[] {
-		return objects.map((obj) => {
-			if (obj.type & MOVABLE_CONTROLLABLE_OBJECT) {
-				return {
-					...obj,
-					v: {
-						x: 1,
-						y: 0,
-					},
+	public commandMoveRight(objects: IGameBoardObject[]): void {
+		objects.forEach((obj) => {
+			if (obj.type & CONTROLLABLE_OBJECT) {
+				if (typeof obj.commandMoveRight !== 'undefined') {
+					obj.commandMoveRight();
 				}
 			} else {
-				return obj;
+				if (typeof obj.commandMove !== 'undefined') {
+					obj.commandMove();
+				}
+			}
+		});
+	}
+
+	public commandAction(objects: IGameBoardObject[]): void {
+		objects.forEach((obj) => {
+			if (typeof obj.commandAction !== 'undefined') {
+				obj.commandAction();
 			}
 		});
 	}
@@ -106,10 +106,9 @@ export default class SokobanaAlgorithm {
 		});
 	}
 
-	public move(objects: IGameBoardObject[], board: IGameBoard): void {
+	public update(objects: IGameBoardObject[], board: IGameBoard): void {
 		objects.forEach((obj) => {
-			board.remove(obj.x, obj.y, obj);
-			board.add(obj.x, obj.y, obj);
+			obj.update(objects, board);
 		});
 
 		for (let x = 0; x < board.sizeX; x++) {

@@ -1,4 +1,4 @@
-import { IGameBoardObject } from './interface';
+import { IGameBoardObject, IGameBoard } from './interface';
 
 export default class GameBoardObject implements IGameBoardObject {
 	public constructor(
@@ -7,5 +7,14 @@ export default class GameBoardObject implements IGameBoardObject {
 		public type: number = 0,
 		public x: number = 0,
 		public y: number = 0,
+		public direction: { x: number, y: number } = { x: 0, y: 0 },
 	) { }
+
+	public commandAction() {
+
+	}
+
+	public update(gameObjects: IGameBoardObject[], board: IGameBoard): void {
+
+	}
 }

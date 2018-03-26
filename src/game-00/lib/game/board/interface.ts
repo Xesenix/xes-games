@@ -1,9 +1,13 @@
 export interface IGameBoardObject {
 	id: number,
 	appearance: number;
+	direction: { x: number, y: number };
 	x: number;
 	y: number;
 	type: number;
+
+	commandAction(): void;
+	update(gameObjects: IGameBoardObject[], board: IGameBoard): void;
 }
 
 export interface IGameBoardMovableObject extends IGameBoardObject {
@@ -14,6 +18,11 @@ export interface IGameBoardMovableObject extends IGameBoardObject {
 	 * @memberof IGameBoardMovableObject
 	 */
 	v: { x: number; y: number; };
+
+	commandMoveUp(): void;
+	commandMoveDown(): void;
+	commandMoveLeft(): void;
+	commandMoveRight(): void;
 }
 
 export interface IGameBoard {

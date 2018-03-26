@@ -18,9 +18,10 @@ import { IAppDataState, reducer } from './reducer';
 // import { UIStatesModule } from './ui-states.module';
 
 import Sokobana from 'lib/game/sokobana/algorithm';
-import { MOVABLE_CONTROLLABLE_OBJECT } from '../lib/game/sokobana/algorithm';
+import { MOVABLE_CONTROLLABLE_OBJECT, MOVABLE_OBJECT } from '../lib/game/sokobana/algorithm';
 import GameBoardMovableObject from 'game-00/lib/game/board/movable-object';
 import GameBoardObject from 'game-00/lib/game/board/object';
+import GameBoardObjectSpawner from 'game-00/lib/game/board/object-spawner';
 
 /**
  * Main module for application. Defines all dependencies and provides default setup for configuration variables.
@@ -95,16 +96,26 @@ export class AppModule extends Container {
 
 		// uiStateManager.boot();
 
+		const algorithm = new Sokobana();
 		const renderer: ReactRenderer = this.get<IRenderer>('ui:renderer');
 		// console.log(React);
 
-		const PLAYER_APPEARANCE = 2;
 		const WALL_APPERANCE = 0;
+		const PLAYER_APPEARANCE = 1;
+		const ARROW_APPEARANCE = 2;
+		const ARROW_CANNON_APPEARANCE = 3;
+
+		// collision groups
 
 		let board = new Board(15, 10);
 		let gameObjects = [
-			new GameBoardMovableObject(1000, PLAYER_APPEARANCE, MOVABLE_CONTROLLABLE_OBJECT, 4, 5),
-			new GameBoardMovableObject(1001, PLAYER_APPEARANCE, MOVABLE_CONTROLLABLE_OBJECT, 6, 8),
+			new GameBoardMovableObject(200, PLAYER_APPEARANCE, MOVABLE_CONTROLLABLE_OBJECT, 4, 5),
+			new GameBoardMovableObject(201, PLAYER_APPEARANCE, MOVABLE_CONTROLLABLE_OBJECT, 6, 8),
+			new GameBoardMovableObject(202, PLAYER_APPEARANCE, MOVABLE_CONTROLLABLE_OBJECT, 1, 1),
+			new GameBoardMovableObject(203, PLAYER_APPEARANCE, MOVABLE_CONTROLLABLE_OBJECT, 9, 8),
+			new GameBoardMovableObject(100, ARROW_APPEARANCE, MOVABLE_OBJECT, 0, 0, { x: 3, y: 0 }),
+			new GameBoardMovableObject(101, ARROW_APPEARANCE, MOVABLE_OBJECT, 8, 8, { x: 0, y: -3 }),
+			new GameBoardObjectSpawner((x, y) => new GameBoardMovableObject(100, ARROW_APPEARANCE, MOVABLE_OBJECT, x, y, { x: 0, y: -2 }), 8, 8),
 		];
 
 		board.set(0, 1, [ new GameBoardObject(1, WALL_APPERANCE, 0, 0, 1) ]);
@@ -116,9 +127,10 @@ export class AppModule extends Container {
 		board.set(4, 8, [ new GameBoardObject(7, WALL_APPERANCE, 0, 4, 8) ]);
 		board.set(5, 8, [ new GameBoardObject(8, WALL_APPERANCE, 0, 5, 8) ]);
 		board.set(6, 7, [ new GameBoardObject(9, WALL_APPERANCE, 0, 6, 7) ]);
+		board.set(8, 8, [ new GameBoardObject(10, ARROW_CANNON_APPEARANCE, 0, 8, 8) ]);
 
-		let recursion = () => {
-			algorithm.move(gameObjects, board);
+		let update = () => {
+			algorithm.update(gameObjects, board);
 			// console.log('board', board);
 			// console.log('gameObjects', gameObjects);
 			// console.time('board')
@@ -132,31 +144,30 @@ export class AppModule extends Container {
 			// console.timeEnd('render');
 		};
 
-		requestAnimationFrame(recursion);
-
-		const algorithm = new Sokobana();
-
 		document.addEventListener('keydown', (ev) => {
 			console.log('ev', ev, gameObjects);
 			switch(ev.code) {
 				case 'KeyW':
 				case 'ArrowUp':
-					gameObjects = algorithm.moveUp(gameObjects, board);
+					algorithm.commandMoveUp(gameObjects);
 				break;
 				case 'KeyS':
 				case 'ArrowDown':
-					gameObjects = algorithm.moveDown(gameObjects, board);
+					algorithm.commandMoveDown(gameObjects);
 				break;
 				case 'KeyA':
 				case 'ArrowLeft':
-					gameObjects = algorithm.moveLeft(gameObjects, board);
+					algorithm.commandMoveLeft(gameObjects);
 				break;
 				case 'KeyD':
 				case 'ArrowRight':
-					gameObjects = algorithm.moveRight(gameObjects, board);
+					algorithm.commandMoveRight(gameObjects);
 				break;
 			}
-			recursion();
+			algorithm.commandAction(gameObjects);
+			update();
 		});
+
+		requestAnimationFrame(update);
 	}
 }
