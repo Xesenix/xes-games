@@ -1,6 +1,10 @@
 export interface IGameBoardObject {
 	id: number,
 	appearance: number;
+	/**
+	 * Some specific state id like alive, dead or something more complicated lik burning flying etc
+	 */
+	state: number;
 	direction: { x: number, y: number };
 	x: number;
 	y: number;
@@ -11,6 +15,7 @@ export interface IGameBoardObject {
 }
 
 export interface IGameBoardMovableObject extends IGameBoardObject {
+	steps: number,
 	/**
 	 * Object velocity.
 	 *

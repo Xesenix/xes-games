@@ -18,10 +18,13 @@ import { IAppDataState, reducer } from './reducer';
 // import { UIStatesModule } from './ui-states.module';
 
 import Sokobana from 'lib/game/sokobana/algorithm';
-import { MOVABLE_CONTROLLABLE_OBJECT, MOVABLE_OBJECT } from '../lib/game/sokobana/algorithm';
+import { MOVABLE_CONTROLLABLE_OBJECT, MOVABLE_OBJECT, DESTROY_ON_COLLISION_OBJECT, DESTRUCTIBLE_OBJECT, KILL_ON_COLLISION_OBJECT, SPAWNER_OBJECT } from '../lib/game/sokobana/algorithm';
 import GameBoardMovableObject from 'game-00/lib/game/board/movable-object';
 import GameBoardObject from 'game-00/lib/game/board/object';
 import GameBoardObjectSpawner from 'game-00/lib/game/board/object-spawner';
+import { IGameBoardMovableObject, IGameBoardObject } from '../lib/game/board/interface';
+import KillOnCollisionSystem from 'game-00/lib/game/system/kill-on-collision';
+import DieOnCollisionSystem from 'game-00/lib/game/system/die-on-collision';
 
 /**
  * Main module for application. Defines all dependencies and provides default setup for configuration variables.
@@ -100,37 +103,121 @@ export class AppModule extends Container {
 		const renderer: ReactRenderer = this.get<IRenderer>('ui:renderer');
 		// console.log(React);
 
-		const WALL_APPERANCE = 0;
+		const WALL_APPEARANCE = 0;
 		const PLAYER_APPEARANCE = 1;
 		const ARROW_APPEARANCE = 2;
 		const ARROW_CANNON_APPEARANCE = 3;
 
+		const ARROW_TYPE = MOVABLE_OBJECT | DESTROY_ON_COLLISION_OBJECT | KILL_ON_COLLISION_OBJECT;
+		const PLAYER_TYPE = MOVABLE_CONTROLLABLE_OBJECT | DESTRUCTIBLE_OBJECT | DESTRUCTIBLE_OBJECT;
+
+		const STATE_ALIVE = 0b01;
+		const STATE_DEAD = 0b00;
+
+		const kill = (target: IGameBoardObject) => { target.state = STATE_DEAD };
+		const killOnCollisionSystem = new KillOnCollisionSystem(kill);
+		const dieOnCollisionSystem = new DieOnCollisionSystem(kill);
+
 		// collision groups
+
+		// TODO: create systems <=======
+		let spawnIndex = 1000;
 
 		let board = new Board(15, 10);
 		let gameObjects = [
-			new GameBoardMovableObject(200, PLAYER_APPEARANCE, MOVABLE_CONTROLLABLE_OBJECT, 4, 5),
-			new GameBoardMovableObject(201, PLAYER_APPEARANCE, MOVABLE_CONTROLLABLE_OBJECT, 6, 8),
-			new GameBoardMovableObject(202, PLAYER_APPEARANCE, MOVABLE_CONTROLLABLE_OBJECT, 1, 1),
-			new GameBoardMovableObject(203, PLAYER_APPEARANCE, MOVABLE_CONTROLLABLE_OBJECT, 9, 8),
-			new GameBoardMovableObject(100, ARROW_APPEARANCE, MOVABLE_OBJECT, 0, 0, { x: 3, y: 0 }),
-			new GameBoardMovableObject(101, ARROW_APPEARANCE, MOVABLE_OBJECT, 8, 8, { x: 0, y: -3 }),
-			new GameBoardObjectSpawner((x, y) => new GameBoardMovableObject(100, ARROW_APPEARANCE, MOVABLE_OBJECT, x, y, { x: 0, y: -2 }), 8, 8),
+			new GameBoardObjectSpawner((x, y) => new GameBoardMovableObject(spawnIndex++, ARROW_APPEARANCE, ARROW_TYPE, x, y, STATE_ALIVE, { x: 0, y: -3 }), 8, 8),
+			new GameBoardObjectSpawner((x, y) => new GameBoardMovableObject(spawnIndex++, ARROW_APPEARANCE, ARROW_TYPE, x, y, STATE_ALIVE, { x: -5, y: 0 }), 13, 4),
+			new GameBoardMovableObject(200, PLAYER_APPEARANCE, PLAYER_TYPE, STATE_ALIVE, 4, 5),
+			new GameBoardMovableObject(201, PLAYER_APPEARANCE, PLAYER_TYPE, STATE_ALIVE, 6, 8),
+			new GameBoardMovableObject(202, PLAYER_APPEARANCE, PLAYER_TYPE, STATE_ALIVE, 1, 1),
+			new GameBoardMovableObject(203, PLAYER_APPEARANCE, PLAYER_TYPE, STATE_ALIVE, 9, 8),
+			new GameBoardMovableObject(100, ARROW_APPEARANCE, ARROW_TYPE, STATE_ALIVE, 0, 0, { x: 5, y: 0 }),
+			new GameBoardMovableObject(101, ARROW_APPEARANCE, ARROW_TYPE, STATE_ALIVE, 8, 3, { x: 0, y: -3 }),
 		];
 
-		board.set(0, 1, [ new GameBoardObject(1, WALL_APPERANCE, 0, 0, 1) ]);
-		board.set(0, 2, [ new GameBoardObject(2, WALL_APPERANCE, 0, 0, 2) ]);
-		board.set(0, 3, [ new GameBoardObject(3, WALL_APPERANCE, 0, 0, 3) ]);
-		board.set(4, 1, [ new GameBoardObject(4, WALL_APPERANCE, 0, 4, 1) ]);
-		board.set(4, 2, [ new GameBoardObject(5, WALL_APPERANCE, 0, 4, 2) ]);
-		board.set(4, 3, [ new GameBoardObject(6, WALL_APPERANCE, 0, 4, 3) ]);
-		board.set(4, 8, [ new GameBoardObject(7, WALL_APPERANCE, 0, 4, 8) ]);
-		board.set(5, 8, [ new GameBoardObject(8, WALL_APPERANCE, 0, 5, 8) ]);
-		board.set(6, 7, [ new GameBoardObject(9, WALL_APPERANCE, 0, 6, 7) ]);
-		board.set(8, 8, [ new GameBoardObject(10, ARROW_CANNON_APPEARANCE, 0, 8, 8) ]);
+		board.set(0, 1, [ new GameBoardObject(1, WALL_APPEARANCE, 0, 0, 0, 1) ]);
+		board.set(0, 2, [ new GameBoardObject(2, WALL_APPEARANCE, 0, 0, 0, 2) ]);
+		board.set(0, 3, [ new GameBoardObject(3, WALL_APPEARANCE, 0, 0, 0, 3) ]);
+		board.set(4, 1, [ new GameBoardObject(4, WALL_APPEARANCE, 0, 0, 4, 1) ]);
+		board.set(4, 2, [ new GameBoardObject(5, WALL_APPEARANCE, 0, 0, 4, 2) ]);
+		board.set(4, 3, [ new GameBoardObject(6, WALL_APPEARANCE, 0, 0, 4, 3) ]);
+		board.set(4, 8, [ new GameBoardObject(7, WALL_APPEARANCE, 0, 0, 4, 8) ]);
+		board.set(5, 8, [ new GameBoardObject(8, WALL_APPEARANCE, 0, 0, 5, 8) ]);
+		board.set(6, 7, [ new GameBoardObject(9, WALL_APPEARANCE, 0, 0, 6, 7) ]);
+		board.set(8, 8, [ new GameBoardObject(10, ARROW_CANNON_APPEARANCE, SPAWNER_OBJECT, 0, 8, 8) ]);
+		board.set(13, 4, [ new GameBoardObject(10, ARROW_CANNON_APPEARANCE, SPAWNER_OBJECT, 0, 13, 4) ]);
 
-		let update = () => {
-			algorithm.update(gameObjects, board);
+		const inputBuffer = [];
+
+		function *resolveCommands() {
+			while (true) {
+				while (inputBuffer.length === 0) {
+					yield;
+				}
+				console.log('========= CHECK NEXT INPUT', inputBuffer);
+				const command = inputBuffer.pop();
+				console.log('========= TAKE INPUT', command);
+
+				switch(command) {
+					case 'KeyW':
+					case 'ArrowUp':
+						algorithm.commandMoveUp(gameObjects);
+					break;
+					case 'KeyS':
+					case 'ArrowDown':
+						algorithm.commandMoveDown(gameObjects);
+					break;
+					case 'KeyA':
+					case 'ArrowLeft':
+						algorithm.commandMoveLeft(gameObjects);
+					break;
+					case 'KeyD':
+					case 'ArrowRight':
+						algorithm.commandMoveRight(gameObjects);
+					break;
+				}
+				algorithm.commandAction(gameObjects);
+
+				gameObjects.filter(obj => (obj.type & SPAWNER_OBJECT) === SPAWNER_OBJECT).forEach(obj => obj.update(gameObjects, board));
+
+				while (!algorithm.resolved(gameObjects)) {
+					console.log('========= UPDATE');
+					algorithm.update(gameObjects, board);
+					killOnCollisionSystem.update(gameObjects, board);
+					dieOnCollisionSystem.update(gameObjects, board);
+
+					gameObjects = gameObjects.filter((obj) => {
+						if (obj.state === STATE_DEAD) {
+							board.remove(obj.x, obj.y, obj);
+							return false;
+						}
+						return true;
+					});
+
+					updateView();
+					yield;
+				}
+				yield;
+			}
+		}
+
+		const gen = resolveCommands();
+
+		const resolve = () => {
+			const step = gen.next();
+			if (!step.done) {
+				setTimeout(() => resolve(), 20);
+			}
+		};
+
+		resolve();
+
+		const updateView = () => {
+
+			gameObjects.forEach((obj) => {
+				board.remove(obj.x, obj.y, obj);
+				board.add(obj.x, obj.y, obj);
+			});
 			// console.log('board', board);
 			// console.log('gameObjects', gameObjects);
 			// console.time('board')
@@ -146,28 +233,9 @@ export class AppModule extends Container {
 
 		document.addEventListener('keydown', (ev) => {
 			console.log('ev', ev, gameObjects);
-			switch(ev.code) {
-				case 'KeyW':
-				case 'ArrowUp':
-					algorithm.commandMoveUp(gameObjects);
-				break;
-				case 'KeyS':
-				case 'ArrowDown':
-					algorithm.commandMoveDown(gameObjects);
-				break;
-				case 'KeyA':
-				case 'ArrowLeft':
-					algorithm.commandMoveLeft(gameObjects);
-				break;
-				case 'KeyD':
-				case 'ArrowRight':
-					algorithm.commandMoveRight(gameObjects);
-				break;
-			}
-			algorithm.commandAction(gameObjects);
-			update();
+			inputBuffer.push(ev.code);
 		});
 
-		requestAnimationFrame(update);
+		requestAnimationFrame(updateView);
 	}
 }

@@ -3,9 +3,22 @@
 	flex-direction: column;
 
 	align-content: center;
-	justify-content: flex-start;
+	justify-content: center;
 	text-align: center;
-	position: relative;
 
 	background-color: rgba(#fff, .5);
+
+	& > * {
+		visibility: hidden;
+	}
+
+	&:hover > *,
+	> *:first-child {
+		visibility: visible;
+	}
+
+	&:hover > * {
+		background-color: #000;
+		z-index: 1000;
+	}
 }

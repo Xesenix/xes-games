@@ -22,6 +22,7 @@ class GameObjectComponent extends React.Component<IGameObjectComponentProps, IGa
 			<div className={`object ${collided ? 'collided' : ''}`} data-state={ object.appearance }>
 				{ object.appearance }
 				<span className="label">id: { object.id }</span>
+				<span className="label">steps: { object.steps || 0 }</span>
 			</div>
 		);
 	}

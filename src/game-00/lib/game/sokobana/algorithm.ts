@@ -3,6 +3,10 @@ import { IGameBoardObject, IGameBoardMovableObject } from '../board/interface';
 
 export const MOVABLE_OBJECT = 0b0001;
 export const CONTROLLABLE_OBJECT = 0b0010;
+export const DESTROY_ON_COLLISION_OBJECT = 0b10100;
+export const KILL_ON_COLLISION_OBJECT = 0b1000;
+export const DESTRUCTIBLE_OBJECT = 0b10000;
+export const SPAWNER_OBJECT = 0b100000;
 
 export const MOVABLE_CONTROLLABLE_OBJECT = MOVABLE_OBJECT | CONTROLLABLE_OBJECT;
 
@@ -71,58 +75,72 @@ export default class SokobanaAlgorithm {
 		});
 	}
 
-	private resolveCell(objects: IGameBoardObject[], board: IGameBoard, x: number, y: number) {
-		objects.forEach((obj) => {
-			if (typeof (obj as any).v !== 'undefined') {
-				const actor = obj as IGameBoardMovableObject;
-				const { v = null } = actor;
+	private resolveCell(obj: IGameBoardMovableObject, board: IGameBoard): boolean {
+		console.log('resolve', obj);
+		if (typeof (obj as any).v !== 'undefined') {
+			const actor = obj as IGameBoardMovableObject;
+			const { v = null } = actor;
 
-				if (v !== null) {
-					const n = {
-						x: v.x !== 0 ? v.x / Math.abs(v.x) : 0,
-						y: v.y !== 0 ? v.y / Math.abs(v.y) : 0,
-					};
+			if (v !== null) {
+				const n = {
+					x: v.x !== 0 ? v.x / Math.abs(v.x) : 0,
+					y: v.y !== 0 ? v.y / Math.abs(v.y) : 0,
+				};
 
-					if (n.x != 0 || n.y != 0) {
-						const targetCellObjects = board.get(x + n.x, y + n.y, null);
-						// is it out of bound?
-						if (targetCellObjects !== null) {
-							// is it empty?
-							// TODO: check collision group
-							if (targetCellObjects.length === 0) {
-								// reduce velocity after each step till it reaches 0
-								actor.v.x -= n.x;
-								actor.v.y -= n.y;
-								// move
-								board.remove(actor.x, actor.y, actor);
-								actor.x = x + n.x;
-								actor.y = y + n.y;
-								board.add(actor.x, actor.y, actor);
-							}
+				if (n.x != 0 || n.y != 0) {
+					const targetCellObjects = board.get(obj.x + n.x, obj.y + n.y, null);
+					// is it out of bound?
+					if (targetCellObjects !== null) {
+						// is it empty?
+						// TODO: check collision group
+						if (targetCellObjects.length === 0) {
+							// reduce velocity after each step till it reaches 0
+							actor.v.x -= n.x;
+							actor.v.y -= n.y;
+							// move
+							board.remove(actor.x, actor.y, actor);
+							actor.x = obj.x + n.x;
+							actor.y = obj.y + n.y;
+							board.add(actor.x, actor.y, actor);
+							// console.log('moved', obj);
+
+							return false;
 						}
 					}
 				}
 			}
-		});
+		}
+
+		return true;
 	}
 
 	public update(objects: IGameBoardObject[], board: IGameBoard): void {
-		objects.forEach((obj) => {
+		// we need to resolve positions of movable objects
+		const movable = objects.filter(obj => typeof (obj as any).v !== 'undefined');
+
+		movable.forEach((obj) => {
 			obj.update(objects, board);
 		});
 
-		for (let x = 0; x < board.sizeX; x++) {
-			for (let y = 0; y < board.sizeY; y++) {
-				const objects = board.get(x, y);
-				this.resolveCell(objects, board, x, y);
-			}
-		}
+		// first move faster objects then determine order by position on board
+		let ordered = movable.sort((a, b) => a.steps < b.steps ? 1 : a.steps > b.steps ? -1 : a.x < b.x || a.y < b.y ? -1 : a.x === b.x && a.y === b.y ? 0 : 1);
+		ordered = ordered.filter(obj => this.resolveCell(obj, board));
+		// for all unresolved reverse board order
+		console.log('=== resolve reverse order');
+		ordered
+			.sort((a, b) => a.steps < b.steps ? 1 : a.steps > b.steps ? -1 : a.x < b.x || a.y < b.y ? 1 : a.x === b.x && a.y === b.y ? 0 : -1)
+			.forEach(obj => this.resolveCell(obj, board));
+	}
 
-		for (let x = board.sizeX - 1; x >= 0; x--) {
-			for (let y = board.sizeY - 1; y >= 0; y--) {
-				const objects = board.get(x, y);
-				this.resolveCell(objects, board, x, y);
+	public resolved(objects: IGameBoardObject[], board: IGameBoard): boolean {
+		return objects.reduce((acc, obj) => {
+			// console.log('is resolved ', acc, obj.state, obj.id, obj.steps);
+			if (obj.state > 0 && typeof (obj as any).steps !== 'undefined') {
+				const { steps = 0 } = obj as IGameBoardMovableObject;
+
+				return acc && steps === 0;
 			}
-		}
+			return acc;
+		}, true);
 	}
 }
