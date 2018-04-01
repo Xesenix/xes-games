@@ -23,23 +23,31 @@
 	}
 
 	&[data-state="2"] {
-		background-color: rgba(#ff8000, .5);
+		background-color: rgba(#a040a0, .75);
 	}
 
 	&[data-state="3"] {
-		background-color: rgba(#c04000, .75);
+		background-color: rgba(#808080, .75);
 	}
 
 	&[data-state="4"] {
-		background-color: rgba(#0000f0, .75);
+		background-color: rgba(#f08000, .75);
 	}
 
 	&[data-state="5"] {
-		background-color: rgba(#000080, .75);
+		background-color: rgba(#804000, .25);
+	}
+
+	&[data-state="6"] {
+		background-color: rgba(#f0f000, .75);
+	}
+
+	&[data-state="7"] {
+		background-color: rgba(#808000, .25);
 	}
 
 	&.collided {
-		background-color: rgba(#c04000, .75);
+		border: 5px solid #c04000;
 	}
 
 	.label {

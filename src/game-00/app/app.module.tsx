@@ -104,6 +104,10 @@ export class AppModule extends Container {
 					kill(source);
 				}
 
+				if ((source.type & STOP_ON_COLLISION_OBJECT) == STOP_ON_COLLISION_OBJECT) {
+					return true;
+				}
+
 				if ((target.type & STOP_ON_COLLISION_OBJECT) == STOP_ON_COLLISION_OBJECT) {
 					return true;
 				}
@@ -147,75 +151,6 @@ export class AppModule extends Container {
 
 		let board = new Board(12, 9);
 		let gameObjects = [];
-			/*new GameBoardObjectSpawner(
-				spawnIndex++,
-				SPAWNER_OBJECT,
-				collisionGroup,
-				{
-					appearance: ARROW_CANNON_APPEARANCE,
-					alive: true,
-					position: { x: 8, y: 8 }
-				} as IGameObjectState,
-				(x, y) => new GameBoardMovableObject(
-					spawnIndex++,
-					ARROW_TYPE,
-					collisionGroup,
-					{
-						appearance: ARROW_APPEARANCE,
-						alive: true,
-						direction: { x: 0, y: -1 },
-						n: { x: 0, y: -1 },
-						speed: 3,
-						steps: 0,
-						impact: 0,
-						position: {
-							x,
-							y,
-						},
-					}
-				),
-			),
-			new GameBoardObjectSpawner(
-				spawnIndex++,
-				SPAWNER_OBJECT,
-				collisionGroup,
-				{
-					appearance: ARROW_CANNON_APPEARANCE,
-					alive: true,
-					position: { x: 13, y: 4 }
-				},
-				(x, y) => new GameBoardMovableObject(
-					spawnIndex++,
-					ARROW_TYPE,
-					collisionGroup,
-					{
-						appearance: ARROW_APPEARANCE,
-						alive: true,
-						direction: { x: -1, y: 0 },
-						n: { x: -1, y: 0 },
-						speed: 5,
-						steps: 0,
-						impact: 0,
-						position: {
-							x,
-							y,
-						},
-					}
-				),
-			),
-			new GameBoardMovableObject(spawnIndex++, ARROW_TYPE, collisionGroup, { appearance: ARROW_APPEARANCE, alive: true, position: { x: 0, y: 0 }, direction: { x: 1, y: 0 }, n: { x: 1, y: 0 }, speed: 5, steps: 0, impact: 0 } ),
-			new GameBoardMovableObject(spawnIndex++, ARROW_TYPE, collisionGroup, { appearance: ARROW_APPEARANCE, alive: true, position: { x: 8, y: 3 }, direction: { x: 0, y: -1 }, n: { x: 0, y: -1 }, speed: 3, steps: 0, impact: 0 } ),
-			new GameBoardMovableObject(spawnIndex++, PLAYER_TYPE, collisionGroup, { appearance: PLAYER_APPEARANCE, alive: true, position: { x: 6, y: 8 }, direction: { x: 0, y: 0 }, n: { x: 0, y: 0 }, speed: 1, steps: 0, impact: 0 } ),
-			new GameBoardMovableObject(spawnIndex++, PLAYER_TYPE, collisionGroup, { appearance: PLAYER_APPEARANCE, alive: true, position: { x: 1, y: 1 }, direction: { x: 0, y: 0 }, n: { x: 0, y: 0 }, speed: 1, steps: 0, impact: 0 } ),
-			new GameBoardMovableObject(spawnIndex++, PLAYER_TYPE, collisionGroup, { appearance: PLAYER_APPEARANCE, alive: true, position: { x: 9, y: 8 }, direction: { x: 0, y: 0 }, n: { x: 0, y: 0 }, speed: 1, steps: 0, impact: 0 } ),
-			new GameBoardMovableObject(spawnIndex++, PLAYER_TYPE, collisionGroup, { appearance: PLAYER_APPEARANCE, alive: true, position: { x: 1, y: 3 }, direction: { x: 0, y: 0 }, n: { x: 0, y: 0 }, speed: 1, steps: 0, impact: 0 } ),
-			new GameBoardMovableObject(spawnIndex++, ROCK_TYPE, collisionGroup, { appearance: ROCK_APPEARANCE, alive: true, position: { x: 1, y: 1 }, direction: { x: 0, y: 0 }, n: { x: 0, y: 0 }, speed: 15, steps: 0, impact: 0 } ),
-			new GameBoardMovableObject(spawnIndex++, ROCK_TYPE, collisionGroup, { appearance: ROCK_APPEARANCE, alive: true, position: { x: 1, y: 7 }, direction: { x: 0, y: 0 }, n: { x: 0, y: 0 }, speed: 15, steps: 0, impact: 0 } ),
-			new GameBoardMovableObject(spawnIndex++, ROCK_TYPE, collisionGroup, { appearance: ROCK_APPEARANCE, alive: true, position: { x: 8, y: 7 }, direction: { x: 0, y: 0 }, n: { x: 0, y: 0 }, speed: 15, steps: 0, impact: 0 } ),
-			new GameBoardMovableObject(spawnIndex++, BOX_TYPE, collisionGroup, { appearance: BOX_APPEARANCE, alive: true, position: { x: 3, y: 3 }, direction: { x: 0, y: 0 }, n: { x: 0, y: 0 }, speed: 1, steps: 0, impact: 0 } ),
-			new GameBoardMovableObject(spawnIndex++, BOX_TYPE, collisionGroup, { appearance: BOX_APPEARANCE, alive: true, position: { x: 8, y: 5 }, direction: { x: 0, y: 0 }, n: { x: 0, y: 0 }, speed: 1, steps: 0, impact: 0 } ),
-			new GameBoardMovableObject(spawnIndex++, BOX_TYPE, collisionGroup, { appearance: BOX_APPEARANCE, alive: true, position: { x: 8, y: 6 }, direction: { x: 0, y: 0 }, n: { x: 0, y: 0 }, speed: 1, steps: 0, impact: 0 } ),
-		];*/
 
 		const map = new MapSystem(gameObjects, board);
 		map.load();
