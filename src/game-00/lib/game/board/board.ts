@@ -42,6 +42,16 @@ export default class Board<T extends IGameObjectState> implements IGameBoard<T> 
 		}
 	}
 
+	addUnique(x: number, y: number, v: IGameBoardObject<T>): void {
+		if (0 <= x && x < this.sizeX && 0 <= y && y < this.sizeY) {
+			if (this.data[y][x].findIndex((el) => el.state.appearance === v.state.appearance) === -1) {
+				v.state.position.x = x;
+				v.state.position.y = y;
+				this.data[y][x].push(v);
+			}
+		}
+	}
+
 	remove(x: number, y: number, v: IGameBoardObject<T>): void {
 		if (0 <= x && x < this.sizeX && 0 <= y && y < this.sizeY) {
 			this.data[y][x] = this.data[y][x].filter(item => item.id !== v.id);

@@ -23,7 +23,7 @@ export default class GameBoardMovableObject<T extends IMovableGameObjectState> e
 	}
 
 	public commandMoveUp() {
-		this.state.n = {
+		this.state.direction = {
 			x: 0,
 			y: -1,
 		};
@@ -31,7 +31,7 @@ export default class GameBoardMovableObject<T extends IMovableGameObjectState> e
 	}
 
 	public commandMoveDown() {
-		this.state.n = {
+		this.state.direction = {
 			x: 0,
 			y: 1,
 		};
@@ -39,7 +39,7 @@ export default class GameBoardMovableObject<T extends IMovableGameObjectState> e
 	}
 
 	public commandMoveLeft() {
-		this.state.n = {
+		this.state.direction = {
 			x: -1,
 			y: 0,
 		};
@@ -47,18 +47,19 @@ export default class GameBoardMovableObject<T extends IMovableGameObjectState> e
 	}
 
 	public commandMoveRight() {
-		this.state.n = {
+		this.state.direction = {
 			x: 1,
 			y: 0,
 		};
 		this.state.steps = this.state.speed;
 	}
 
-	public commandMove() {
+	public commandAction() {
 		this.state.n = {
 			...this.state.direction,
 		};
 		this.state.steps = this.state.speed;
+		console.log('commandAction', this);
 	}
 
 	public update(gameObjects: IGameBoardObject<T>[], board: IGameBoard<T>): void {

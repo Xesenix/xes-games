@@ -18,14 +18,16 @@ import { IAppDataState, reducer } from './reducer';
 // import { UIStatesModule } from './ui-states.module';
 
 import Sokobana from 'lib/game/sokobana/algorithm';
-import { MOVABLE_CONTROLLABLE_OBJECT, MOVABLE_OBJECT, DESTROY_ON_COLLISION_OBJECT, DESTRUCTIBLE_OBJECT, KILL_ON_COLLISION_OBJECT, SPAWNER_OBJECT } from '../lib/game/sokobana/algorithm';
+import { MOVABLE_CONTROLLABLE_OBJECT, MOVABLE_OBJECT, DESTROY_ON_COLLISION_OBJECT, DESTRUCTIBLE_OBJECT, KILL_ON_COLLISION_OBJECT, SPAWNER_OBJECT, STOP_ON_COLLISION_OBJECT } from '../lib/game/sokobana/algorithm';
 import GameBoardMovableObject from 'game-00/lib/game/board/movable-object';
 import GameBoardObject from 'game-00/lib/game/board/object';
 import GameBoardObjectSpawner from 'game-00/lib/game/board/object-spawner';
 import { IGameBoardMovableObject, IGameBoardObject, IGameObjectState, IMovableGameObjectState } from '../lib/game/board/interface';
-import KillOnCollisionSystem from 'game-00/lib/game/system/kill-on-collision';
-import DieOnCollisionSystem from 'game-00/lib/game/system/die-on-collision';
 import CollisionSystem from 'game-00/lib/game/system/collision';
+import { i18n } from 'xes-webpack-core';
+import MapSystem from 'lib/game/system/map';
+import { ARROW_APPEARANCE } from 'game-00/lib/game/system/map';
+import { ROCK_APPEARANCE } from '../lib/game/system/map';
 
 /**
  * Main module for application. Defines all dependencies and provides default setup for configuration variables.
@@ -81,6 +83,38 @@ export class AppModule extends Container {
 		}));
 
 		this.bind<IDictionary>('environment').toConstantValue(new FlatDictionary({}));
+
+		const kill = (target: IGameBoardObject<IGameObjectState>) => {
+			target.state = { ...target.state, alive: false };
+		};
+
+		this.bind('on-collision').toConstantValue(
+			(source: IGameBoardMovableObject<IMovableGameObjectState>, target: IGameBoardObject<IGameObjectState>, impact: number) => {
+				source.state.impact = impact;
+				if ((source.type & KILL_ON_COLLISION_OBJECT) == KILL_ON_COLLISION_OBJECT) {
+					if (target !== null && (target.type & DESTRUCTIBLE_OBJECT) == DESTRUCTIBLE_OBJECT) {
+						// if target is rock only rock can kill it
+						if (source.state.appearance === ROCK_APPEARANCE || target.state.appearance !== ROCK_APPEARANCE) {
+							kill(target);
+						}
+					}
+				}
+
+				if ((source.type & DESTROY_ON_COLLISION_OBJECT) == DESTROY_ON_COLLISION_OBJECT) {
+					kill(source);
+				}
+
+				if ((target.type & STOP_ON_COLLISION_OBJECT) == STOP_ON_COLLISION_OBJECT) {
+					return true;
+				}
+
+				return false;
+			}
+		);
+		this.bind('on-collision-filter').toConstantValue((obj: IGameBoardObject) => true)
+		this.bind<CollisionSystem<IGameObjectState>>('collision-system').to(CollisionSystem).inSingletonScope();
+
+		this.bind<Sokobana>('game-engine').to(Sokobana).inSingletonScope();
 	}
 
 	public banner() {
@@ -100,57 +134,28 @@ export class AppModule extends Container {
 
 		// uiStateManager.boot();
 
-		const algorithm = new Sokobana();
+		const algorithm = this.get('game-engine');
 		const renderer: ReactRenderer = this.get<IRenderer>('ui:renderer');
 		// console.log(React);
 
-		const WALL_APPEARANCE = 0;
-		const PLAYER_APPEARANCE = 1;
-		const ARROW_APPEARANCE = 2;
-		const ARROW_CANNON_APPEARANCE = 3;
-		const ROCK_APPEARANCE = 4;
-		const BROKEN_ROCK_APPEARANCE = 5;
-
-		const ARROW_TYPE = MOVABLE_OBJECT | DESTROY_ON_COLLISION_OBJECT | KILL_ON_COLLISION_OBJECT;
-		const PLAYER_TYPE = MOVABLE_CONTROLLABLE_OBJECT | DESTRUCTIBLE_OBJECT;
-		const ROCK_TYPE = MOVABLE_CONTROLLABLE_OBJECT | KILL_ON_COLLISION_OBJECT;
-
-		const kill = (target: IGameBoardObject<IGameObjectState>) => { target.state = { ...target.state, alive: false } };
 		// const killOnCollisionSystem = new KillOnCollisionSystem(kill);
 		// const dieOnCollisionSystem = new DieOnCollisionSystem(kill);
-		const impactOnCollision = new CollisionSystem(
-			(source: IGameBoardMovableObject<IMovableGameObjectState>, target: IGameBoardObject<IGameObjectState>, impact: number) => {
-				source.state.impact = impact;
-				if ((source.type & KILL_ON_COLLISION_OBJECT) == KILL_ON_COLLISION_OBJECT) {
-					if (target !== null && (target.type & DESTRUCTIBLE_OBJECT) == DESTRUCTIBLE_OBJECT) {
-						kill(target);
-					}
-				}
-
-				if ((source.type & DESTROY_ON_COLLISION_OBJECT) == DESTROY_ON_COLLISION_OBJECT) {
-					kill(source);
-				}
-			}
-		);
+		const impactOnCollision = this.get('collision-system')
 
 		// collision groups
+		let spawnIndex = 0;
 
-		// TODO: create systems <=======
-		let spawnIndex = 1000;
-
-		const collisionGroup = 0b01;
-
-		let board = new Board(15, 10);
-		let gameObjects = [
-			new GameBoardObjectSpawner(
-				10,
+		let board = new Board(12, 9);
+		let gameObjects = [];
+			/*new GameBoardObjectSpawner(
+				spawnIndex++,
 				SPAWNER_OBJECT,
 				collisionGroup,
 				{
 					appearance: ARROW_CANNON_APPEARANCE,
 					alive: true,
 					position: { x: 8, y: 8 }
-				},
+				} as IGameObjectState,
 				(x, y) => new GameBoardMovableObject(
 					spawnIndex++,
 					ARROW_TYPE,
@@ -171,7 +176,7 @@ export class AppModule extends Container {
 				),
 			),
 			new GameBoardObjectSpawner(
-				11,
+				spawnIndex++,
 				SPAWNER_OBJECT,
 				collisionGroup,
 				{
@@ -198,25 +203,22 @@ export class AppModule extends Container {
 					}
 				),
 			),
-			new GameBoardMovableObject(100, ARROW_TYPE, collisionGroup, { appearance: ARROW_APPEARANCE, alive: true, position: { x: 0, y: 0 }, direction: { x: 1, y: 0 }, n: { x: 1, y: 0 }, speed: 5, steps: 0, impact: 0 } ),
-			new GameBoardMovableObject(101, ARROW_TYPE, collisionGroup, { appearance: ARROW_APPEARANCE, alive: true, position: { x: 8, y: 3 }, direction: { x: 0, y: -1 }, n: { x: 0, y: -1 }, speed: 3, steps: 0, impact: 0 } ),
-			new GameBoardMovableObject(200, PLAYER_TYPE, collisionGroup, { appearance: PLAYER_APPEARANCE, alive: true, position: { x: 4, y: 5 }, direction: { x: 0, y: 0 }, n: { x: 0, y: 0 }, speed: 1, steps: 0, impact: 0 } ),
-			new GameBoardMovableObject(201, PLAYER_TYPE, collisionGroup, { appearance: PLAYER_APPEARANCE, alive: true, position: { x: 6, y: 8 }, direction: { x: 0, y: 0 }, n: { x: 0, y: 0 }, speed: 1, steps: 0, impact: 0 } ),
-			new GameBoardMovableObject(202, PLAYER_TYPE, collisionGroup, { appearance: PLAYER_APPEARANCE, alive: true, position: { x: 1, y: 1 }, direction: { x: 0, y: 0 }, n: { x: 0, y: 0 }, speed: 1, steps: 0, impact: 0 } ),
-			new GameBoardMovableObject(203, PLAYER_TYPE, collisionGroup, { appearance: PLAYER_APPEARANCE, alive: true, position: { x: 9, y: 8 }, direction: { x: 0, y: 0 }, n: { x: 0, y: 0 }, speed: 1, steps: 0, impact: 0 } ),
-			new GameBoardMovableObject(300, ROCK_TYPE, collisionGroup, { appearance: ROCK_APPEARANCE, alive: true, position: { x: 6, y: 1 }, direction: { x: 0, y: 0 }, n: { x: 0, y: 0 }, speed: 15, steps: 0, impact: 0 } ),
-			new GameBoardMovableObject(301, ROCK_TYPE, collisionGroup, { appearance: ROCK_APPEARANCE, alive: true, position: { x: 2, y: 5 }, direction: { x: 0, y: 0 }, n: { x: 0, y: 0 }, speed: 15, steps: 0, impact: 0 } ),
-		];
+			new GameBoardMovableObject(spawnIndex++, ARROW_TYPE, collisionGroup, { appearance: ARROW_APPEARANCE, alive: true, position: { x: 0, y: 0 }, direction: { x: 1, y: 0 }, n: { x: 1, y: 0 }, speed: 5, steps: 0, impact: 0 } ),
+			new GameBoardMovableObject(spawnIndex++, ARROW_TYPE, collisionGroup, { appearance: ARROW_APPEARANCE, alive: true, position: { x: 8, y: 3 }, direction: { x: 0, y: -1 }, n: { x: 0, y: -1 }, speed: 3, steps: 0, impact: 0 } ),
+			new GameBoardMovableObject(spawnIndex++, PLAYER_TYPE, collisionGroup, { appearance: PLAYER_APPEARANCE, alive: true, position: { x: 6, y: 8 }, direction: { x: 0, y: 0 }, n: { x: 0, y: 0 }, speed: 1, steps: 0, impact: 0 } ),
+			new GameBoardMovableObject(spawnIndex++, PLAYER_TYPE, collisionGroup, { appearance: PLAYER_APPEARANCE, alive: true, position: { x: 1, y: 1 }, direction: { x: 0, y: 0 }, n: { x: 0, y: 0 }, speed: 1, steps: 0, impact: 0 } ),
+			new GameBoardMovableObject(spawnIndex++, PLAYER_TYPE, collisionGroup, { appearance: PLAYER_APPEARANCE, alive: true, position: { x: 9, y: 8 }, direction: { x: 0, y: 0 }, n: { x: 0, y: 0 }, speed: 1, steps: 0, impact: 0 } ),
+			new GameBoardMovableObject(spawnIndex++, PLAYER_TYPE, collisionGroup, { appearance: PLAYER_APPEARANCE, alive: true, position: { x: 1, y: 3 }, direction: { x: 0, y: 0 }, n: { x: 0, y: 0 }, speed: 1, steps: 0, impact: 0 } ),
+			new GameBoardMovableObject(spawnIndex++, ROCK_TYPE, collisionGroup, { appearance: ROCK_APPEARANCE, alive: true, position: { x: 1, y: 1 }, direction: { x: 0, y: 0 }, n: { x: 0, y: 0 }, speed: 15, steps: 0, impact: 0 } ),
+			new GameBoardMovableObject(spawnIndex++, ROCK_TYPE, collisionGroup, { appearance: ROCK_APPEARANCE, alive: true, position: { x: 1, y: 7 }, direction: { x: 0, y: 0 }, n: { x: 0, y: 0 }, speed: 15, steps: 0, impact: 0 } ),
+			new GameBoardMovableObject(spawnIndex++, ROCK_TYPE, collisionGroup, { appearance: ROCK_APPEARANCE, alive: true, position: { x: 8, y: 7 }, direction: { x: 0, y: 0 }, n: { x: 0, y: 0 }, speed: 15, steps: 0, impact: 0 } ),
+			new GameBoardMovableObject(spawnIndex++, BOX_TYPE, collisionGroup, { appearance: BOX_APPEARANCE, alive: true, position: { x: 3, y: 3 }, direction: { x: 0, y: 0 }, n: { x: 0, y: 0 }, speed: 1, steps: 0, impact: 0 } ),
+			new GameBoardMovableObject(spawnIndex++, BOX_TYPE, collisionGroup, { appearance: BOX_APPEARANCE, alive: true, position: { x: 8, y: 5 }, direction: { x: 0, y: 0 }, n: { x: 0, y: 0 }, speed: 1, steps: 0, impact: 0 } ),
+			new GameBoardMovableObject(spawnIndex++, BOX_TYPE, collisionGroup, { appearance: BOX_APPEARANCE, alive: true, position: { x: 8, y: 6 }, direction: { x: 0, y: 0 }, n: { x: 0, y: 0 }, speed: 1, steps: 0, impact: 0 } ),
+		];*/
 
-		board.set(0, 1, [ new GameBoardObject(1, 0, collisionGroup, { appearance: WALL_APPEARANCE, alive: false, position: { x: 0, y: 1 } }) ]);
-		board.set(0, 2, [ new GameBoardObject(2, 0, collisionGroup, { appearance: WALL_APPEARANCE, alive: false, position: { x: 0, y: 2 } }) ]);
-		board.set(0, 3, [ new GameBoardObject(3, 0, collisionGroup, { appearance: WALL_APPEARANCE, alive: false, position: { x: 0, y: 3 } }) ]);
-		board.set(4, 1, [ new GameBoardObject(4, 0, collisionGroup, { appearance: WALL_APPEARANCE, alive: false, position: { x: 4, y: 1 } }) ]);
-		board.set(4, 2, [ new GameBoardObject(5, 0, collisionGroup, { appearance: WALL_APPEARANCE, alive: false, position: { x: 4, y: 2 } }) ]);
-		board.set(4, 3, [ new GameBoardObject(6, 0, collisionGroup, { appearance: WALL_APPEARANCE, alive: false, position: { x: 4, y: 3 } }) ]);
-		board.set(4, 8, [ new GameBoardObject(7, 0, collisionGroup, { appearance: WALL_APPEARANCE, alive: false, position: { x: 4, y: 8 } }) ]);
-		board.set(5, 8, [ new GameBoardObject(8, 0, collisionGroup, { appearance: WALL_APPEARANCE, alive: false, position: { x: 5, y: 8 } }) ]);
-		board.set(6, 7, [ new GameBoardObject(9, 0, collisionGroup, { appearance: WALL_APPEARANCE, alive: false, position: { x: 6, y: 7 } }) ]);
+		const map = new MapSystem(gameObjects, board);
+		map.load();
 
 		const inputBuffer = [];
 
@@ -225,8 +227,9 @@ export class AppModule extends Container {
 				while (inputBuffer.length === 0) {
 					yield;
 				}
+				console.group('input')
 				console.log('========= CHECK NEXT INPUT', inputBuffer);
-				const command = inputBuffer.pop();
+				const command = inputBuffer.shift();
 				console.log('========= TAKE INPUT', command);
 
 				switch(command) {
@@ -249,14 +252,30 @@ export class AppModule extends Container {
 				}
 				algorithm.commandAction(gameObjects);
 
+				console.log('========= SPAWN');
 				gameObjects.filter(obj => (obj.type & SPAWNER_OBJECT) === SPAWNER_OBJECT).forEach(obj => obj.update(gameObjects, board));
 
 				while (!algorithm.resolved(gameObjects)) {
+					console.group('step')
 					console.log('========= UPDATE');
 					algorithm.update(gameObjects, board);
-					// killOnCollisionSystem.update(gameObjects, board);
-					// dieOnCollisionSystem.update(gameObjects, board);
 					impactOnCollision.update(gameObjects, board);
+
+					// add bodies
+					gameObjects.forEach((obj) => {
+						if (!obj.state.alive) {
+							switch (obj.state.appearance) {
+								case ARROW_APPEARANCE:
+									map.buildBrokenArrow(obj.state.position.x, obj.state.position.y);
+									break;
+								case ROCK_APPEARANCE:
+									map.buildBrokenRock(obj.state.position.x, obj.state.position.y);
+									break;
+							}
+							return false;
+						}
+						return true;
+					});
 
 					// remove dead
 					gameObjects = gameObjects.filter((obj) => {
@@ -268,8 +287,11 @@ export class AppModule extends Container {
 					});
 
 					updateView();
+					console.groupEnd();
 					yield;
 				}
+				console.groupEnd();
+				console.log('========= FINISH');
 				yield;
 			}
 		}
@@ -286,7 +308,6 @@ export class AppModule extends Container {
 		resolve();
 
 		const updateView = () => {
-
 			gameObjects.forEach((obj) => {
 				board.remove(obj.state.position.x, obj.state.position.y, obj);
 				board.add(obj.state.position.x, obj.state.position.y, obj);

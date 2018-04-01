@@ -1,4 +1,6 @@
-import { IGameBoard, IGameBoardObject, IGameBoardMovableObject, IGameObjectState, IMovableGameObjectState } from '../board/interface';
+import { inject } from 'lib/di';
+import { CollisionSystem } from 'lib/game/system/collision';
+import { IGameBoard, IGameBoardObject, IGameBoardMovableObject, IGameObjectState } from 'lib/game/board/interface';
 
 export const MOVABLE_OBJECT = 0b0001;
 export const CONTROLLABLE_OBJECT = 0b0010;
@@ -6,10 +8,16 @@ export const DESTROY_ON_COLLISION_OBJECT = 0b10100;
 export const KILL_ON_COLLISION_OBJECT = 0b1000;
 export const DESTRUCTIBLE_OBJECT = 0b10000;
 export const SPAWNER_OBJECT = 0b100000;
+export const STOP_ON_COLLISION_OBJECT = 0b1000000;
 
 export const MOVABLE_CONTROLLABLE_OBJECT = MOVABLE_OBJECT | CONTROLLABLE_OBJECT;
 
+@inject(['collision-system'])
 export default class SokobanaAlgorithm<T extends IGameObjectState> {
+	constructor(
+		private colisionSystem: CollisionSystem,
+	) { }
+
 	public commandMoveUp(objects: IGameBoardObject<T>[]): void {
 		objects.forEach((obj) => {
 			if (obj.type & CONTROLLABLE_OBJECT) {
@@ -76,12 +84,12 @@ export default class SokobanaAlgorithm<T extends IGameObjectState> {
 
 	private resolveCell(obj: IGameBoardMovableObject<T>, board: IGameBoard<T>): boolean {
 		console.log('resolveCell', obj);
-		const { steps = 0, n = { x: 0, y: 0 }, position = { x: 0, y: 0 } } = obj.state as any;
+		const { alive = false, steps = 0, n = { x: 0, y: 0 }, position = { x: 0, y: 0 } } = obj.state as any;
 
-		if (steps > 0 && (n.x != 0 || n.y != 0)) {
+		if (alive && steps > 0 && (n.x != 0 || n.y != 0)) {
 			const targetCellObjects = board.get(position.x + n.x, position.y + n.y, null);
 
-			if (!this.checkCollision(obj, targetCellObjects)) {
+			if (!this.colisionSystem.checkCollision(obj, targetCellObjects)) {
 				// reduce velocity after each step till it reaches 0
 				// actor.v.x -= n.x;
 				// actor.v.y -= n.y;
@@ -95,17 +103,10 @@ export default class SokobanaAlgorithm<T extends IGameObjectState> {
 
 				return false;
 			}
+			console.log('not moved', obj);
 		}
 
 		return true;
-	}
-
-	public checkCollision(obj: IGameBoardObject<T>, targets: IGameBoardObject<T>[]): boolean {
-		// check out of bound
-		if (targets === null) {
-			return true;
-		}
-		return targets.reduce((result: boolean, target: IGameBoardObject<T>) => result || (target.collisionGroups & obj.collisionGroups) > 0, false);
 	}
 
 	public update(objects: IGameBoardObject<T>[], board: IGameBoard<T>): void {
