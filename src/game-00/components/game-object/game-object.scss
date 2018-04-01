@@ -30,6 +30,14 @@
 		background-color: rgba(#c04000, .75);
 	}
 
+	&[data-state="4"] {
+		background-color: rgba(#0000f0, .75);
+	}
+
+	&[data-state="5"] {
+		background-color: rgba(#000080, .75);
+	}
+
 	&.collided {
 		background-color: rgba(#c04000, .75);
 	}

@@ -1,42 +1,53 @@
-export interface IGameBoardObject {
-	id: number,
+export interface IGameObjectState {
+	alive: boolean;
 	appearance: number;
-	/**
-	 * Some specific state id like alive, dead or something more complicated lik burning flying etc
-	 */
-	state: number;
-	direction: { x: number, y: number };
-	x: number;
-	y: number;
-	type: number;
-
-	commandAction(): void;
-	update(gameObjects: IGameBoardObject[], board: IGameBoard): void;
+	position: {
+		x: number;
+		y: number;
+	};
 }
 
-export interface IGameBoardMovableObject extends IGameBoardObject {
+export interface IMovableGameObjectState extends IGameObjectState {
 	steps: number,
+	speed: number,
+	impact: number,
 	/**
 	 * Object velocity.
 	 *
 	 * @type { x: number; y: number; }
-	 * @memberof IGameBoardMovableObject
+	 * @memberof IMovableGameObjectState
 	 */
-	v: { x: number; y: number; };
+	n: { x: number; y: number; };
+	direction: { x: number, y: number };
+}
 
+export interface IGameBoardObject<T extends IGameObjectState> {
+	id: number,
+	/**
+	 * Some specific state id like alive, dead or something more complicated lik burning flying etc
+	 */
+	state: T;
+	type: number;
+	collisionGroups: number;
+
+	commandAction(): void;
+	update(gameObjects: IGameBoardObject<T>[], board: IGameBoard<T>): void;
+}
+
+export interface IGameBoardMovableObject<T extends IMovableGameObjectState> extends IGameBoardObject<T> {
 	commandMoveUp(): void;
 	commandMoveDown(): void;
 	commandMoveLeft(): void;
 	commandMoveRight(): void;
 }
 
-export interface IGameBoard {
+export interface IGameBoard<T extends IGameObjectState> {
 	sizeX: number;
 	sizeY: number;
-	get(x: number, y: number): IGameBoardObject[];
-	set(x: number, y: number, v: IGameBoardObject[]): void;
-	add(x: number, y: number, v: IGameBoardObject): void;
-	remove(x: number, y: number, v: IGameBoardObject): void;
-	clone(): IGameBoard;
-	tiles(): { x: number, y: number, v: IGameBoardObject[] }[];
+	get(x: number, y: number, v: IGameBoardObject<T>[] | null): IGameBoardObject<T>[];
+	set(x: number, y: number, v: IGameBoardObject<T>[]): void;
+	add(x: number, y: number, v: IGameBoardObject<T>): void;
+	remove(x: number, y: number, v: IGameBoardObject<T>): void;
+	clone(): IGameBoard<T>;
+	tiles(): { x: number, y: number, v: IGameBoardObject<T>[] }[];
 }

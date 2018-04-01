@@ -4,16 +4,16 @@ import { hot } from 'react-hot-loader';
 import GameObjectComponent from '../game-object/game-object';
 
 import './game-tile.scss';
-import { IGameBoardObject } from '../../lib/game/board/interface';
+import { IGameBoardObject, IGameObjectState } from '../../lib/game/board/interface';
 
-export interface IGameTileProps {
-	objects: IGameBoardObject[];
+export interface IGameTileProps<T extends IGameObjectState> {
+	objects: IGameBoardObject<T>[];
 }
 
 export interface IGameTileState {
 }
 
-class GameTileComponent extends React.Component<IGameTileProps, IGameTileState> {
+class GameTileComponent<T extends IGameObjectState> extends React.Component<IGameTileProps<T>, IGameTileState> {
 	public render(): any {
 		return (<div className="tile">{
 			this.props.objects.map(
