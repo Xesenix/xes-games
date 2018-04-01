@@ -1,4 +1,4 @@
-import { IGameBoard } from 'lib/game/sokobana/algorithm';
+import { IGameBoard } from 'lib/game/sokobana/aspects';
 import { inject } from 'lib/di';
 import { IGameBoardObject, IGameObjectState } from './interface';
 

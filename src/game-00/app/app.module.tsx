@@ -16,19 +16,16 @@ import Board from 'lib/game/board/board';
 
 import { IAppDataState, reducer } from './reducer';
 // import { UIStatesModule } from './ui-states.module';
+import { i18n } from 'xes-webpack-core';
 
 import Sokobana from 'lib/game/sokobana/algorithm';
-import { MOVABLE_CONTROLLABLE_OBJECT, MOVABLE_OBJECT, DESTROY_ON_COLLISION_OBJECT, DESTRUCTIBLE_OBJECT, KILL_ON_COLLISION_OBJECT, SPAWNER_OBJECT, STOP_ON_COLLISION_OBJECT } from '../lib/game/sokobana/algorithm';
-import GameBoardMovableObject from 'game-00/lib/game/board/movable-object';
-import GameBoardObject from 'game-00/lib/game/board/object';
-import GameBoardObjectSpawner from 'game-00/lib/game/board/object-spawner';
-import { IGameBoardMovableObject, IGameBoardObject, IGameObjectState, IMovableGameObjectState } from '../lib/game/board/interface';
-import CollisionSystem from 'game-00/lib/game/system/collision';
-import { i18n } from 'xes-webpack-core';
-import MapSystem from 'lib/game/system/map';
-import { ARROW_APPEARANCE } from 'game-00/lib/game/system/map';
-import { ROCK_APPEARANCE } from '../lib/game/system/map';
-
+import { MOVABLE_CONTROLLABLE_ASPECT, MOVABLE_ASPECT, DESTROY_OBJECT_ON_COLLISION_ASPECT, DESTRUCTIBLE_OBJECT_ASPECT, KILL_ON_COLLISION_OBJECT_ASPECT, SPAWNER_OBJECT_ASPECT, STOP_ON_COLLISION_ASPECT } from 'lib/game/sokobana/aspects';
+import { IGameBoardMovableObject, IGameBoardObject, IGameObjectState, IMovableGameObjectState } from 'lib/game/board/interface';
+import GameBoardMovableObject from 'lib/game/board/movable-object';
+import GameBoardObject from 'lib/game/board/object';
+import GameBoardObjectSpawner from 'lib/game/board/object-spawner';
+import CollisionSystem from 'lib/game/system/collision';
+import MapSystem, { ARROW_APPEARANCE, ROCK_APPEARANCE } from 'lib/game/system/map';
 /**
  * Main module for application. Defines all dependencies and provides default setup for configuration variables.
  *
@@ -91,8 +88,8 @@ export class AppModule extends Container {
 		this.bind('on-collision').toConstantValue(
 			(source: IGameBoardMovableObject<IMovableGameObjectState>, target: IGameBoardObject<IGameObjectState>, impact: number) => {
 				source.state.impact = impact;
-				if ((source.type & KILL_ON_COLLISION_OBJECT) == KILL_ON_COLLISION_OBJECT) {
-					if (target !== null && (target.type & DESTRUCTIBLE_OBJECT) == DESTRUCTIBLE_OBJECT) {
+				if ((source.type & KILL_ON_COLLISION_OBJECT_ASPECT) == KILL_ON_COLLISION_OBJECT_ASPECT) {
+					if (target !== null && (target.type & DESTRUCTIBLE_OBJECT_ASPECT) == DESTRUCTIBLE_OBJECT_ASPECT) {
 						// if target is rock only rock can kill it
 						if (source.state.appearance === ROCK_APPEARANCE || target.state.appearance !== ROCK_APPEARANCE) {
 							kill(target);
@@ -100,15 +97,15 @@ export class AppModule extends Container {
 					}
 				}
 
-				if ((source.type & DESTROY_ON_COLLISION_OBJECT) == DESTROY_ON_COLLISION_OBJECT) {
+				if ((source.type & DESTROY_OBJECT_ON_COLLISION_ASPECT) == DESTROY_OBJECT_ON_COLLISION_ASPECT) {
 					kill(source);
 				}
 
-				if ((source.type & STOP_ON_COLLISION_OBJECT) == STOP_ON_COLLISION_OBJECT) {
+				if ((source.type & STOP_ON_COLLISION_ASPECT) == STOP_ON_COLLISION_ASPECT) {
 					return true;
 				}
 
-				if ((target.type & STOP_ON_COLLISION_OBJECT) == STOP_ON_COLLISION_OBJECT) {
+				if ((target.type & STOP_ON_COLLISION_ASPECT) == STOP_ON_COLLISION_ASPECT) {
 					return true;
 				}
 
@@ -188,7 +185,7 @@ export class AppModule extends Container {
 				algorithm.commandAction(gameObjects);
 
 				console.log('========= SPAWN');
-				gameObjects.filter(obj => (obj.type & SPAWNER_OBJECT) === SPAWNER_OBJECT).forEach(obj => obj.update(gameObjects, board));
+				gameObjects.filter(obj => (obj.type & SPAWNER_OBJECT_ASPECT) === SPAWNER_OBJECT_ASPECT).forEach(obj => obj.update(gameObjects, board));
 				gameObjects.forEach((obj) => {
 					obj.state.impact = 0;
 				})

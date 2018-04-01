@@ -2,15 +2,7 @@ import { inject } from 'lib/di';
 import { CollisionSystem } from 'lib/game/system/collision';
 import { IGameBoard, IGameBoardObject, IGameBoardMovableObject, IGameObjectState } from 'lib/game/board/interface';
 
-export const MOVABLE_OBJECT = 0b0001;
-export const CONTROLLABLE_OBJECT = 0b0010;
-export const DESTROY_ON_COLLISION_OBJECT = 0b10100;
-export const KILL_ON_COLLISION_OBJECT = 0b1000;
-export const DESTRUCTIBLE_OBJECT = 0b10000;
-export const SPAWNER_OBJECT = 0b100000;
-export const STOP_ON_COLLISION_OBJECT = 0b1000000;
-
-export const MOVABLE_CONTROLLABLE_OBJECT = MOVABLE_OBJECT | CONTROLLABLE_OBJECT;
+import { CONTROLLABLE_ASPECT, MOVABLE_ASPECT } from './aspects';
 
 @inject(['collision-system'])
 export default class SokobanaAlgorithm<T extends IGameObjectState> {
@@ -20,7 +12,7 @@ export default class SokobanaAlgorithm<T extends IGameObjectState> {
 
 	public commandMoveUp(objects: IGameBoardObject<T>[]): void {
 		objects.forEach((obj) => {
-			if (obj.type & CONTROLLABLE_OBJECT) {
+			if (obj.type & CONTROLLABLE_ASPECT) {
 				if (typeof obj.commandMoveUp === 'function') {
 					obj.commandMoveUp();
 				}
@@ -34,7 +26,7 @@ export default class SokobanaAlgorithm<T extends IGameObjectState> {
 
 	public commandMoveDown(objects: IGameBoardObject<T>[]): void {
 		objects.forEach((obj) => {
-			if (obj.type & CONTROLLABLE_OBJECT) {
+			if (obj.type & CONTROLLABLE_ASPECT) {
 				if (typeof obj.commandMoveDown === 'function') {
 					obj.commandMoveDown();
 				}
@@ -48,7 +40,7 @@ export default class SokobanaAlgorithm<T extends IGameObjectState> {
 
 	public commandMoveLeft(objects: IGameBoardObject<T>[]): void {
 		objects.forEach((obj) => {
-			if (obj.type & CONTROLLABLE_OBJECT) {
+			if (obj.type & CONTROLLABLE_ASPECT) {
 				if (typeof obj.commandMoveLeft === 'function') {
 					obj.commandMoveLeft();
 				}
@@ -62,7 +54,7 @@ export default class SokobanaAlgorithm<T extends IGameObjectState> {
 
 	public commandMoveRight(objects: IGameBoardObject<T>[]): void {
 		objects.forEach((obj) => {
-			if (obj.type & CONTROLLABLE_OBJECT) {
+			if (obj.type & CONTROLLABLE_ASPECT) {
 				if (typeof obj.commandMoveRight === 'function') {
 					obj.commandMoveRight();
 				}
@@ -111,7 +103,7 @@ export default class SokobanaAlgorithm<T extends IGameObjectState> {
 
 	public update(objects: IGameBoardObject<T>[], board: IGameBoard<T>): void {
 		// we need to resolve positions of movable objects
-		const movable = objects.filter(obj => (obj.type & MOVABLE_OBJECT) === MOVABLE_OBJECT);
+		const movable = objects.filter(obj => (obj.type & MOVABLE_ASPECT) === MOVABLE_ASPECT);
 
 		movable.forEach((obj) => {
 			obj.update(objects, board);

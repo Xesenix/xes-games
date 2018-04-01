@@ -2,7 +2,7 @@ import GameBoardObjectSpawner from 'lib/game/board/object-spawner';
 import GameBoardMovableObject from 'lib/game/board/movable-object';
 import { IGameBoard, IGameObjectState, IGameBoardObject } from 'lib/game/board/interface';
 import GameBoardObject from 'lib/game/board/object';
-import { SPAWNER_OBJECT, STOP_ON_COLLISION_OBJECT , MOVABLE_OBJECT, MOVABLE_CONTROLLABLE_OBJECT, DESTROY_ON_COLLISION_OBJECT, KILL_ON_COLLISION_OBJECT, DESTRUCTIBLE_OBJECT } from 'lib/game/sokobana/algorithm';
+import { SPAWNER_OBJECT_ASPECT, STOP_ON_COLLISION_ASPECT , MOVABLE_ASPECT, MOVABLE_CONTROLLABLE_ASPECT, DESTROY_OBJECT_ON_COLLISION_ASPECT, KILL_ON_COLLISION_OBJECT_ASPECT, DESTRUCTIBLE_OBJECT_ASPECT } from 'lib/game/sokobana/aspects';
 
 export const WALL_APPEARANCE = 0;
 export const PLAYER_APPEARANCE = 1;
@@ -13,11 +13,11 @@ export const BROKEN_ROCK_APPEARANCE = 5;
 export const ARROW_APPEARANCE = 6;
 export const BROKEN_ARROW_APPEARANCE = 7;
 
-const ARROW_TYPE = MOVABLE_OBJECT | DESTROY_ON_COLLISION_OBJECT | KILL_ON_COLLISION_OBJECT;
-const PLAYER_TYPE = MOVABLE_CONTROLLABLE_OBJECT | DESTRUCTIBLE_OBJECT;
-const ROCK_TYPE = MOVABLE_CONTROLLABLE_OBJECT | KILL_ON_COLLISION_OBJECT | DESTRUCTIBLE_OBJECT | STOP_ON_COLLISION_OBJECT;
-const BOX_TYPE = MOVABLE_CONTROLLABLE_OBJECT | STOP_ON_COLLISION_OBJECT;
-const WALL_TYPE = STOP_ON_COLLISION_OBJECT;
+const ARROW_TYPE = MOVABLE_ASPECT | DESTROY_OBJECT_ON_COLLISION_ASPECT | KILL_ON_COLLISION_OBJECT_ASPECT;
+const PLAYER_TYPE = MOVABLE_CONTROLLABLE_ASPECT | DESTRUCTIBLE_OBJECT_ASPECT;
+const ROCK_TYPE = MOVABLE_CONTROLLABLE_ASPECT | KILL_ON_COLLISION_OBJECT_ASPECT | DESTRUCTIBLE_OBJECT_ASPECT | STOP_ON_COLLISION_ASPECT;
+const BOX_TYPE = MOVABLE_CONTROLLABLE_ASPECT | STOP_ON_COLLISION_ASPECT;
+const WALL_TYPE = STOP_ON_COLLISION_ASPECT;
 
 const collisionGroup = 0b01;
 
@@ -32,7 +32,7 @@ export default class MapSystem {
 	public buildArrowCannon(x, y, dx, dy) {
 		this.objects.push(new GameBoardObjectSpawner(
 			this.spawnIndex++,
-			SPAWNER_OBJECT | STOP_ON_COLLISION_OBJECT,
+			SPAWNER_OBJECT_ASPECT | STOP_ON_COLLISION_ASPECT,
 			collisionGroup,
 			{
 				appearance: ARROW_CANNON_APPEARANCE,
@@ -69,7 +69,7 @@ export default class MapSystem {
 	}
 
 	public buildBrokenRock(x, y) {
-		this.board.addUnique(x, y, new GameBoardObject(this.spawnIndex++, STOP_ON_COLLISION_OBJECT, collisionGroup, { appearance: BROKEN_ROCK_APPEARANCE, alive: false, position: { x, y } }));
+		this.board.addUnique(x, y, new GameBoardObject(this.spawnIndex++, STOP_ON_COLLISION_ASPECT, collisionGroup, { appearance: BROKEN_ROCK_APPEARANCE, alive: false, position: { x, y } }));
 	}
 
 	public buildBox(x, y) {
