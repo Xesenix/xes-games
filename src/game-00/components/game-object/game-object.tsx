@@ -16,14 +16,14 @@ class GameObjectComponent<T extends IGameObjectState> extends React.Component<IG
 	public render(): any {
 		const { object } = this.props;
 		const { type = 0 } = object;
-		const { steps = 0 } = object.state;
-		const collided = steps > 0 && (type & MOVABLE_OBJECT) > 0;
+		const { impact = 0 } = object.state;
+		const collided = impact > 0 && (type & MOVABLE_OBJECT) > 0;
 
 		return (
 			<div className={`object ${collided ? 'collided' : ''}`} data-state={ object.state.appearance }>
 				{ object.state.appearance }
 				<span className="label">id: { object.id }</span>
-				<span className="label">steps: { steps || 0 }</span>
+				<span className="label">impact: { impact || 0 }</span>
 			</div>
 		);
 	}

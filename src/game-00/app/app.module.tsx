@@ -189,6 +189,9 @@ export class AppModule extends Container {
 
 				console.log('========= SPAWN');
 				gameObjects.filter(obj => (obj.type & SPAWNER_OBJECT) === SPAWNER_OBJECT).forEach(obj => obj.update(gameObjects, board));
+				gameObjects.forEach((obj) => {
+					obj.state.impact = 0;
+				})
 
 				while (!algorithm.resolved(gameObjects)) {
 					console.group('step')
