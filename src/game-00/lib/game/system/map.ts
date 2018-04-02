@@ -2,7 +2,7 @@ import GameBoardObjectSpawner from 'lib/game/board/object-spawner';
 import GameBoardMovableObject from 'lib/game/board/movable-object';
 import { IGameBoard, IGameObjectState, IGameBoardObject } from 'lib/game/board/interface';
 import GameBoardObject from 'lib/game/board/object';
-import { SPAWNER_OBJECT_ASPECT, STOP_ON_COLLISION_ASPECT , MOVABLE_ASPECT, MOVABLE_CONTROLLABLE_ASPECT, DESTROY_OBJECT_ON_COLLISION_ASPECT, KILL_ON_COLLISION_OBJECT_ASPECT, DESTRUCTIBLE_OBJECT_ASPECT } from 'lib/game/sokobana/aspects';
+import { LIFE_SPAN_ASPECT, SPAWNER_OBJECT_ASPECT, STOP_ON_COLLISION_ASPECT , MOVABLE_ASPECT, MOVABLE_CONTROLLABLE_ASPECT, DESTROY_OBJECT_ON_COLLISION_ASPECT, KILL_ON_COLLISION_OBJECT_ASPECT, DESTRUCTIBLE_OBJECT_ASPECT } from 'lib/game/sokobana/aspects';
 
 export const WALL_APPEARANCE = 0;
 export const PLAYER_APPEARANCE = 1;
@@ -65,11 +65,17 @@ export default class MapSystem {
 	}
 
 	public buildBrokenArrow(x, y) {
-		this.board.addUnique(x, y, new GameBoardObject(this.spawnIndex++, 0, 0, { appearance: BROKEN_ARROW_APPEARANCE, alive: false, position: { x, y } }));
+		const obj = new GameBoardObject(this.spawnIndex++, LIFE_SPAN_ASPECT, 0, { appearance: BROKEN_ARROW_APPEARANCE, alive: true, lifespan: 1, position: { x, y } });
+		if (this.board.addUnique(x, y, obj)) {
+			this.objects.push(obj);
+		}
 	}
 
 	public buildBrokenRock(x, y) {
-		this.board.addUnique(x, y, new GameBoardObject(this.spawnIndex++, STOP_ON_COLLISION_ASPECT, collisionGroup, { appearance: BROKEN_ROCK_APPEARANCE, alive: false, position: { x, y } }));
+		const obj = new GameBoardObject(this.spawnIndex++, STOP_ON_COLLISION_ASPECT, collisionGroup, { appearance: BROKEN_ROCK_APPEARANCE, alive: true, position: { x, y } });
+		if (this.board.addUnique(x, y, obj)) {
+			this.objects.push(obj);
+		}
 	}
 
 	public buildBox(x, y) {

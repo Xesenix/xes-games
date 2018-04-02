@@ -26,6 +26,8 @@ import GameBoardObject from 'lib/game/board/object';
 import GameBoardObjectSpawner from 'lib/game/board/object-spawner';
 import CollisionSystem from 'lib/game/system/collision';
 import MapSystem, { ARROW_APPEARANCE, ROCK_APPEARANCE } from 'lib/game/system/map';
+import LifespanSystem from 'lib/game/system/lifespan';
+
 /**
  * Main module for application. Defines all dependencies and provides default setup for configuration variables.
  *
@@ -85,6 +87,8 @@ export class AppModule extends Container {
 			target.state = { ...target.state, alive: false };
 		};
 
+		this.bind('kill').toConstantValue(kill);
+
 		this.bind('on-collision').toConstantValue(
 			(source: IGameBoardMovableObject<IMovableGameObjectState>, target: IGameBoardObject<IGameObjectState>, impact: number) => {
 				source.state.impact = impact;
@@ -101,9 +105,10 @@ export class AppModule extends Container {
 					kill(source);
 				}
 
-				if ((source.type & STOP_ON_COLLISION_ASPECT) == STOP_ON_COLLISION_ASPECT) {
+				// FIXME: this breaks rocks collisions with arrows
+				/*if ((source.type & STOP_ON_COLLISION_ASPECT) == STOP_ON_COLLISION_ASPECT) {
 					return true;
-				}
+				}*/
 
 				if ((target.type & STOP_ON_COLLISION_ASPECT) == STOP_ON_COLLISION_ASPECT) {
 					return true;
@@ -114,6 +119,7 @@ export class AppModule extends Container {
 		);
 		this.bind('on-collision-filter').toConstantValue((obj: IGameBoardObject) => true)
 		this.bind<CollisionSystem<IGameObjectState>>('collision-system').to(CollisionSystem).inSingletonScope();
+		this.bind<LifespanSystem>('lifespan-system').to(LifespanSystem).inSingletonScope();
 
 		this.bind<Sokobana>('game-engine').to(Sokobana).inSingletonScope();
 	}
@@ -141,7 +147,8 @@ export class AppModule extends Container {
 
 		// const killOnCollisionSystem = new KillOnCollisionSystem(kill);
 		// const dieOnCollisionSystem = new DieOnCollisionSystem(kill);
-		const impactOnCollision = this.get('collision-system')
+		const collisionSystem = this.get('collision-system');
+		const lifespanSystem = this.get('lifespan-system');
 
 		// collision groups
 		let spawnIndex = 0;
@@ -188,13 +195,14 @@ export class AppModule extends Container {
 				gameObjects.filter(obj => (obj.type & SPAWNER_OBJECT_ASPECT) === SPAWNER_OBJECT_ASPECT).forEach(obj => obj.update(gameObjects, board));
 				gameObjects.forEach((obj) => {
 					obj.state.impact = 0;
-				})
+				});
+				lifespanSystem.update(gameObjects, board);
 
 				while (!algorithm.resolved(gameObjects)) {
 					console.group('step')
 					console.log('========= UPDATE');
 					algorithm.update(gameObjects, board);
-					impactOnCollision.update(gameObjects, board);
+					collisionSystem.update(gameObjects, board);
 
 					// add bodies
 					gameObjects.forEach((obj) => {
@@ -220,6 +228,7 @@ export class AppModule extends Container {
 						}
 						return true;
 					});
+					map.objects = gameObjects;
 
 					updateView();
 					console.groupEnd();

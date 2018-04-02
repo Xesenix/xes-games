@@ -1,5 +1,6 @@
 export interface IGameObjectState {
 	alive: boolean;
+	lifespan?: number;
 	appearance: number;
 	position: {
 		x: number;
