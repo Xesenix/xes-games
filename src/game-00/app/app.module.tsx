@@ -19,14 +19,12 @@ import { IAppDataState, reducer } from './reducer';
 import { i18n } from 'xes-webpack-core';
 
 import Sokobana from 'lib/game/sokobana/algorithm';
-import { MOVABLE_CONTROLLABLE_ASPECT, MOVABLE_ASPECT, DESTROY_OBJECT_ON_COLLISION_ASPECT, DESTRUCTIBLE_OBJECT_ASPECT, KILL_ON_COLLISION_OBJECT_ASPECT, SPAWNER_OBJECT_ASPECT, STOP_ON_COLLISION_ASPECT } from 'lib/game/sokobana/aspects';
-import { IGameBoardMovableObject, IGameBoardObject, IGameObjectState, IMovableGameObjectState } from 'lib/game/board/interface';
-import GameBoardMovableObject from 'lib/game/board/movable-object';
-import GameBoardObject from 'lib/game/board/object';
-import GameBoardObjectSpawner from 'lib/game/board/object-spawner';
+import { DESTROY_OBJECT_ON_COLLISION_ASPECT, DESTRUCTIBLE_OBJECT_ASPECT, KILL_ON_COLLISION_OBJECT_ASPECT, STOP_ON_COLLISION_ASPECT } from 'lib/game/sokobana/aspects';
+import { IGameBoardObject, IGameObjectState, IMovableGameObjectState } from 'lib/game/board/interface';
 import CollisionSystem from 'lib/game/system/collision';
 import MapSystem, { ARROW_APPEARANCE, ROCK_APPEARANCE } from 'lib/game/system/map';
 import LifespanSystem from 'lib/game/system/lifespan';
+import SpawnSystem from 'lib/game/system/spawn';
 
 /**
  * Main module for application. Defines all dependencies and provides default setup for configuration variables.
@@ -90,7 +88,7 @@ export class AppModule extends Container {
 		this.bind('kill').toConstantValue(kill);
 
 		this.bind('on-collision').toConstantValue(
-			(source: IGameBoardMovableObject<IMovableGameObjectState>, target: IGameBoardObject<IGameObjectState>, impact: number) => {
+			(source: IGameBoardObject<IMovableGameObjectState>, target: IGameBoardObject<IGameObjectState>, impact: number) => {
 				source.state.impact = impact;
 				if ((source.type & KILL_ON_COLLISION_OBJECT_ASPECT) == KILL_ON_COLLISION_OBJECT_ASPECT) {
 					if (target !== null && (target.type & DESTRUCTIBLE_OBJECT_ASPECT) == DESTRUCTIBLE_OBJECT_ASPECT) {
@@ -135,6 +133,8 @@ export class AppModule extends Container {
 	}
 
 	public boot() {
+		const ARROW_SPAWNER = 0;
+
 		this.banner();
 		// const uiStateManager = this.get<StateManager>('state:state-manager');
 		const console = this.get<Console>('debug:console');
@@ -147,17 +147,17 @@ export class AppModule extends Container {
 
 		// const killOnCollisionSystem = new KillOnCollisionSystem(kill);
 		// const dieOnCollisionSystem = new DieOnCollisionSystem(kill);
-		const collisionSystem = this.get('collision-system');
-		const lifespanSystem = this.get('lifespan-system');
-
-		// collision groups
-		let spawnIndex = 0;
 
 		let board = new Board(12, 9);
 		let gameObjects = [];
-
 		const map = new MapSystem(gameObjects, board);
 		map.load();
+		const collisionSystem = this.get('collision-system');
+		const lifespanSystem = this.get('lifespan-system');
+
+		const spawnSystem = new SpawnSystem({
+			[ARROW_SPAWNER]: (x: number, y: number, dx: number, dy: number) => [ map.buildArrow({ x, y }, { x: dx, y: dy }) ],
+		});
 
 		const inputBuffer = [];
 
@@ -191,9 +191,10 @@ export class AppModule extends Container {
 				}
 				algorithm.commandAction(gameObjects);
 
-				console.log('========= SPAWN');
-				gameObjects.filter(obj => (obj.type & SPAWNER_OBJECT_ASPECT) === SPAWNER_OBJECT_ASPECT).forEach(obj => obj.update(gameObjects, board));
+				console.log('========= SPAWN', gameObjects);
+				spawnSystem.update(gameObjects, board);
 				gameObjects.forEach((obj) => {
+					console.log('init', obj);
 					obj.state.impact = 0;
 				});
 				lifespanSystem.update(gameObjects, board);
@@ -248,11 +249,12 @@ export class AppModule extends Container {
 				setTimeout(() => resolve(), 20);
 			}
 		};
-
+		console.log('resolve');
 		resolve();
 
 		const updateView = () => {
 			gameObjects.forEach((obj) => {
+				console.log('updateView', obj)
 				board.remove(obj.state.position.x, obj.state.position.y, obj);
 				board.add(obj.state.position.x, obj.state.position.y, obj);
 			});

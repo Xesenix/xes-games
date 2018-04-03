@@ -1,5 +1,3 @@
-import GameBoardObjectSpawner from 'lib/game/board/object-spawner';
-import GameBoardMovableObject from 'lib/game/board/movable-object';
 import { IGameBoard, IGameObjectState, IGameBoardObject } from 'lib/game/board/interface';
 import GameBoardObject from 'lib/game/board/object';
 import { LIFE_SPAN_ASPECT, SPAWNER_OBJECT_ASPECT, STOP_ON_COLLISION_ASPECT , MOVABLE_ASPECT, MOVABLE_CONTROLLABLE_ASPECT, DESTROY_OBJECT_ON_COLLISION_ASPECT, KILL_ON_COLLISION_OBJECT_ASPECT, DESTRUCTIBLE_OBJECT_ASPECT } from 'lib/game/sokobana/aspects';
@@ -30,38 +28,22 @@ export default class MapSystem {
 	) { }
 
 	public buildArrowCannon(x, y, dx, dy) {
-		this.objects.push(new GameBoardObjectSpawner(
+		this.objects.push(new GameBoardObject(
 			this.spawnIndex++,
 			SPAWNER_OBJECT_ASPECT | STOP_ON_COLLISION_ASPECT,
 			collisionGroup,
 			{
 				appearance: ARROW_CANNON_APPEARANCE,
 				alive: true,
-				position: { x, y }
+				position: { x, y },
+				spawnFactoryId: 0,
+				direction: { x: dx, y: dy },
 			} as IGameObjectState,
-			(x, y) => new GameBoardMovableObject(
-				this.spawnIndex++,
-				ARROW_TYPE,
-				collisionGroup,
-				{
-					appearance: ARROW_APPEARANCE,
-					alive: true,
-					direction: { x: dx, y: dy },
-					n: { x: 0, y: -1 },
-					speed: 15,
-					steps: 0,
-					impact: 0,
-					position: {
-						x,
-						y,
-					},
-				}
-			),
 		));
 	}
 
-	public buildArrow(x, y, dx, dy) {
-		this.objects.push(new GameBoardMovableObject(this.spawnIndex++, ARROW_TYPE, collisionGroup, { appearance: ARROW_APPEARANCE, alive: true, position: { x, y }, direction: { x: dx, y: dy }, n: { x: 1, y: 0 }, speed: 15, steps: 0, impact: 0 } ));
+	public buildArrow(position: { x: number, y: number }, direction: { x: number, y: number }): IGameBoardObject {
+		return new GameBoardObject(this.spawnIndex++, ARROW_TYPE, collisionGroup, { appearance: ARROW_APPEARANCE, alive: true, position, direction, n: { x: 1, y: 0 }, speed: 15, steps: 0, impact: 0 } );
 	}
 
 	public buildBrokenArrow(x, y) {
@@ -79,15 +61,15 @@ export default class MapSystem {
 	}
 
 	public buildBox(x, y) {
-		this.objects.push(new GameBoardMovableObject(this.spawnIndex++, BOX_TYPE, collisionGroup, { appearance: BOX_APPEARANCE, alive: true, position: { x, y }, direction: { x: 0, y: 0 }, n: { x: 0, y: 0 }, speed: 1, steps: 0, impact: 0 } ));
+		this.objects.push(new GameBoardObject(this.spawnIndex++, BOX_TYPE, collisionGroup, { appearance: BOX_APPEARANCE, alive: true, position: { x, y }, direction: { x: 0, y: 0 }, n: { x: 0, y: 0 }, speed: 1, steps: 0, impact: 0 } ));
 	}
 
 	public buildPlayer(x, y) {
-		this.objects.push(new GameBoardMovableObject(this.spawnIndex++, PLAYER_TYPE, collisionGroup, { appearance: PLAYER_APPEARANCE, alive: true, position: { x, y }, direction: { x: 0, y: 0 }, n: { x: 0, y: 0 }, speed: 1, steps: 0, impact: 0 } ));
+		this.objects.push(new GameBoardObject(this.spawnIndex++, PLAYER_TYPE, collisionGroup, { appearance: PLAYER_APPEARANCE, alive: true, position: { x, y }, direction: { x: 0, y: 0 }, n: { x: 0, y: 0 }, speed: 1, steps: 0, impact: 0 } ));
 	}
 
 	public buildRock(x, y) {
-		this.objects.push(new GameBoardMovableObject(this.spawnIndex++, ROCK_TYPE, collisionGroup, { appearance: ROCK_APPEARANCE, alive: true, position: { x, y }, direction: { x: 0, y: 0 }, n: { x: 0, y: 0 }, speed: 15, steps: 0, impact: 0 } ));
+		this.objects.push(new GameBoardObject(this.spawnIndex++, ROCK_TYPE, collisionGroup, { appearance: ROCK_APPEARANCE, alive: true, position: { x, y }, direction: { x: 0, y: 0 }, n: { x: 0, y: 0 }, speed: 15, steps: 0, impact: 0 } ));
 	}
 
 	public buildWall(x, y) {

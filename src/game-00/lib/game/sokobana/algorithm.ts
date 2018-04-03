@@ -1,6 +1,6 @@
 import { inject } from 'lib/di';
 import { CollisionSystem } from 'lib/game/system/collision';
-import { IGameBoard, IGameBoardObject, IGameBoardMovableObject, IGameObjectState } from 'lib/game/board/interface';
+import { IGameBoard, IGameBoardObject, IGameObjectState } from 'lib/game/board/interface';
 
 import { CONTROLLABLE_ASPECT, MOVABLE_ASPECT } from './aspects';
 
@@ -11,70 +11,55 @@ export default class SokobanaAlgorithm<T extends IGameObjectState> {
 	) { }
 
 	public commandMoveUp(objects: IGameBoardObject<T>[]): void {
-		objects.forEach((obj) => {
-			if (obj.type & CONTROLLABLE_ASPECT) {
-				if (typeof obj.commandMoveUp === 'function') {
-					obj.commandMoveUp();
-				}
-			} else {
-				if (typeof obj.commandMove === 'function') {
-					obj.commandMove();
-				}
-			}
+		objects.filter(obj => (obj.type & CONTROLLABLE_ASPECT) === CONTROLLABLE_ASPECT).forEach((obj) => {
+			obj.state.direction = {
+				x: 0,
+				y: -1,
+			};
+			obj.state.steps = obj.state.speed;
 		});
 	}
 
 	public commandMoveDown(objects: IGameBoardObject<T>[]): void {
-		objects.forEach((obj) => {
-			if (obj.type & CONTROLLABLE_ASPECT) {
-				if (typeof obj.commandMoveDown === 'function') {
-					obj.commandMoveDown();
-				}
-			} else {
-				if (typeof obj.commandMove === 'function') {
-					obj.commandMove();
-				}
-			}
+		objects.filter(obj => (obj.type & CONTROLLABLE_ASPECT) === CONTROLLABLE_ASPECT).forEach((obj) => {
+			obj.state.direction = {
+				x: 0,
+				y: 1,
+			};
+			obj.state.steps = obj.state.speed;
 		});
 	}
 
 	public commandMoveLeft(objects: IGameBoardObject<T>[]): void {
-		objects.forEach((obj) => {
-			if (obj.type & CONTROLLABLE_ASPECT) {
-				if (typeof obj.commandMoveLeft === 'function') {
-					obj.commandMoveLeft();
-				}
-			} else {
-				if (typeof obj.commandMove === 'function') {
-					obj.commandMove();
-				}
-			}
+		objects.filter(obj => (obj.type & CONTROLLABLE_ASPECT) === CONTROLLABLE_ASPECT).forEach((obj) => {
+			obj.state.direction = {
+				x: -1,
+				y: 0,
+			};
+			obj.state.steps = obj.state.speed;
 		});
 	}
 
 	public commandMoveRight(objects: IGameBoardObject<T>[]): void {
-		objects.forEach((obj) => {
-			if (obj.type & CONTROLLABLE_ASPECT) {
-				if (typeof obj.commandMoveRight === 'function') {
-					obj.commandMoveRight();
-				}
-			} else {
-				if (typeof obj.commandMove === 'function') {
-					obj.commandMove();
-				}
-			}
+		objects.filter(obj => (obj.type & CONTROLLABLE_ASPECT) === CONTROLLABLE_ASPECT).forEach((obj) => {
+			obj.state.direction = {
+				x: 1,
+				y: 0,
+			};
+			obj.state.steps = obj.state.speed;
 		});
 	}
 
 	public commandAction(objects: IGameBoardObject<T>[]): void {
-		objects.forEach((obj) => {
-			if (typeof obj.commandAction === 'function') {
-				obj.commandAction();
-			}
+		objects.filter(obj => (obj.type & MOVABLE_ASPECT) === MOVABLE_ASPECT).forEach((obj) => {
+			obj.state.n = {
+				...obj.state.direction,
+			};
+			obj.state.steps = obj.state.speed;
 		});
 	}
 
-	private resolveCell(obj: IGameBoardMovableObject<T>, board: IGameBoard<T>): boolean {
+	private resolveCell(obj: IGameBoardObject<T>, board: IGameBoard<T>): boolean {
 		console.log('resolveCell', obj);
 		const { alive = false, steps = 0, n = { x: 0, y: 0 }, position = { x: 0, y: 0 } } = obj.state as any;
 

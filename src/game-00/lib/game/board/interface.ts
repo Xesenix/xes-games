@@ -1,6 +1,7 @@
 export interface IGameObjectState {
 	alive: boolean;
 	lifespan?: number;
+	spawnFactoryId?: number;
 	appearance: number;
 	position: {
 		x: number;
@@ -33,13 +34,6 @@ export interface IGameBoardObject<T extends IGameObjectState> {
 
 	commandAction(): void;
 	update(gameObjects: IGameBoardObject<T>[], board: IGameBoard<T>): void;
-}
-
-export interface IGameBoardMovableObject<T extends IMovableGameObjectState> extends IGameBoardObject<T> {
-	commandMoveUp(): void;
-	commandMoveDown(): void;
-	commandMoveLeft(): void;
-	commandMoveRight(): void;
 }
 
 export interface IGameBoard<T extends IGameObjectState> {

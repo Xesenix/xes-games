@@ -1,10 +1,10 @@
 import { inject } from 'lib/di';
-import { IGameBoard, IGameBoardMovableObject, IGameBoardObject } from 'lib/game/board/interface';
+import { IGameBoard, IGameBoardObject } from 'lib/game/board/interface';
 
 @inject(['on-collision', 'on-collision-filter'])
 export default class CollisionSystem<T> {
 	constructor(
-		public onCollision = (source: IGameBoardMovableObject, target: IGameBoardObject, impact: number) => true,
+		public onCollision = (source: IGameBoardObject, target: IGameBoardObject, impact: number) => true,
 		public filter = (obj: IGameBoardObject) => true,
 	) { }
 
