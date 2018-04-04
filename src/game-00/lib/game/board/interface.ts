@@ -2,6 +2,7 @@ export interface IGameObjectState {
 	alive: boolean;
 	lifespan?: number;
 	spawnFactoryId?: number;
+	bodyFactoryId?: number;
 	appearance: number;
 	position: {
 		x: number;

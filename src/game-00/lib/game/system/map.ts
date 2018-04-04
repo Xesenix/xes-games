@@ -11,11 +11,14 @@ export const BROKEN_ROCK_APPEARANCE = 5;
 export const ARROW_APPEARANCE = 6;
 export const BROKEN_ARROW_APPEARANCE = 7;
 
-const ARROW_TYPE = MOVABLE_ASPECT | DESTROY_OBJECT_ON_COLLISION_ASPECT | KILL_ON_COLLISION_OBJECT_ASPECT;
-const PLAYER_TYPE = MOVABLE_CONTROLLABLE_ASPECT | DESTRUCTIBLE_OBJECT_ASPECT;
-const ROCK_TYPE = MOVABLE_CONTROLLABLE_ASPECT | KILL_ON_COLLISION_OBJECT_ASPECT | DESTRUCTIBLE_OBJECT_ASPECT | STOP_ON_COLLISION_ASPECT;
-const BOX_TYPE = MOVABLE_CONTROLLABLE_ASPECT | STOP_ON_COLLISION_ASPECT;
-const WALL_TYPE = STOP_ON_COLLISION_ASPECT;
+export const ARROW_TYPE = MOVABLE_ASPECT | DESTROY_OBJECT_ON_COLLISION_ASPECT | KILL_ON_COLLISION_OBJECT_ASPECT;
+export const PLAYER_TYPE = MOVABLE_CONTROLLABLE_ASPECT | DESTRUCTIBLE_OBJECT_ASPECT;
+export const ROCK_TYPE = MOVABLE_CONTROLLABLE_ASPECT | KILL_ON_COLLISION_OBJECT_ASPECT | DESTRUCTIBLE_OBJECT_ASPECT | STOP_ON_COLLISION_ASPECT;
+export const BOX_TYPE = MOVABLE_CONTROLLABLE_ASPECT | STOP_ON_COLLISION_ASPECT;
+export const WALL_TYPE = STOP_ON_COLLISION_ASPECT;
+
+export const BROKEN_ARROW_FACTORY = 0;
+export const BROKEN_ROCK_FACTORY = 1;
 
 const collisionGroup = 0b01;
 
@@ -43,33 +46,76 @@ export default class MapSystem {
 	}
 
 	public buildArrow(position: { x: number, y: number }, direction: { x: number, y: number }): IGameBoardObject {
-		return new GameBoardObject(this.spawnIndex++, ARROW_TYPE, collisionGroup, { appearance: ARROW_APPEARANCE, alive: true, position, direction, n: { x: 1, y: 0 }, speed: 15, steps: 0, impact: 0 } );
+		return new GameBoardObject(this.spawnIndex++, ARROW_TYPE, collisionGroup, {
+			appearance: ARROW_APPEARANCE,
+			alive: true,
+			bodyFactoryId: BROKEN_ARROW_FACTORY,
+			position,
+			direction,
+			n: { x: 1, y: 0 },
+			speed: 15,
+			steps: 0,
+			impact: 0,
+		});
 	}
 
-	public buildBrokenArrow(x, y) {
-		const obj = new GameBoardObject(this.spawnIndex++, LIFE_SPAN_ASPECT, 0, { appearance: BROKEN_ARROW_APPEARANCE, alive: true, lifespan: 1, position: { x, y } });
-		if (this.board.addUnique(x, y, obj)) {
-			this.objects.push(obj);
-		}
+	public buildBrokenArrow(position: { x: number, y: number }, direction: { x: number, y: number }): IGameBoardObject {
+		return new GameBoardObject(this.spawnIndex++, LIFE_SPAN_ASPECT, 0, {
+			appearance: BROKEN_ARROW_APPEARANCE,
+			alive: true,
+			lifespan: 1,
+			position,
+			direction,
+		});
 	}
 
-	public buildBrokenRock(x, y) {
-		const obj = new GameBoardObject(this.spawnIndex++, STOP_ON_COLLISION_ASPECT, collisionGroup, { appearance: BROKEN_ROCK_APPEARANCE, alive: true, position: { x, y } });
-		if (this.board.addUnique(x, y, obj)) {
-			this.objects.push(obj);
-		}
+	public buildBrokenRock(position: { x: number, y: number }, direction: { x: number, y: number }): IGameBoardObject {
+		return new GameBoardObject(this.spawnIndex++, STOP_ON_COLLISION_ASPECT, collisionGroup, {
+			appearance: BROKEN_ROCK_APPEARANCE,
+			alive: true,
+			position,
+			direction,
+		});
 	}
 
 	public buildBox(x, y) {
-		this.objects.push(new GameBoardObject(this.spawnIndex++, BOX_TYPE, collisionGroup, { appearance: BOX_APPEARANCE, alive: true, position: { x, y }, direction: { x: 0, y: 0 }, n: { x: 0, y: 0 }, speed: 1, steps: 0, impact: 0 } ));
+		this.objects.push(new GameBoardObject(this.spawnIndex++, BOX_TYPE, collisionGroup, {
+			appearance: BOX_APPEARANCE,
+			alive: true,
+			position: { x, y },
+			direction: { x: 0, y: 0 },
+			n: { x: 0, y: 0 },
+			speed: 1,
+			steps: 0,
+			impact: 0,
+		}));
 	}
 
 	public buildPlayer(x, y) {
-		this.objects.push(new GameBoardObject(this.spawnIndex++, PLAYER_TYPE, collisionGroup, { appearance: PLAYER_APPEARANCE, alive: true, position: { x, y }, direction: { x: 0, y: 0 }, n: { x: 0, y: 0 }, speed: 1, steps: 0, impact: 0 } ));
+		this.objects.push(new GameBoardObject(this.spawnIndex++, PLAYER_TYPE, collisionGroup, {
+			appearance: PLAYER_APPEARANCE,
+			alive: true,
+			position: { x, y },
+			direction: { x: 0, y: 0 },
+			n: { x: 0, y: 0 },
+			speed: 1,
+			steps: 0,
+			impact: 0,
+		}));
 	}
 
 	public buildRock(x, y) {
-		this.objects.push(new GameBoardObject(this.spawnIndex++, ROCK_TYPE, collisionGroup, { appearance: ROCK_APPEARANCE, alive: true, position: { x, y }, direction: { x: 0, y: 0 }, n: { x: 0, y: 0 }, speed: 15, steps: 0, impact: 0 } ));
+		this.objects.push(new GameBoardObject(this.spawnIndex++, ROCK_TYPE, collisionGroup, {
+			appearance: ROCK_APPEARANCE,
+			alive: true,
+			bodyFactoryId: BROKEN_ROCK_FACTORY,
+			position: { x, y },
+			direction: { x: 0, y: 0 },
+			n: { x: 0, y: 0 },
+			speed: 15,
+			steps: 0,
+			impact: 0,
+		}));
 	}
 
 	public buildWall(x, y) {
@@ -93,7 +139,7 @@ export default class MapSystem {
 		this.buildWall(1, 4);
 		this.buildWall(1, 6);
 
-		this.buildWall(3, 1);
+		// this.buildWall(3, 1);
 		this.buildWall(3, 2);
 		this.buildWall(3, 4);
 		this.buildWall(3, 6);
@@ -132,5 +178,6 @@ export default class MapSystem {
 		this.buildBox(8, 6);
 
 		this.buildArrowCannon(11, 1, -1, 0);
+		this.buildArrowCannon(3, 1, 1, 0);
 	}
 }

@@ -22,9 +22,10 @@ import Sokobana from 'lib/game/sokobana/algorithm';
 import { DESTROY_OBJECT_ON_COLLISION_ASPECT, DESTRUCTIBLE_OBJECT_ASPECT, KILL_ON_COLLISION_OBJECT_ASPECT, STOP_ON_COLLISION_ASPECT } from 'lib/game/sokobana/aspects';
 import { IGameBoardObject, IGameObjectState, IMovableGameObjectState } from 'lib/game/board/interface';
 import CollisionSystem from 'lib/game/system/collision';
-import MapSystem, { ARROW_APPEARANCE, ROCK_APPEARANCE } from 'lib/game/system/map';
+import MapSystem, { ARROW_APPEARANCE, ROCK_APPEARANCE, BROKEN_ARROW_FACTORY, BROKEN_ROCK_FACTORY } from 'lib/game/system/map';
 import LifespanSystem from 'lib/game/system/lifespan';
 import SpawnSystem from 'lib/game/system/spawn';
+import ReplaceDeadWithBodySystem from 'lib/game/system/replace-dead-with-body';
 
 /**
  * Main module for application. Defines all dependencies and provides default setup for configuration variables.
@@ -158,6 +159,10 @@ export class AppModule extends Container {
 		const spawnSystem = new SpawnSystem({
 			[ARROW_SPAWNER]: (x: number, y: number, dx: number, dy: number) => [ map.buildArrow({ x, y }, { x: dx, y: dy }) ],
 		});
+		const bodiesSystem = new ReplaceDeadWithBodySystem({
+			[BROKEN_ARROW_FACTORY]: (x: number, y: number, dx: number, dy: number) => [ map.buildBrokenArrow({ x, y }, { x: dx, y: dy }) ],
+			[BROKEN_ROCK_FACTORY]: (x: number, y: number, dx: number, dy: number) => [ map.buildBrokenRock({ x, y }, { x: dx, y: dy }) ],
+		});
 
 		const inputBuffer = [];
 
@@ -206,20 +211,7 @@ export class AppModule extends Container {
 					collisionSystem.update(gameObjects, board);
 
 					// add bodies
-					gameObjects.forEach((obj) => {
-						if (!obj.state.alive) {
-							switch (obj.state.appearance) {
-								case ARROW_APPEARANCE:
-									map.buildBrokenArrow(obj.state.position.x, obj.state.position.y);
-									break;
-								case ROCK_APPEARANCE:
-									map.buildBrokenRock(obj.state.position.x, obj.state.position.y);
-									break;
-							}
-							return false;
-						}
-						return true;
-					});
+					bodiesSystem.update(gameObjects, board);
 
 					// remove dead
 					gameObjects = gameObjects.filter((obj) => {
