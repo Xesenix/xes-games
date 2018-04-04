@@ -189,10 +189,10 @@ export class AppModule extends Container {
 						algorithm.commandMoveRight(gameObjects);
 					break;
 				}
-				algorithm.commandAction(gameObjects);
 
 				console.log('========= SPAWN', gameObjects);
 				spawnSystem.update(gameObjects, board);
+				algorithm.commandAction(gameObjects);
 				gameObjects.forEach((obj) => {
 					console.log('init', obj);
 					obj.state.impact = 0;
@@ -249,7 +249,6 @@ export class AppModule extends Container {
 				setTimeout(() => resolve(), 20);
 			}
 		};
-		console.log('resolve');
 		resolve();
 
 		const updateView = () => {
@@ -258,17 +257,9 @@ export class AppModule extends Container {
 				board.remove(obj.state.position.x, obj.state.position.y, obj);
 				board.add(obj.state.position.x, obj.state.position.y, obj);
 			});
-			// console.log('board', board);
-			// console.log('gameObjects', gameObjects);
-			// console.time('board')
-			// board = board.map((row, y) => row.map(({ v = 0 }, x) => ({ x, y, v: (v + x + y) % 5 })));
-			// console.timeEnd('board')
-			// console.time('outlet')
+
 			renderer.setOutlet(<GameBoardComponent board={ board }/>);
-			// console.timeEnd('outlet')
-			// console.time('render');
 			renderer.render();
-			// console.timeEnd('render');
 		};
 
 		document.addEventListener('keydown', (ev) => {
