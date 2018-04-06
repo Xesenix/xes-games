@@ -177,20 +177,16 @@ export class AppModule extends Container {
 				console.log('========= TAKE INPUT', command);
 
 				switch(command) {
-					case 'KeyW':
-					case 'ArrowUp':
+					case 'up':
 						algorithm.commandMoveUp(gameObjects);
 					break;
-					case 'KeyS':
-					case 'ArrowDown':
+					case 'down':
 						algorithm.commandMoveDown(gameObjects);
 					break;
-					case 'KeyA':
-					case 'ArrowLeft':
+					case 'left':
 						algorithm.commandMoveLeft(gameObjects);
 					break;
-					case 'KeyD':
-					case 'ArrowRight':
+					case 'right':
 						algorithm.commandMoveRight(gameObjects);
 					break;
 				}
@@ -256,7 +252,24 @@ export class AppModule extends Container {
 
 		document.addEventListener('keydown', (ev) => {
 			console.log('ev', ev, gameObjects);
-			inputBuffer.push(ev.code);
+			switch(ev.code) {
+				case 'KeyW':
+				case 'ArrowUp':
+					inputBuffer.push('up');
+				break;
+				case 'KeyS':
+				case 'ArrowDown':
+					inputBuffer.push('down');
+				break;
+				case 'KeyA':
+				case 'ArrowLeft':
+					inputBuffer.push('left');
+				break;
+				case 'KeyD':
+				case 'ArrowRight':
+					inputBuffer.push('right');
+				break;
+			}
 		});
 
 		requestAnimationFrame(updateView);
