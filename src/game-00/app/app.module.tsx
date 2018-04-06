@@ -233,11 +233,13 @@ export class AppModule extends Container {
 
 		const resolve = () => {
 			const step = gen.next();
-			if (!step.done) {
-				setTimeout(() => resolve(), 20);
+			if (step.done) {
+				clearInterval(intervalHandle);
 			}
 		};
 		resolve();
+
+		const intervalHandle = setInterval(resolve, 20)
 
 		const updateView = () => {
 			gameObjects.forEach((obj) => {
