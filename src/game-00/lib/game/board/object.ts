@@ -4,7 +4,7 @@ export default class GameBoardObject<T extends IGameObjectState> implements IGam
 	public constructor(
 		public id: number = 0,
 		public type: number = 0,
-		public collisionGroups = 0b1,
+		public collisionGroup: number = 0,
 		public state: T = {
 			alive: true,
 			position: {

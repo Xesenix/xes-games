@@ -1,6 +1,7 @@
 import { IGameBoard, IGameObjectState, IGameBoardObject } from 'lib/game/board/interface';
 import GameBoardObject from 'lib/game/board/object';
-import { LIFE_SPAN_ASPECT, SPAWNER_OBJECT_ASPECT, STOP_ON_COLLISION_ASPECT , MOVABLE_ASPECT, MOVABLE_CONTROLLABLE_ASPECT, DESTROY_OBJECT_ON_COLLISION_ASPECT, KILL_ON_COLLISION_OBJECT_ASPECT, DESTRUCTIBLE_OBJECT_ASPECT } from 'lib/game/sokobana/aspects';
+import { LIFE_SPAN_ASPECT, SPAWNER_OBJECT_ASPECT, COLLISION_ASPECT , MOVABLE_ASPECT, MOVABLE_CONTROLLABLE_ASPECT, DESTROY_OBJECT_ON_COLLISION_ASPECT, KILL_ON_COLLISION_OBJECT_ASPECT, DESTRUCTIBLE_OBJECT_ASPECT } from 'lib/game/sokobana/aspects';
+import { EXIT_ASPECT } from 'game-00/lib/game/sokobana/aspects';
 
 export const WALL_APPEARANCE = 0;
 export const PLAYER_APPEARANCE = 1;
@@ -10,17 +11,17 @@ export const ROCK_APPEARANCE = 4;
 export const BROKEN_ROCK_APPEARANCE = 5;
 export const ARROW_APPEARANCE = 6;
 export const BROKEN_ARROW_APPEARANCE = 7;
+export const EXIT_APPEARANCE = 8;
 
-export const ARROW_TYPE = MOVABLE_ASPECT | DESTROY_OBJECT_ON_COLLISION_ASPECT | KILL_ON_COLLISION_OBJECT_ASPECT;
-export const PLAYER_TYPE = MOVABLE_CONTROLLABLE_ASPECT | DESTRUCTIBLE_OBJECT_ASPECT;
-export const ROCK_TYPE = MOVABLE_CONTROLLABLE_ASPECT | KILL_ON_COLLISION_OBJECT_ASPECT | DESTRUCTIBLE_OBJECT_ASPECT | STOP_ON_COLLISION_ASPECT;
-export const BOX_TYPE = MOVABLE_CONTROLLABLE_ASPECT | STOP_ON_COLLISION_ASPECT;
-export const WALL_TYPE = STOP_ON_COLLISION_ASPECT;
+export const ARROW_TYPE = MOVABLE_ASPECT | DESTROY_OBJECT_ON_COLLISION_ASPECT | KILL_ON_COLLISION_OBJECT_ASPECT | COLLISION_ASPECT;
+export const PLAYER_TYPE = MOVABLE_CONTROLLABLE_ASPECT | DESTRUCTIBLE_OBJECT_ASPECT | COLLISION_ASPECT;
+export const ROCK_TYPE = MOVABLE_CONTROLLABLE_ASPECT | KILL_ON_COLLISION_OBJECT_ASPECT | DESTRUCTIBLE_OBJECT_ASPECT | COLLISION_ASPECT;
+export const BOX_TYPE = MOVABLE_CONTROLLABLE_ASPECT | COLLISION_ASPECT;
+export const WALL_TYPE = COLLISION_ASPECT;
+export const EXIT_TYPE = EXIT_ASPECT;
 
 export const BROKEN_ARROW_FACTORY = 0;
 export const BROKEN_ROCK_FACTORY = 1;
-
-const collisionGroup = 0b01;
 
 export default class MapSystem {
 	private spawnIndex = 0;
@@ -33,8 +34,8 @@ export default class MapSystem {
 	public buildArrowCannon(x, y, dx, dy) {
 		this.objects.push(new GameBoardObject(
 			this.spawnIndex++,
-			SPAWNER_OBJECT_ASPECT | STOP_ON_COLLISION_ASPECT,
-			collisionGroup,
+			SPAWNER_OBJECT_ASPECT | COLLISION_ASPECT,
+			0,
 			{
 				appearance: ARROW_CANNON_APPEARANCE,
 				alive: true,
@@ -46,7 +47,7 @@ export default class MapSystem {
 	}
 
 	public buildArrow(position: { x: number, y: number }, direction: { x: number, y: number }): IGameBoardObject {
-		return new GameBoardObject(this.spawnIndex++, ARROW_TYPE, collisionGroup, {
+		return new GameBoardObject(this.spawnIndex++, ARROW_TYPE, 3, {
 			appearance: ARROW_APPEARANCE,
 			alive: true,
 			bodyFactoryId: BROKEN_ARROW_FACTORY,
@@ -60,7 +61,7 @@ export default class MapSystem {
 	}
 
 	public buildBrokenArrow(position: { x: number, y: number }, direction: { x: number, y: number }): IGameBoardObject {
-		return new GameBoardObject(this.spawnIndex++, LIFE_SPAN_ASPECT, 0, {
+		return new GameBoardObject(this.spawnIndex++, LIFE_SPAN_ASPECT, 4, {
 			appearance: BROKEN_ARROW_APPEARANCE,
 			alive: true,
 			lifespan: 1,
@@ -70,7 +71,7 @@ export default class MapSystem {
 	}
 
 	public buildBrokenRock(position: { x: number, y: number }, direction: { x: number, y: number }): IGameBoardObject {
-		return new GameBoardObject(this.spawnIndex++, STOP_ON_COLLISION_ASPECT, collisionGroup, {
+		return new GameBoardObject(this.spawnIndex++, COLLISION_ASPECT, 0, {
 			appearance: BROKEN_ROCK_APPEARANCE,
 			alive: true,
 			position,
@@ -79,7 +80,7 @@ export default class MapSystem {
 	}
 
 	public buildBox(x, y) {
-		this.objects.push(new GameBoardObject(this.spawnIndex++, BOX_TYPE, collisionGroup, {
+		this.objects.push(new GameBoardObject(this.spawnIndex++, BOX_TYPE, 0, {
 			appearance: BOX_APPEARANCE,
 			alive: true,
 			position: { x, y },
@@ -92,7 +93,7 @@ export default class MapSystem {
 	}
 
 	public buildPlayer(x, y) {
-		this.objects.push(new GameBoardObject(this.spawnIndex++, PLAYER_TYPE, collisionGroup, {
+		this.objects.push(new GameBoardObject(this.spawnIndex++, PLAYER_TYPE, 1, {
 			appearance: PLAYER_APPEARANCE,
 			alive: true,
 			position: { x, y },
@@ -105,7 +106,7 @@ export default class MapSystem {
 	}
 
 	public buildRock(x, y) {
-		this.objects.push(new GameBoardObject(this.spawnIndex++, ROCK_TYPE, collisionGroup, {
+		this.objects.push(new GameBoardObject(this.spawnIndex++, ROCK_TYPE, 2, {
 			appearance: ROCK_APPEARANCE,
 			alive: true,
 			bodyFactoryId: BROKEN_ROCK_FACTORY,
@@ -119,7 +120,11 @@ export default class MapSystem {
 	}
 
 	public buildWall(x, y) {
-		return this.board.set(x, y, [ new GameBoardObject(this.spawnIndex++, WALL_TYPE, collisionGroup, { appearance: WALL_APPEARANCE, alive: false, position: { x, y } }) ]);
+		return this.board.set(x, y, [ new GameBoardObject(this.spawnIndex++, WALL_TYPE, 0, { appearance: WALL_APPEARANCE, alive: false, position: { x, y } }) ]);
+	}
+
+	public buildExit(x, y) {
+		this.objects.push(new GameBoardObject(this.spawnIndex++, EXIT_TYPE, 4, { appearance: EXIT_APPEARANCE, alive: true, position: { x, y } } ));
 	}
 
 	public load() {
@@ -179,5 +184,7 @@ export default class MapSystem {
 
 		this.buildArrowCannon(11, 1, -1, 0);
 		this.buildArrowCannon(3, 1, 1, 0);
+
+		this.buildExit(10, 6);
 	}
 }
