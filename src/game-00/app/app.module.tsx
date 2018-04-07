@@ -165,6 +165,7 @@ export class AppModule extends Container {
 		});
 
 		const inputBuffer = [];
+		let command = null;
 
 		function *resolveCommands() {
 			while (true) {
@@ -173,7 +174,7 @@ export class AppModule extends Container {
 				}
 				console.group('input')
 				console.log('========= CHECK NEXT INPUT', inputBuffer);
-				const command = inputBuffer.shift();
+				command = inputBuffer.shift();
 				console.log('========= TAKE INPUT', command);
 
 				switch(command) {
@@ -249,6 +250,7 @@ export class AppModule extends Container {
 			});
 
 			renderer.setOutlet(<GameBoardComponent board={ board }/>);
+			renderer.setOutlet(<div>Command: { command }</div>, 'console');
 			renderer.render();
 		};
 
