@@ -103,17 +103,18 @@ export class AppModule extends Container {
 				if ((source.type & DESTROY_OBJECT_ON_COLLISION_ASPECT) == DESTROY_OBJECT_ON_COLLISION_ASPECT) {
 					kill(source);
 				}
-
-				// FIXME: this breaks rocks collisions with arrows
-				/*if ((source.type & STOP_ON_COLLISION_ASPECT) == STOP_ON_COLLISION_ASPECT) {
-					return true;
-				}*/
-
-				if ((target.type & STOP_ON_COLLISION_ASPECT) == STOP_ON_COLLISION_ASPECT) {
-					return true;
+			}
+		);
+		this.bind('on-overlap').toConstantValue(
+			(source: IGameBoardObject<IMovableGameObjectState>, target: IGameBoardObject<IGameObjectState>) => {
+				if ((source.type & KILL_ON_OVERLAP_OBJECT_ASPECT) == KILL_ON_OVERLAP_OBJECT_ASPECT) {
+					if (target !== null && (target.type & DESTRUCTIBLE_OBJECT_ASPECT) == DESTRUCTIBLE_OBJECT_ASPECT) {
+						// if target is rock only rock can kill it
+						if (source.state.appearance === ROCK_APPEARANCE || target.state.appearance !== ROCK_APPEARANCE) {
+							kill(target);
+						}
+					}
 				}
-
-				return false;
 			}
 		);
 		this.bind('on-collision-filter').toConstantValue((obj: IGameBoardObject) => true)

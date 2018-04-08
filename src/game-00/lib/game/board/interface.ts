@@ -32,9 +32,6 @@ export interface IGameBoardObject<T extends IGameObjectState> {
 	state: T;
 	type: number;
 	collisionGroup: number;
-
-	commandAction(): void;
-	update(gameObjects: IGameBoardObject<T>[], board: IGameBoard<T>): void;
 }
 
 export interface IGameBoard<T extends IGameObjectState> {

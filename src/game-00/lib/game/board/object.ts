@@ -13,12 +13,4 @@ export default class GameBoardObject<T extends IGameObjectState> implements IGam
 			},
 		} as T,
 	) { }
-
-	public commandAction() {
-
-	}
-
-	public update(gameObjects: IGameBoardObject<T>[], board: IGameBoard<T>): void {
-
-	}
 }
