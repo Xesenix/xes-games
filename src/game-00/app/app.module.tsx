@@ -19,13 +19,14 @@ import { IAppDataState, reducer } from './reducer';
 import { i18n } from 'xes-webpack-core';
 
 import Sokobana from 'lib/game/sokobana/algorithm';
-import { DESTROY_OBJECT_ON_COLLISION_ASPECT, DESTRUCTIBLE_OBJECT_ASPECT, KILL_ON_COLLISION_OBJECT_ASPECT, STOP_ON_COLLISION_ASPECT } from 'lib/game/sokobana/aspects';
+import { COLLECTABLE_ASPECT, ACTOR_ASPECT, COLLECTOR_ASPECT, DESTROY_OBJECT_ON_COLLISION_ASPECT, DESTRUCTIBLE_OBJECT_ASPECT, KILL_ON_COLLISION_OBJECT_ASPECT, EXIT_ASPECT } from 'lib/game/sokobana/aspects';
 import { IGameBoardObject, IGameObjectState, IMovableGameObjectState } from 'lib/game/board/interface';
 import CollisionSystem from 'lib/game/system/collision';
-import MapSystem, { ARROW_APPEARANCE, ROCK_APPEARANCE, BROKEN_ARROW_FACTORY, BROKEN_ROCK_FACTORY } from 'lib/game/system/map';
+import MapSystem, { ROCK_APPEARANCE, BROKEN_ARROW_FACTORY, BROKEN_ROCK_FACTORY } from 'lib/game/system/map';
 import LifespanSystem from 'lib/game/system/lifespan';
 import SpawnSystem from 'lib/game/system/spawn';
 import ReplaceDeadWithBodySystem from 'lib/game/system/replace-dead-with-body';
+import OverlapSystem from 'lib/game/system/overlap';
 
 /**
  * Main module for application. Defines all dependencies and provides default setup for configuration variables.
@@ -90,6 +91,7 @@ export class AppModule extends Container {
 
 		this.bind('on-collision').toConstantValue(
 			(source: IGameBoardObject<IMovableGameObjectState>, target: IGameBoardObject<IGameObjectState>, impact: number) => {
+				console.log('== collision', source, target);
 				source.state.impact = impact;
 				if ((source.type & KILL_ON_COLLISION_OBJECT_ASPECT) == KILL_ON_COLLISION_OBJECT_ASPECT) {
 					if (target !== null && (target.type & DESTRUCTIBLE_OBJECT_ASPECT) == DESTRUCTIBLE_OBJECT_ASPECT) {
@@ -165,11 +167,33 @@ export class AppModule extends Container {
 			[BROKEN_ROCK_FACTORY]: (x: number, y: number, dx: number, dy: number) => [ map.buildBrokenRock({ x, y }, { x: dx, y: dy }) ],
 		});
 
+		const collectableSystem = new OverlapSystem(COLLECTABLE_ASPECT, COLLECTOR_ASPECT, (visitable: IGameBoardObject, visitor: IGameBoardObject) => {
+			if (visitable.state.alive) {
+				collected[visitable.state.collectableId] ++;
+				visitable.state.alive = false;
+			}
+		});
+
+		const exitSystem = new OverlapSystem(EXIT_ASPECT, ACTOR_ASPECT, (visitable: IGameBoardObject, visitor: IGameBoardObject) => {
+			console.log('exit visitor', visitor);
+			finished = collected[visitable.state.keyItemId] === initialCollectableCount[visitable.state.keyItemId];
+		});
+
 		const inputBuffer = [];
+		let finished = false;
 		let command = null;
+		let collected = { 0: 0 };
+		let initialCollectableCount = { 0: 0 };
+		let steps = 0;
 
 		function *resolveCommands() {
-			while (true) {
+			gameObjects.forEach((obj) => {
+				if ((obj.type & COLLECTABLE_ASPECT) === COLLECTABLE_ASPECT) {
+					initialCollectableCount[obj.state.collectableId] ++;
+				}
+			});
+
+			while (!finished) {
 				while (inputBuffer.length === 0) {
 					yield;
 				}
@@ -202,6 +226,8 @@ export class AppModule extends Container {
 				});
 				lifespanSystem.update(gameObjects, board);
 
+				steps++;
+
 				while (!algorithm.resolved(gameObjects)) {
 					console.group('step')
 					console.log('========= UPDATE');
@@ -210,6 +236,8 @@ export class AppModule extends Container {
 
 					// add bodies
 					bodiesSystem.update(gameObjects, board);
+
+					collectableSystem.update(gameObjects, board);
 
 					// remove dead
 					gameObjects = gameObjects.filter((obj) => {
@@ -221,14 +249,17 @@ export class AppModule extends Container {
 					});
 					map.objects = gameObjects;
 
+					exitSystem.update(gameObjects, board);
+
 					updateView();
 					console.groupEnd();
 					yield;
 				}
 				console.groupEnd();
 				console.log('========= FINISH');
-				yield;
 			}
+			renderer.setOutlet(<div>Victory</div>);
+			renderer.render();
 		}
 
 		const gen = resolveCommands();
@@ -245,13 +276,17 @@ export class AppModule extends Container {
 
 		const updateView = () => {
 			gameObjects.forEach((obj) => {
-				console.log('updateView', obj)
+				// console.log('updateView', obj)
 				board.remove(obj.state.position.x, obj.state.position.y, obj);
 				board.add(obj.state.position.x, obj.state.position.y, obj);
 			});
 
 			renderer.setOutlet(<GameBoardComponent board={ board }/>);
-			renderer.setOutlet(<div>Command: { command }</div>, 'console');
+			renderer.setOutlet((<div style={ { backgroundColor: '#000', padding: '1rem' } }>
+				Command: { command }<br/>
+				Keys: { collected[0] } / { initialCollectableCount[0] }<br/>
+				Steps: { steps }<br/>
+			</div>), 'console');
 			renderer.render();
 		};
 

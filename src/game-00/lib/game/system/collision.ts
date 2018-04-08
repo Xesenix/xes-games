@@ -34,12 +34,7 @@ export default class CollisionSystem<T> {
 	) { }
 
 	public checkCollision(obj: IGameBoardObject<T>, targets: IGameBoardObject<T>[]): boolean {
-		// check out of bound
-		if (targets === null) {
-			return true;
-		}
-
-		return targets.reduce((result: boolean, target: IGameBoardObject<T>) => result || this.collisionMap[obj.collisionGroup][target.collisionGroup], false);
+		return this.collectCollisions(obj, targets).length > 0;
 	}
 
 	public collectCollisions(source: IGameBoardObject, targets: IGameBoardObject[]) {
@@ -55,6 +50,6 @@ export default class CollisionSystem<T> {
 			const targetCellObjects = board.get(position.x + n.x, position.y + n.y, null);
 			console.log('collision', obj, targetCellObjects);
 			this.collectCollisions(obj, targetCellObjects).forEach(target => this.onCollision(obj, target, 0));
-		})
+		});
 	}
 }

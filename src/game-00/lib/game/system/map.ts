@@ -1,7 +1,6 @@
 import { IGameBoard, IGameObjectState, IGameBoardObject } from 'lib/game/board/interface';
 import GameBoardObject from 'lib/game/board/object';
-import { LIFE_SPAN_ASPECT, SPAWNER_OBJECT_ASPECT, COLLISION_ASPECT , MOVABLE_ASPECT, MOVABLE_CONTROLLABLE_ASPECT, DESTROY_OBJECT_ON_COLLISION_ASPECT, KILL_ON_COLLISION_OBJECT_ASPECT, DESTRUCTIBLE_OBJECT_ASPECT } from 'lib/game/sokobana/aspects';
-import { EXIT_ASPECT } from 'game-00/lib/game/sokobana/aspects';
+import { COLLECTOR_ASPECT, COLLECTABLE_ASPECT, LIFE_SPAN_ASPECT, SPAWNER_OBJECT_ASPECT, COLLISION_ASPECT , MOVABLE_ASPECT, MOVABLE_CONTROLLABLE_ASPECT, DESTROY_OBJECT_ON_COLLISION_ASPECT, KILL_ON_COLLISION_OBJECT_ASPECT, DESTRUCTIBLE_OBJECT_ASPECT, EXIT_ASPECT, ACTOR_ASPECT } from 'lib/game/sokobana/aspects';
 
 export const WALL_APPEARANCE = 0;
 export const PLAYER_APPEARANCE = 1;
@@ -12,13 +11,15 @@ export const BROKEN_ROCK_APPEARANCE = 5;
 export const ARROW_APPEARANCE = 6;
 export const BROKEN_ARROW_APPEARANCE = 7;
 export const EXIT_APPEARANCE = 8;
+export const KEY_APPEARANCE = 9;
 
 export const ARROW_TYPE = MOVABLE_ASPECT | DESTROY_OBJECT_ON_COLLISION_ASPECT | KILL_ON_COLLISION_OBJECT_ASPECT | COLLISION_ASPECT;
-export const PLAYER_TYPE = MOVABLE_CONTROLLABLE_ASPECT | DESTRUCTIBLE_OBJECT_ASPECT | COLLISION_ASPECT;
+export const PLAYER_TYPE = MOVABLE_CONTROLLABLE_ASPECT | DESTRUCTIBLE_OBJECT_ASPECT | COLLISION_ASPECT | ACTOR_ASPECT | COLLECTOR_ASPECT;
 export const ROCK_TYPE = MOVABLE_CONTROLLABLE_ASPECT | KILL_ON_COLLISION_OBJECT_ASPECT | DESTRUCTIBLE_OBJECT_ASPECT | COLLISION_ASPECT;
 export const BOX_TYPE = MOVABLE_CONTROLLABLE_ASPECT | COLLISION_ASPECT;
 export const WALL_TYPE = COLLISION_ASPECT;
 export const EXIT_TYPE = EXIT_ASPECT;
+export const KEY_TYPE = COLLECTABLE_ASPECT | DESTRUCTIBLE_OBJECT_ASPECT;
 
 export const BROKEN_ARROW_FACTORY = 0;
 export const BROKEN_ROCK_FACTORY = 1;
@@ -123,8 +124,12 @@ export default class MapSystem {
 		return this.board.set(x, y, [ new GameBoardObject(this.spawnIndex++, WALL_TYPE, 0, { appearance: WALL_APPEARANCE, alive: false, position: { x, y } }) ]);
 	}
 
-	public buildExit(x, y) {
-		this.objects.push(new GameBoardObject(this.spawnIndex++, EXIT_TYPE, 4, { appearance: EXIT_APPEARANCE, alive: true, position: { x, y } } ));
+	public buildExit(x, y, keyItemId) {
+		this.objects.push(new GameBoardObject(this.spawnIndex++, EXIT_TYPE, 4, { appearance: EXIT_APPEARANCE, alive: true, position: { x, y }, keyItemId } ));
+	}
+
+	public buildKey(x, y, collectableId) {
+		this.objects.push(new GameBoardObject(this.spawnIndex++, KEY_TYPE, 4, { appearance: KEY_APPEARANCE, alive: true, position: { x, y }, collectableId } ));
 	}
 
 	public load() {
@@ -185,6 +190,8 @@ export default class MapSystem {
 		this.buildArrowCannon(11, 1, -1, 0);
 		this.buildArrowCannon(3, 1, 1, 0);
 
-		this.buildExit(10, 6);
+		this.buildExit(10, 6, 0);
+		this.buildKey(6, 5, 0);
+		this.buildKey(1, 5, 0);
 	}
 }
