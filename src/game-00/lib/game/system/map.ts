@@ -1,6 +1,19 @@
-import { IGameBoard, IGameObjectState, IGameBoardObject } from 'lib/game/board/interface';
+import { IGameBoard, IGameBoardObject, IGameObjectState } from 'lib/game/board/interface';
 import GameBoardObject from 'lib/game/board/object';
-import { COLLECTOR_ASPECT, COLLECTABLE_ASPECT, LIFE_SPAN_ASPECT, SPAWNER_OBJECT_ASPECT, COLLISION_ASPECT , MOVABLE_ASPECT, MOVABLE_CONTROLLABLE_ASPECT, DESTROY_OBJECT_ON_COLLISION_ASPECT, KILL_ON_COLLISION_OBJECT_ASPECT, DESTRUCTIBLE_OBJECT_ASPECT, EXIT_ASPECT, ACTOR_ASPECT } from 'lib/game/sokobana/aspects';
+import {
+	ACTOR_ASPECT,
+	COLLECTABLE_ASPECT,
+	COLLECTOR_ASPECT,
+	COLLISION_ASPECT,
+	DESTROY_OBJECT_ON_COLLISION_ASPECT,
+	DESTRUCTIBLE_OBJECT_ASPECT,
+	EXIT_ASPECT,
+	KILL_ON_COLLISION_OBJECT_ASPECT,
+	LIFE_SPAN_ASPECT,
+	MOVABLE_ASPECT,
+	MOVABLE_CONTROLLABLE_ASPECT,
+	SPAWNER_OBJECT_ASPECT,
+} from 'lib/game/sokobana/aspects';
 
 export const WALL_APPEARANCE = 0;
 export const PLAYER_APPEARANCE = 1;
@@ -28,11 +41,11 @@ export default class MapSystem {
 	private spawnIndex = 0;
 
 	constructor(
-		private objects: IGameBoardObject[],
+		private objects: Array<IGameBoardObject>,
 		private board: IGameBoard,
 	) { }
 
-	public buildArrowCannon(x, y, dx, dy) {
+	public buildArrowCannon(x: number, y: number, dx: number, dy: number): void {
 		this.objects.push(new GameBoardObject(
 			this.spawnIndex++,
 			SPAWNER_OBJECT_ASPECT | COLLISION_ASPECT,
@@ -80,7 +93,7 @@ export default class MapSystem {
 		});
 	}
 
-	public buildBox(x, y) {
+	public buildBox(x: number, y: number): void {
 		this.objects.push(new GameBoardObject(this.spawnIndex++, BOX_TYPE, 0, {
 			appearance: BOX_APPEARANCE,
 			alive: true,
@@ -93,7 +106,7 @@ export default class MapSystem {
 		}));
 	}
 
-	public buildPlayer(x, y) {
+	public buildPlayer(x: number, y: number): void {
 		this.objects.push(new GameBoardObject(this.spawnIndex++, PLAYER_TYPE, 1, {
 			appearance: PLAYER_APPEARANCE,
 			alive: true,
@@ -106,7 +119,7 @@ export default class MapSystem {
 		}));
 	}
 
-	public buildRock(x, y) {
+	public buildRock(x: number, y: number): void {
 		this.objects.push(new GameBoardObject(this.spawnIndex++, ROCK_TYPE, 2, {
 			appearance: ROCK_APPEARANCE,
 			alive: true,
@@ -120,15 +133,15 @@ export default class MapSystem {
 		}));
 	}
 
-	public buildWall(x, y) {
+	public buildWall(x: number, y: number): void {
 		return this.board.set(x, y, [ new GameBoardObject(this.spawnIndex++, WALL_TYPE, 0, { appearance: WALL_APPEARANCE, alive: false, position: { x, y } }) ]);
 	}
 
-	public buildExit(x, y, keyItemId) {
+	public buildExit(x: number, y: number, keyItemId: number): void {
 		this.objects.push(new GameBoardObject(this.spawnIndex++, EXIT_TYPE, 4, { appearance: EXIT_APPEARANCE, alive: true, position: { x, y }, keyItemId } ));
 	}
 
-	public buildKey(x, y, collectableId) {
+	public buildKey(x: number, y: number, collectableId: number): void {
 		this.objects.push(new GameBoardObject(this.spawnIndex++, KEY_TYPE, 4, { appearance: KEY_APPEARANCE, alive: true, position: { x, y }, collectableId } ));
 	}
 

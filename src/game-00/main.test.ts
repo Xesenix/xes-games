@@ -16,4 +16,4 @@ const excludeRegexp: RegExp = /\..*\/(main|index)\./;
  * @see https://github.com/webpack-contrib/karma-webpack#alternative-usage
  */
 const context = require.context('.', true, /\.(t|j)sx?$/);
-context.keys().filter(p => !excludeRegexp.test(p)).forEach(context);
+context.keys().filter((p: string) => !excludeRegexp.test(p)).forEach(context);

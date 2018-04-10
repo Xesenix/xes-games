@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { hot } from 'react-hot-loader';
 
-import GameTileComponent from 'components/game-tile/game-tile';
 import { IGameBoard } from 'app/reducer/game-board';
+import GameTileComponent from 'components/game-tile/game-tile';
 
 import './game-board.scss';
 

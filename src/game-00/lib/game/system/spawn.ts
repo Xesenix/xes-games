@@ -1,5 +1,5 @@
-import { IGameBoard } from 'lib/game/game-board';
 import { IGameBoardObject } from 'lib/game/board/interface';
+import { IGameBoard } from 'lib/game/game-board';
 import { SPAWNER_OBJECT_ASPECT } from 'lib/game/sokobana/aspects';
 
 export default class SpawnSystem {

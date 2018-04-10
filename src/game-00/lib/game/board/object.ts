@@ -1,6 +1,6 @@
-import { IGameBoardObject, IGameBoard, IGameObjectState } from './interface';
+import { IGameBoardObject, IGameObjectState } from './interface';
 
-export default class GameBoardObject<T extends IGameObjectState> implements IGameBoardObject<T> {;
+export default class GameBoardObject<T extends IGameObjectState> implements IGameBoardObject<T> {
 	public constructor(
 		public id: number = 0,
 		public type: number = 0,

@@ -1,10 +1,10 @@
-import { DESTRUCTIBLE_OBJECT_ASPECT } from 'lib/game/sokobana/aspects';
-import { IGameBoard } from 'lib/game/sokobana/algorithm';
 import { IGameBoardObject } from 'lib/game/board/interface';
+import { IGameBoard } from 'lib/game/sokobana/algorithm';
+import { DESTRUCTIBLE_OBJECT_ASPECT } from 'lib/game/sokobana/aspects';
 
 export default class ReplaceDeadWithBodySystem {
 	constructor(
-		private factories: { [key: string]: (x: number, y: number, dx: number, dy: number) => IGameBoardObject[] } = {},
+		private factories: { [key: string]: (x: number, y: number, dx: number, dy: number) => Array<IGameBoardObject> } = {},
 	) { }
 
 	public update(objects: IGameBoardObject[], board: IGameBoard) {
@@ -18,8 +18,8 @@ export default class ReplaceDeadWithBodySystem {
 					const created: IGameBoardObject = factory(obj.state.position.x, obj.state.position.y, obj.state.direction.x, obj.state.direction.y);
 
 					created.forEach((body: IGameBoardObject) => {
-						const created = board.addUnique(body.state.position.x, body.state.position.y, body);
-						if (created) {
+						const isCreated = board.addUnique(body.state.position.x, body.state.position.y, body);
+						if (isCreated) {
 							spawned.push(body);
 						}
 					});

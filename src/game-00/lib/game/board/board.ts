@@ -1,10 +1,11 @@
-import { IGameBoard } from 'lib/game/sokobana/aspects';
 import { inject } from 'lib/di';
+import { IGameBoard } from 'lib/game/sokobana/aspects';
+
 import { IGameBoardObject, IGameObjectState } from './interface';
 
 @inject(['board:size-x', 'board:size-y'])
 export default class Board<T extends IGameObjectState> implements IGameBoard<T> {
-	private data: Array<Array<IGameBoardObject<T>[]>>;
+	private data: Array<Array<IGameBoardObject<T>>>;
 
 	constructor(
 		public sizeX: number,
@@ -12,10 +13,10 @@ export default class Board<T extends IGameObjectState> implements IGameBoard<T> 
 	) {
 		const board = new Array<Array<number>>(sizeY);
 		board.fill([]);
-		this.data = board.map(() => (new Array<IGameBoardObject<T>[]>(sizeX)).fill([]).map(() => []));
+		this.data = board.map(() => (new Array<Array<IGameBoardObject<T>>>(sizeX)).fill([]).map(() => []));
 	}
 
-	get(x: number, y: number, defaultValue: IGameBoardObject<T>[]): IGameBoardObject<T>[] {
+	public get(x: number, y: number, defaultValue: Array<IGameBoardObject<T>>): Array<IGameBoardObject<T>> {
 		if (0 <= x && x < this.sizeX && 0 <= y && y < this.sizeY) {
 			return typeof this.data[y][x] !== 'undefined' ? this.data[y][x] : defaultValue;
 		}
@@ -23,9 +24,9 @@ export default class Board<T extends IGameObjectState> implements IGameBoard<T> 
 		return defaultValue;
 	}
 
-	set(x: number, y: number, v: IGameBoardObject<T>[]): void {
+	public set(x: number, y: number, v: Array<IGameBoardObject<T>>): void {
 		if (0 <= x && x < this.sizeX && 0 <= y && y < this.sizeY) {
-			this.data[y][x] = v.map(obj => {
+			this.data[y][x] = v.map((obj: IGameBoardObject<T>) => {
 				obj.state.position.x = x;
 				obj.state.position.y = y;
 
@@ -34,7 +35,7 @@ export default class Board<T extends IGameObjectState> implements IGameBoard<T> 
 		}
 	}
 
-	add(x: number, y: number, v: IGameBoardObject<T>): void {
+	public add(x: number, y: number, v: IGameBoardObject<T>): void {
 		if (0 <= x && x < this.sizeX && 0 <= y && y < this.sizeY) {
 			v.state.position.x = x;
 			v.state.position.y = y;
@@ -42,9 +43,9 @@ export default class Board<T extends IGameObjectState> implements IGameBoard<T> 
 		}
 	}
 
-	addUnique(x: number, y: number, v: IGameBoardObject<T>): boolean {
+	public addUnique(x: number, y: number, v: IGameBoardObject<T>): boolean {
 		if (0 <= x && x < this.sizeX && 0 <= y && y < this.sizeY) {
-			if (this.data[y][x].findIndex((el) => !!el.state && !!v.state && el.state.appearance === v.state.appearance) === -1) {
+			if (this.data[y][x].findIndex((el: IGameBoardObject<T>) => !!el.state && !!v.state && el.state.appearance === v.state.appearance) === -1) {
 				v.state.position = {
 					x,
 					y,
@@ -58,17 +59,17 @@ export default class Board<T extends IGameObjectState> implements IGameBoard<T> 
 		return false;
 	}
 
-	remove(x: number, y: number, v: IGameBoardObject<T>): void {
+	public remove(x: number, y: number, v: IGameBoardObject<T>): void {
 		if (0 <= x && x < this.sizeX && 0 <= y && y < this.sizeY) {
-			this.data[y][x] = this.data[y][x].filter(item => item.id !== v.id);
+			this.data[y][x] = this.data[y][x].filter((item: IGameBoardObject<T>) => item.id !== v.id);
 		}
 	}
 
-	tiles() {
+	public tiles() {
 		return [].concat.apply([], this.data.map((row, y) => row.map((v, x) => ({ x, y, v }))));
 	}
 
-	clone(): IGameBoard {
+	public clone(): IGameBoard {
 		const board = new Board(this.sizeX, this.sizeY);
 		board.data = board.data.map((row, y) => row.map((v, x) => this.data[y][x]));
 		return board;

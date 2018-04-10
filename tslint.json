@@ -6,7 +6,7 @@
 	"jsRules": {},
 	"rules": {
 		"max-line-length": {
-			"options": [160],
+			"options": [160]
 		},
 		"indent": [true, "tabs", 2],
 		"trailing-comma": [
@@ -18,7 +18,10 @@
 			}
 		],
 		"no-redundant-jsdoc": true,
+		"no-bitwise": false,
 		"no-console": false,
+		"no-empty": false,
+		"no-empty-interface": false,
 		"prefer-template": [true, "allow-single-concat"],
 		"quotemark": [true, "single", "jsx-double"],
 		"semicolon": [true, "always"],
