@@ -4,7 +4,7 @@ import { DESTRUCTIBLE_OBJECT_ASPECT } from 'lib/game/sokobana/aspects';
 
 export default class ReplaceDeadWithBodySystem {
 	constructor(
-		private factories: { [key: string]: (x: number, y: number, dx: number, dy: number) => Array<IGameBoardObject> } = {},
+		private factories: { [key: string]: (x: number, y: number, dx: number, dy: number) => IGameBoardObject[] } = {},
 	) { }
 
 	public update(objects: IGameBoardObject[], board: IGameBoard) {

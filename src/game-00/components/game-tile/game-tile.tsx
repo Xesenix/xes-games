@@ -7,7 +7,7 @@ import { IGameBoardObject, IGameObjectState } from 'lib/game/board/interface';
 import './game-tile.scss';
 
 export interface IGameTileProps<T extends IGameObjectState> {
-	objects: Array<IGameBoardObject<T>>;
+	objects: IGameBoardObject<T>[];
 }
 
 export interface IGameTileState {

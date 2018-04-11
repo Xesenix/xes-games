@@ -34,10 +34,10 @@ export interface IGameBoardObject<T extends IGameObjectState> {
 export interface IGameBoard<T extends IGameObjectState> {
 	sizeX: number;
 	sizeY: number;
-	get(x: number, y: number, v: Array<IGameBoardObject<T>> | null): Array<IGameBoardObject<T>>;
-	set(x: number, y: number, v: Array<IGameBoardObject<T>>): void;
+	get(x: number, y: number, v: IGameBoardObject<T>[] | null): IGameBoardObject<T>[];
+	set(x: number, y: number, v: IGameBoardObject<T>[]): void;
 	add(x: number, y: number, v: IGameBoardObject<T>): void;
 	remove(x: number, y: number, v: IGameBoardObject<T>): void;
 	clone(): IGameBoard<T>;
-	tiles(): Array<{ x: number, y: number, v: Array<IGameBoardObject<T>> }>;
+	tiles(): { x: number, y: number, v: IGameBoardObject<T>[] }[];
 }

@@ -41,7 +41,7 @@ export default class MapSystem {
 	private spawnIndex = 0;
 
 	constructor(
-		private objects: Array<IGameBoardObject>,
+		private objects: IGameBoardObject[],
 		private board: IGameBoard,
 	) { }
 

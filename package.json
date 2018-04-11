@@ -12,6 +12,7 @@
 		"tdd": "cross-env BABEL_ENV=test ENV=test karma start",
 		"test": "cross-env BABEL_ENV=test ENV=test karma start --single-run",
 		"lint": "tslint -p ./ -c ./tslint.json",
+		"lint:fix": "tslint -p ./ -c ./tslint.json --fix",
 		"start": "http-server ./dist",
 		"serve": "cross-env ENV=development HMR=true webpack-dev-server --config webpack.config.js",
 		"build:dev": "cross-env ENV=development parallel-webpack --config webpack.config.js",
@@ -86,7 +87,7 @@
 		"rxjs": "^5.5.7",
 		"ts-node": "^5.0.1",
 		"tslint": "^5.9.1",
-		"typescript": "^2.7.2"
+		"typescript": "^2.8.1"
 	},
 	"dependencies": {
 		"phaser": "^3.2.0",

@@ -3,7 +3,6 @@ import * as ReactDOM from 'react-dom';
 
 import { EventEmitter } from 'events';
 import { Container } from 'inversify';
-import { i18n } from 'xes-webpack-core';
 
 import GameBoardComponent from 'components/game-board/game-board';
 import OutletComponent from 'components/outlet/outlet';
@@ -27,11 +26,14 @@ import MapSystem, { BROKEN_ARROW_FACTORY, BROKEN_ROCK_FACTORY, ROCK_APPEARANCE }
 import OverlapSystem from 'lib/game/system/overlap';
 import ReplaceDeadWithBodySystem from 'lib/game/system/replace-dead-with-body';
 import SpawnSystem from 'lib/game/system/spawn';
+import { __ } from 'lib/localize';
 import { PhaserModule } from 'lib/phaser/phaser.module';
 import { IRenderer, ReactRenderer } from 'lib/renderer/react-renderer';
 import { ThemeModule } from 'lib/theme/theme.module';
 
 // import { IAppDataState, reducer } from './reducer';
+
+declare const process: any;
 
 /**
  * Main module for application. Defines all dependencies and provides default setup for configuration variables.
@@ -265,9 +267,9 @@ export class AppModule extends Container {
 
 			renderer.setOutlet(<GameBoardComponent board={ board }/>);
 			renderer.setOutlet((<div style={ { backgroundColor: '#000', padding: '1rem' } }>
-				Command: { command }<br/>
-				Keys: { collected[0] } / { initialCollectableCount[0] }<br/>
-				Steps: { steps }<br/>
+				{ __('Command') }: { command }<br/>
+				{ __('Keys') }: { collected[0] } / { initialCollectableCount[0] }<br/>
+				{ __('Steps') }: { steps }<br/>
 			</div>), 'console');
 			renderer.render();
 		};

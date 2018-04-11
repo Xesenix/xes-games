@@ -33,23 +33,23 @@ export default class CollisionSystem<T> {
 		public filter = (obj: IGameBoardObject<T>) => true,
 	) { }
 
-	public checkCollision(obj: IGameBoardObject<T>, targets: Array<IGameBoardObject<T>>): boolean {
+	public checkCollision(obj: IGameBoardObject<T>, targets: IGameBoardObject<T>[]): boolean {
 		return this.collectCollisions(obj, targets).length > 0;
 	}
 
-	public collectCollisions(source: IGameBoardObject<T>, targets: Array<IGameBoardObject<T>>): void {
+	public collectCollisions(source: IGameBoardObject<T>, targets: IGameBoardObject<T>[]): void {
 		if (targets === null) {
 			return [null];
 		}
 		return targets.filter((target: IGameBoardObject<T>) => this.collisionMap[source.collisionGroup][target.collisionGroup]);
 	}
 
-	public update(objects: Array<IGameBoardObject<T>>, board: IGameBoard): void {
+	public update(objects: IGameBoardObject<T>[], board: IGameBoard): void {
 		objects
 			.filter((obj: IGameBoardObject<T>) => obj.state.collided)
 			.forEach((obj: IGameBoardObject<T>) => {
 				const { n = { x: 0, y: 0 }, position = { x: 0, y: 0 } } = obj.state as any;
-				const targetCellObjects: Array<IGameBoardObject> = board.get(position.x + n.x, position.y + n.y, null);
+				const targetCellObjects: IGameBoardObject[] = board.get(position.x + n.x, position.y + n.y, null);
 				this.collectCollisions(obj, targetCellObjects).forEach((target: IGameBoardObject) => this.onCollision(obj, target, 0));
 			});
 	}

@@ -8,7 +8,7 @@ export default class OverlapSystem {
 		private onVisit: (visitable: IGameBoardObject, visitor: IGameBoardObject) => void,
 	) { }
 
-	public update(objects: Array<IGameBoardObject>, board: IGameBoard): void {
+	public update(objects: IGameBoardObject[], board: IGameBoard): void {
 		objects.forEach((visitable: IGameBoardObject) => {
 			if ((visitable.type & this.visitableType) === this.visitableType) {
 				const visitors = board.get(visitable.state.position.x, visitable.state.position.y, null);

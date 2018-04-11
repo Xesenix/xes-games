@@ -5,18 +5,18 @@ import { IGameBoardObject, IGameObjectState } from './interface';
 
 @inject(['board:size-x', 'board:size-y'])
 export default class Board<T extends IGameObjectState> implements IGameBoard<T> {
-	private data: Array<Array<IGameBoardObject<T>>>;
+	private data: IGameBoardObject<T>[][];
 
 	constructor(
 		public sizeX: number,
 		public sizeY: number,
 	) {
-		const board = new Array<Array<number>>(sizeY);
+		const board = new Array<number[]>(sizeY);
 		board.fill([]);
-		this.data = board.map(() => (new Array<Array<IGameBoardObject<T>>>(sizeX)).fill([]).map(() => []));
+		this.data = board.map(() => (new Array<IGameBoardObject<T>[]>(sizeX)).fill([]).map(() => []));
 	}
 
-	public get(x: number, y: number, defaultValue: Array<IGameBoardObject<T>>): Array<IGameBoardObject<T>> {
+	public get(x: number, y: number, defaultValue: IGameBoardObject<T>[]): IGameBoardObject<T>[] {
 		if (0 <= x && x < this.sizeX && 0 <= y && y < this.sizeY) {
 			return typeof this.data[y][x] !== 'undefined' ? this.data[y][x] : defaultValue;
 		}
@@ -24,7 +24,7 @@ export default class Board<T extends IGameObjectState> implements IGameBoard<T> 
 		return defaultValue;
 	}
 
-	public set(x: number, y: number, v: Array<IGameBoardObject<T>>): void {
+	public set(x: number, y: number, v: IGameBoardObject<T>[]): void {
 		if (0 <= x && x < this.sizeX && 0 <= y && y < this.sizeY) {
 			this.data[y][x] = v.map((obj: IGameBoardObject<T>) => {
 				obj.state.position.x = x;

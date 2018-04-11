@@ -10,7 +10,7 @@ export default class SokobanaAlgorithm<T extends IGameObjectState> {
 		private collisionSystem: CollisionSystem,
 	) { }
 
-	public commandMoveUp(objects: Array<IGameBoardObject<T>>): void {
+	public commandMoveUp(objects: IGameBoardObject<T>[]): void {
 		objects.filter((obj: IGameBoardObject<T>) => (obj.type & CONTROLLABLE_ASPECT) === CONTROLLABLE_ASPECT).forEach((obj) => {
 			obj.state.direction = {
 				x: 0,
@@ -20,7 +20,7 @@ export default class SokobanaAlgorithm<T extends IGameObjectState> {
 		});
 	}
 
-	public commandMoveDown(objects: Array<IGameBoardObject<T>>): void {
+	public commandMoveDown(objects: IGameBoardObject<T>[]): void {
 		objects.filter((obj: IGameBoardObject<T>) => (obj.type & CONTROLLABLE_ASPECT) === CONTROLLABLE_ASPECT).forEach((obj) => {
 			obj.state.direction = {
 				x: 0,
@@ -30,7 +30,7 @@ export default class SokobanaAlgorithm<T extends IGameObjectState> {
 		});
 	}
 
-	public commandMoveLeft(objects: Array<IGameBoardObject<T>>): void {
+	public commandMoveLeft(objects: IGameBoardObject<T>[]): void {
 		objects.filter((obj: IGameBoardObject<T>) => (obj.type & CONTROLLABLE_ASPECT) === CONTROLLABLE_ASPECT).forEach((obj) => {
 			obj.state.direction = {
 				x: -1,
@@ -40,7 +40,7 @@ export default class SokobanaAlgorithm<T extends IGameObjectState> {
 		});
 	}
 
-	public commandMoveRight(objects: Array<IGameBoardObject<T>>): void {
+	public commandMoveRight(objects: IGameBoardObject<T>[]): void {
 		objects.filter((obj: IGameBoardObject<T>) => (obj.type & CONTROLLABLE_ASPECT) === CONTROLLABLE_ASPECT).forEach((obj) => {
 			obj.state.direction = {
 				x: 1,
@@ -50,7 +50,7 @@ export default class SokobanaAlgorithm<T extends IGameObjectState> {
 		});
 	}
 
-	public commandAction(objects: Array<IGameBoardObject<T>>): void {
+	public commandAction(objects: IGameBoardObject<T>[]): void {
 		objects.filter((obj: IGameBoardObject<T>) => (obj.type & MOVABLE_ASPECT) === MOVABLE_ASPECT).forEach((obj) => {
 			obj.state.n = {
 				...obj.state.direction,
@@ -59,7 +59,7 @@ export default class SokobanaAlgorithm<T extends IGameObjectState> {
 		});
 	}
 
-	public update(objects: Array<IGameBoardObject<T>>, board: IGameBoard<T>): void {
+	public update(objects: IGameBoardObject<T>[], board: IGameBoard<T>): void {
 		// we need to resolve positions of movable objects
 		const movable = objects.filter((obj: IGameBoardObject<T>) => (obj.type & MOVABLE_ASPECT) === MOVABLE_ASPECT);
 
@@ -102,7 +102,7 @@ export default class SokobanaAlgorithm<T extends IGameObjectState> {
 			});
 	}
 
-	public resolved(objects: Array<IGameBoardObject<T>>, board: IGameBoard<T>): boolean {
+	public resolved(objects: IGameBoardObject<T>[], board: IGameBoard<T>): boolean {
 		return objects.reduce((acc: boolean, obj: IGameBoardObject<T>) => {
 			const { alive = false, steps = 0 } = obj.state || {};
 			console.log('is resolved ', acc, obj.id, steps);
