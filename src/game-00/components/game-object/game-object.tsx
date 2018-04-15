@@ -2,7 +2,6 @@ import * as React from 'react';
 import { hot } from 'react-hot-loader';
 
 import { IGameBoardObject, IGameObjectState } from 'lib/game/board/interface';
-import { MOVABLE_ASPECT } from 'lib/game/sokobana/aspects';
 
 import './game-object.scss';
 

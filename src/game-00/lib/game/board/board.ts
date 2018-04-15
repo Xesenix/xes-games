@@ -68,10 +68,4 @@ export default class Board<T extends IGameObjectState> implements IGameBoard<T> 
 	public tiles() {
 		return [].concat.apply([], this.data.map((row, y) => row.map((v, x) => ({ x, y, v }))));
 	}
-
-	public clone(): IGameBoard {
-		const board = new Board(this.sizeX, this.sizeY);
-		board.data = board.data.map((row, y) => row.map((v, x) => this.data[y][x]));
-		return board;
-	}
 }

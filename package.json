@@ -40,7 +40,7 @@
 			],
 			"test": "main.test.ts",
 			"templateData": {
-				"title": "Ancien Maze of Epla 2",
+				"title": "Ancient Maze",
 				"author": "Paweł Kapalla aka Xesenix"
 			},
 			"assets": [

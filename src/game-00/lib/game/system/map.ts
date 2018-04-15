@@ -1,5 +1,3 @@
-import { IGameBoard, IGameBoardObject, IGameObjectState } from 'lib/game/board/interface';
-import GameBoardObject from 'lib/game/board/object';
 import {
 	ACTOR_ASPECT,
 	COLLECTABLE_ASPECT,
@@ -13,7 +11,9 @@ import {
 	MOVABLE_ASPECT,
 	MOVABLE_CONTROLLABLE_ASPECT,
 	SPAWNER_OBJECT_ASPECT,
-} from 'lib/game/sokobana/aspects';
+} from 'lib/game/ancient-maze/aspects';
+import { IGameBoard, IGameBoardObject, IGameObjectState } from 'lib/game/board/interface';
+import GameBoardObject from 'lib/game/board/object';
 
 export const WALL_APPEARANCE = 0;
 export const PLAYER_APPEARANCE = 1;
@@ -37,16 +37,15 @@ export const KEY_TYPE = COLLECTABLE_ASPECT | DESTRUCTIBLE_OBJECT_ASPECT;
 export const BROKEN_ARROW_FACTORY = 0;
 export const BROKEN_ROCK_FACTORY = 1;
 
-export default class MapSystem {
+export default class MapSystem<T extends IGameObjectState, S extends { objects: IGameBoardObject<T>[], board: IGameBoard<T> }> {
 	private spawnIndex = 0;
 
 	constructor(
-		private objects: IGameBoardObject[],
-		private board: IGameBoard,
+		private state: S,
 	) { }
 
 	public buildArrowCannon(x: number, y: number, dx: number, dy: number): void {
-		this.objects.push(new GameBoardObject(
+		this.state.objects.push(new GameBoardObject(
 			this.spawnIndex++,
 			SPAWNER_OBJECT_ASPECT | COLLISION_ASPECT,
 			0,
@@ -60,7 +59,7 @@ export default class MapSystem {
 		));
 	}
 
-	public buildArrow(position: { x: number, y: number }, direction: { x: number, y: number }): IGameBoardObject {
+	public buildArrow(position: { x: number, y: number }, direction: { x: number, y: number }): IGameBoardObject<T> {
 		return new GameBoardObject(this.spawnIndex++, ARROW_TYPE, 3, {
 			appearance: ARROW_APPEARANCE,
 			alive: true,
@@ -74,7 +73,7 @@ export default class MapSystem {
 		});
 	}
 
-	public buildBrokenArrow(position: { x: number, y: number }, direction: { x: number, y: number }): IGameBoardObject {
+	public buildBrokenArrow(position: { x: number, y: number }, direction: { x: number, y: number }): IGameBoardObject<T> {
 		return new GameBoardObject(this.spawnIndex++, LIFE_SPAN_ASPECT, 4, {
 			appearance: BROKEN_ARROW_APPEARANCE,
 			alive: true,
@@ -84,7 +83,7 @@ export default class MapSystem {
 		});
 	}
 
-	public buildBrokenRock(position: { x: number, y: number }, direction: { x: number, y: number }): IGameBoardObject {
+	public buildBrokenRock(position: { x: number, y: number }, direction: { x: number, y: number }): IGameBoardObject<T> {
 		return new GameBoardObject(this.spawnIndex++, COLLISION_ASPECT, 0, {
 			appearance: BROKEN_ROCK_APPEARANCE,
 			alive: true,
@@ -94,7 +93,7 @@ export default class MapSystem {
 	}
 
 	public buildBox(x: number, y: number): void {
-		this.objects.push(new GameBoardObject(this.spawnIndex++, BOX_TYPE, 0, {
+		this.state.objects.push(new GameBoardObject(this.spawnIndex++, BOX_TYPE, 0, {
 			appearance: BOX_APPEARANCE,
 			alive: true,
 			position: { x, y },
@@ -107,7 +106,7 @@ export default class MapSystem {
 	}
 
 	public buildPlayer(x: number, y: number): void {
-		this.objects.push(new GameBoardObject(this.spawnIndex++, PLAYER_TYPE, 1, {
+		this.state.objects.push(new GameBoardObject(this.spawnIndex++, PLAYER_TYPE, 1, {
 			appearance: PLAYER_APPEARANCE,
 			alive: true,
 			position: { x, y },
@@ -120,7 +119,7 @@ export default class MapSystem {
 	}
 
 	public buildRock(x: number, y: number): void {
-		this.objects.push(new GameBoardObject(this.spawnIndex++, ROCK_TYPE, 2, {
+		this.state.objects.push(new GameBoardObject(this.spawnIndex++, ROCK_TYPE, 2, {
 			appearance: ROCK_APPEARANCE,
 			alive: true,
 			bodyFactoryId: BROKEN_ROCK_FACTORY,
@@ -134,26 +133,30 @@ export default class MapSystem {
 	}
 
 	public buildWall(x: number, y: number): void {
-		return this.board.set(x, y, [ new GameBoardObject(this.spawnIndex++, WALL_TYPE, 0, { appearance: WALL_APPEARANCE, alive: false, position: { x, y } }) ]);
+		return this.state.board.set(
+			x,
+			y,
+			[ new GameBoardObject(this.spawnIndex++, WALL_TYPE, 0, { appearance: WALL_APPEARANCE, alive: false, position: { x, y } }) ],
+		);
 	}
 
 	public buildExit(x: number, y: number, keyItemId: number): void {
-		this.objects.push(new GameBoardObject(this.spawnIndex++, EXIT_TYPE, 4, { appearance: EXIT_APPEARANCE, alive: true, position: { x, y }, keyItemId } ));
+		this.state.objects.push(new GameBoardObject(this.spawnIndex++, EXIT_TYPE, 4, { appearance: EXIT_APPEARANCE, alive: true, position: { x, y }, keyItemId } ));
 	}
 
 	public buildKey(x: number, y: number, collectableId: number): void {
-		this.objects.push(new GameBoardObject(this.spawnIndex++, KEY_TYPE, 4, { appearance: KEY_APPEARANCE, alive: true, position: { x, y }, collectableId } ));
+		this.state.objects.push(new GameBoardObject(this.spawnIndex++, KEY_TYPE, 4, { appearance: KEY_APPEARANCE, alive: true, position: { x, y }, collectableId } ));
 	}
 
 	public load() {
-		for (let i = 0; i < this.board.sizeX; i ++) {
+		for (let i = 0; i < this.state.board.sizeX; i ++) {
 			this.buildWall(i, 0);
-			this.buildWall(i, this.board.sizeY - 1);
+			this.buildWall(i, this.state.board.sizeY - 1);
 		}
 
-		for (let i = 2; i < this.board.sizeY - 1; i ++) {
+		for (let i = 2; i < this.state.board.sizeY - 1; i ++) {
 			this.buildWall(0, i);
-			this.buildWall(this.board.sizeX - 1, i);
+			this.buildWall(this.state.board.sizeX - 1, i);
 		}
 
 		this.buildWall(0, 1);

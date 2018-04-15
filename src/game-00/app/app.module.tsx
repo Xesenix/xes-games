@@ -4,33 +4,25 @@ import * as ReactDOM from 'react-dom';
 import { EventEmitter } from 'events';
 import { Container } from 'inversify';
 
-import GameBoardComponent from 'components/game-board/game-board';
 import OutletComponent from 'components/outlet/outlet';
 import { FlatDictionary } from 'lib/dictionary/flat-dictionary';
 import { IDictionary } from 'lib/dictionary/interfaces';
-import Board from 'lib/game/board/board';
-import { IGameBoardObject, IGameObjectState, IMovableGameObjectState } from 'lib/game/board/interface';
-import Sokobana from 'lib/game/sokobana/algorithm';
+import Algorithm from 'lib/game/ancient-maze/algorithm';
+import AncientMaze from 'lib/game/ancient-maze/ancient-maze';
+import { IAncientMazeState } from 'lib/game/ancient-maze/ancient-maze';
 import {
-	ACTOR_ASPECT,
-	COLLECTABLE_ASPECT,
-	COLLECTOR_ASPECT,
 	DESTROY_OBJECT_ON_COLLISION_ASPECT,
 	DESTRUCTIBLE_OBJECT_ASPECT,
-	EXIT_ASPECT,
 	KILL_ON_COLLISION_OBJECT_ASPECT,
-} from 'lib/game/sokobana/aspects';
+} from 'lib/game/ancient-maze/aspects';
+import { IGameBoardObject, IGameObjectState, IMovableGameObjectState } from 'lib/game/board/interface';
 import CollisionSystem from 'lib/game/system/collision';
 import LifespanSystem from 'lib/game/system/lifespan';
-import MapSystem, { BROKEN_ARROW_FACTORY, BROKEN_ROCK_FACTORY, ROCK_APPEARANCE } from 'lib/game/system/map';
-import OverlapSystem from 'lib/game/system/overlap';
-import ReplaceDeadWithBodySystem from 'lib/game/system/replace-dead-with-body';
-import SpawnSystem from 'lib/game/system/spawn';
+import { ROCK_APPEARANCE } from 'lib/game/system/map';
 import { __ } from 'lib/localize';
 import { PhaserModule } from 'lib/phaser/phaser.module';
 import { IRenderer, ReactRenderer } from 'lib/renderer/react-renderer';
 import { ThemeModule } from 'lib/theme/theme.module';
-import { SokobanaModule } from 'game-00/lib/game/sokobana.module';
 
 // import { IAppDataState, reducer } from './reducer';
 
@@ -122,7 +114,7 @@ export class AppModule extends Container {
 		this.bind<CollisionSystem<IGameObjectState>>('collision-system').to(CollisionSystem).inSingletonScope();
 		this.bind<LifespanSystem>('lifespan-system').to(LifespanSystem).inSingletonScope();
 
-		this.bind<Sokobana>('game-engine').to(Sokobana).inSingletonScope();
+		this.bind<Algorithm<IAncientMazeState>>('game-engine').to(Algorithm).inSingletonScope();
 	}
 
 	public banner() {
@@ -137,11 +129,9 @@ export class AppModule extends Container {
 	}
 
 	public boot() {
-		const ARROW_SPAWNER = 0;
-
 		this.banner();
 
-		const sokobana = new SokobanaModule(this);
-		sokobana.boot();
+		const game = new AncientMaze(this);
+		game.boot();
 	}
 }

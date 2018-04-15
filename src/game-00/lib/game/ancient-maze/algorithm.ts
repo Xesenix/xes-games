@@ -5,12 +5,13 @@ import { CollisionSystem } from 'lib/game/system/collision';
 import { CONTROLLABLE_ASPECT, MOVABLE_ASPECT } from './aspects';
 
 @inject(['collision-system'])
-export default class SokobanaAlgorithm<T extends IGameObjectState> {
+export default class Algorithm<T extends IGameObjectState, S extends { objects: IGameBoardObject<T>[], board: IGameBoard }> {
 	constructor(
 		private collisionSystem: CollisionSystem,
 	) { }
 
-	public commandMoveUp(objects: IGameBoardObject<T>[]): void {
+	public commandMoveUp(state: S): void {
+		const { objects } = state;
 		objects.filter((obj: IGameBoardObject<T>) => (obj.type & CONTROLLABLE_ASPECT) === CONTROLLABLE_ASPECT).forEach((obj) => {
 			obj.state.direction = {
 				x: 0,
@@ -20,7 +21,8 @@ export default class SokobanaAlgorithm<T extends IGameObjectState> {
 		});
 	}
 
-	public commandMoveDown(objects: IGameBoardObject<T>[]): void {
+	public commandMoveDown(state: S): void {
+		const { objects } = state;
 		objects.filter((obj: IGameBoardObject<T>) => (obj.type & CONTROLLABLE_ASPECT) === CONTROLLABLE_ASPECT).forEach((obj) => {
 			obj.state.direction = {
 				x: 0,
@@ -30,7 +32,8 @@ export default class SokobanaAlgorithm<T extends IGameObjectState> {
 		});
 	}
 
-	public commandMoveLeft(objects: IGameBoardObject<T>[]): void {
+	public commandMoveLeft(state: S): void {
+		const { objects } = state;
 		objects.filter((obj: IGameBoardObject<T>) => (obj.type & CONTROLLABLE_ASPECT) === CONTROLLABLE_ASPECT).forEach((obj) => {
 			obj.state.direction = {
 				x: -1,
@@ -40,7 +43,8 @@ export default class SokobanaAlgorithm<T extends IGameObjectState> {
 		});
 	}
 
-	public commandMoveRight(objects: IGameBoardObject<T>[]): void {
+	public commandMoveRight(state: S): void {
+		const { objects } = state;
 		objects.filter((obj: IGameBoardObject<T>) => (obj.type & CONTROLLABLE_ASPECT) === CONTROLLABLE_ASPECT).forEach((obj) => {
 			obj.state.direction = {
 				x: 1,
@@ -50,7 +54,8 @@ export default class SokobanaAlgorithm<T extends IGameObjectState> {
 		});
 	}
 
-	public commandAction(objects: IGameBoardObject<T>[]): void {
+	public commandAction(state: S): void {
+		const { objects } = state;
 		objects.filter((obj: IGameBoardObject<T>) => (obj.type & MOVABLE_ASPECT) === MOVABLE_ASPECT).forEach((obj) => {
 			obj.state.n = {
 				...obj.state.direction,
@@ -59,7 +64,8 @@ export default class SokobanaAlgorithm<T extends IGameObjectState> {
 		});
 	}
 
-	public update(objects: IGameBoardObject<T>[], board: IGameBoard<T>): void {
+	public update(state: S): void {
+		const { objects, board } = state;
 		// we need to resolve positions of movable objects
 		const movable = objects.filter((obj: IGameBoardObject<T>) => (obj.type & MOVABLE_ASPECT) === MOVABLE_ASPECT);
 
@@ -102,7 +108,8 @@ export default class SokobanaAlgorithm<T extends IGameObjectState> {
 			});
 	}
 
-	public resolved(objects: IGameBoardObject<T>[], board: IGameBoard<T>): boolean {
+	public resolved(state: S): boolean {
+		const { objects } = state;
 		return objects.reduce((acc: boolean, obj: IGameBoardObject<T>) => {
 			const { alive = false, steps = 0 } = obj.state || {};
 			console.log('is resolved ', acc, obj.id, steps);
