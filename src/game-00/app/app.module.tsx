@@ -19,7 +19,6 @@ import { IGameBoardObject, IGameObjectState, IMovableGameObjectState } from 'lib
 import CollisionSystem from 'lib/game/system/collision';
 import LifespanSystem from 'lib/game/system/lifespan';
 import { ROCK_APPEARANCE } from 'lib/game/system/map';
-import { __ } from 'lib/localize';
 import { PhaserModule } from 'lib/phaser/phaser.module';
 import { IRenderer, ReactRenderer } from 'lib/renderer/react-renderer';
 import { ThemeModule } from 'lib/theme/theme.module';

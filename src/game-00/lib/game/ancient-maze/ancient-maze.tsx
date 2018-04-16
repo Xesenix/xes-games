@@ -1,4 +1,5 @@
 import GameBoardComponent from 'components/game-board/game-board';
+import GameStateConsoleComponent from 'components/game-state-console/game-state-console';
 import { Container } from 'inversify';
 import Algorithm from 'lib/game/ancient-maze/algorithm';
 import Board from 'lib/game/board/board';
@@ -9,7 +10,6 @@ import MapSystem, { BROKEN_ARROW_FACTORY, BROKEN_ROCK_FACTORY } from 'lib/game/s
 import OverlapSystem from 'lib/game/system/overlap';
 import ReplaceDeadWithBodySystem from 'lib/game/system/replace-dead-with-body';
 import SpawnSystem from 'lib/game/system/spawn';
-import { __ } from 'lib/localize';
 import { IRenderer, ReactRenderer } from 'lib/renderer/react-renderer';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
@@ -163,12 +163,7 @@ export default class AncientMaze {
 			});
 
 			renderer.setOutlet(<GameBoardComponent board={ state.board }/>);
-			renderer.setOutlet((<div style={ { backgroundColor: '#000', padding: '1rem' } }>
-				{ __('Command') }: { state.command }<br/>
-				{ __('Keys') }: { state.collected[0] } / { state.initialCollectableCount[0] }<br/>
-				{ __('Steps') }: { state.steps }<br/>
-				{ __('Executed moves') }: { state.executedCommands.map((cmd: CommandType) => <span>{ cmd },</span>) }
-			</div>), 'console');
+			renderer.setOutlet(<GameStateConsoleComponent state={ state }/>, 'console');
 			renderer.render();
 		};
 

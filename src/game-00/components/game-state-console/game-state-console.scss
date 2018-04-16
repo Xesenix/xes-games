@@ -1,0 +1,18 @@
+.console {
+	padding: 1rem;
+	background-color: #000;
+	font-family: Consolas;
+	line-height: 1.616rem;
+
+	.pill {
+		display: inline-block;
+		background-color: #fff;
+		color: #000;
+		padding: 4px;
+		margin-left: 2px;
+		border-radius: 4px;
+		font-size: 1rem;
+		font-weight: bold;
+		line-height: 1rem;
+	}
+}
