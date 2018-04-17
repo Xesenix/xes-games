@@ -7,18 +7,10 @@ import { Container } from 'inversify';
 import OutletComponent from 'components/outlet/outlet';
 import { FlatDictionary } from 'lib/dictionary/flat-dictionary';
 import { IDictionary } from 'lib/dictionary/interfaces';
-import Algorithm from 'lib/game/ancient-maze/algorithm';
 import AncientMaze from 'lib/game/ancient-maze/ancient-maze';
 import { IAncientMazeState } from 'lib/game/ancient-maze/ancient-maze';
-import {
-	DESTROY_OBJECT_ON_COLLISION_ASPECT,
-	DESTRUCTIBLE_OBJECT_ASPECT,
-	KILL_ON_COLLISION_OBJECT_ASPECT,
-} from 'lib/game/ancient-maze/aspects';
-import { IGameBoardObject, IGameObjectState, IMovableGameObjectState } from 'lib/game/board/interface';
-import CollisionSystem from 'lib/game/system/collision';
-import LifespanSystem from 'lib/game/system/lifespan';
-import { ROCK_APPEARANCE } from 'lib/game/system/map';
+import { AncientMazeModule } from 'lib/game/ancient-maze/ancient-maze.module';
+import Board from 'lib/game/board/board';
 import { PhaserModule } from 'lib/phaser/phaser.module';
 import { IRenderer, ReactRenderer } from 'lib/renderer/react-renderer';
 import { ThemeModule } from 'lib/theme/theme.module';
@@ -60,6 +52,7 @@ export class AppModule extends Container {
 		// phaser
 		this.load(ThemeModule());
 		this.load(PhaserModule());
+		this.load(AncientMazeModule());
 
 		// state management
 		// this.load(StateManagerModule());
@@ -81,39 +74,17 @@ export class AppModule extends Container {
 
 		this.bind<IDictionary>('environment').toConstantValue(new FlatDictionary({}));
 
-		const kill = (target: IGameBoardObject<IGameObjectState>) => {
-			target.state = { ...target.state, alive: false };
-		};
-
-		this.bind('kill').toConstantValue(kill);
-
-		this.bind('on-collision').toConstantValue(
-			(source: IGameBoardObject<IMovableGameObjectState>, target: IGameBoardObject<IGameObjectState>, impact: number) => {
-				console.log('== collision', source, target);
-				source.state.impact = impact;
-				if ((source.type & KILL_ON_COLLISION_OBJECT_ASPECT) === KILL_ON_COLLISION_OBJECT_ASPECT) {
-					if (target !== null && (target.type & DESTRUCTIBLE_OBJECT_ASPECT) === DESTRUCTIBLE_OBJECT_ASPECT) {
-						// if target is rock only rock can kill it
-						if (source.state.appearance === ROCK_APPEARANCE || target.state.appearance !== ROCK_APPEARANCE) {
-							kill(target);
-						}
-					}
-				}
-
-				if ((source.type & DESTROY_OBJECT_ON_COLLISION_ASPECT) === DESTROY_OBJECT_ON_COLLISION_ASPECT) {
-					kill(source);
-				}
-			},
-		);
-		this.bind('on-overlap').toConstantValue(
-			(source: IGameBoardObject<IMovableGameObjectState>, target: IGameBoardObject<IGameObjectState>) => {
-			},
-		);
-		this.bind('on-collision-filter').toConstantValue((obj: IGameBoardObject) => true);
-		this.bind<CollisionSystem<IGameObjectState>>('collision-system').to(CollisionSystem).inSingletonScope();
-		this.bind<LifespanSystem>('lifespan-system').to(LifespanSystem).inSingletonScope();
-
-		this.bind<Algorithm<IAncientMazeState>>('game-engine').to(Algorithm).inSingletonScope();
+		this.bind<IAncientMazeState>('game-state').toConstantValue({
+			objects: [],
+			inputBuffer: [],
+			finished: false,
+			command: undefined,
+			executedCommands: [],
+			collected: { 0: 0 },
+			initialCollectableCount: { 0: 0 },
+			steps: 0,
+			board: new Board(12, 9),
+		});
 	}
 
 	public banner() {
@@ -130,7 +101,7 @@ export class AppModule extends Container {
 	public boot() {
 		this.banner();
 
-		const game = new AncientMaze(this);
+		const game = this.get<AncientMaze>('game');
 		game.boot();
 	}
 }

@@ -2,7 +2,12 @@ import { IGameBoard } from 'lib/game/ancient-maze/algorithm';
 import { DESTRUCTIBLE_OBJECT_ASPECT } from 'lib/game/ancient-maze/aspects';
 import { IGameBoardObject, IGameObjectState } from 'lib/game/board/interface';
 
-export default class ReplaceDeadWithBodySystem<T extends IGameObjectState, S extends { objects: IGameBoardObject<T>[], board: IGameBoard<T> }> {
+export interface IMortalState<T> {
+	objects: IGameBoardObject<T>[];
+	board: IGameBoard<T>;
+}
+
+export default class ReplaceDeadWithBodySystem<T extends IGameObjectState, S extends IMortalState<T>> {
 	constructor(
 		private factories: { [key: string]: (x: number, y: number, dx: number, dy: number) => IGameBoardObject<T>[] } = {},
 	) { }

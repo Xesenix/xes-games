@@ -1,11 +1,16 @@
 import { IGameBoard } from 'lib/game/ancient-maze/aspects';
 import { IGameBoardObject, IGameObjectState } from 'lib/game/board/interface';
 
-export default class OverlapSystem<T extends IGameObjectState, S extends { objects: IGameBoardObject<T>[], board: IGameBoard<T> }> {
+export interface IOverlapableState<T> {
+	objects: IGameBoardObject<T>[];
+	board: IGameBoard<T>;
+}
+
+export default class OverlapSystem<T extends IGameObjectState, S extends IOverlapableState<T>> {
 	constructor(
 		private visitableType: number,
 		private visitorType: number,
-		private onVisit: (visitable: IGameBoardObject<T>, visitor: IGameBoardObject<T>) => void,
+		private onVisit: (state: S, visitable: IGameBoardObject<T>, visitor: IGameBoardObject<T>) => void,
 	) { }
 
 	public update(state: S): void {
@@ -17,7 +22,7 @@ export default class OverlapSystem<T extends IGameObjectState, S extends { objec
 				if (!!visitors) {
 					visitors.filter((visitor: IGameBoardObject<T>) => visitor.id !== visitable.id).forEach((visitor: IGameBoardObject<T>) => {
 						if (visitable.state.alive && visitor.state.alive && (visitor.type & this.visitorType) === this.visitorType) {
-							this.onVisit(visitable, visitor);
+							this.onVisit(state, visitable, visitor);
 						}
 					});
 				}

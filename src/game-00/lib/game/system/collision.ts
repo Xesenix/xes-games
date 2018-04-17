@@ -1,6 +1,5 @@
 import { inject } from 'lib/di';
-import { IGameObjectState } from 'lib/game/board/interface';
-import { IGameBoard, IGameBoardObject } from 'lib/game/board/interface';
+import { IGameBoard, IGameBoardObject, IGameObjectState } from 'lib/game/board/interface';
 
 // wall   = 0
 // player = 1
@@ -16,7 +15,7 @@ import { IGameBoard, IGameBoardObject } from 'lib/game/board/interface';
 // 3|1|0|0|0|0
 // 4|0|0|0|0|0
 
-@inject(['on-collision', 'on-overlap', 'on-collision-filter'])
+@inject(['on-collision', 'on-collision-filter'])
 export default class CollisionSystem<T extends IGameObjectState, S extends { objects: IGameBoardObject<T>[], board: IGameBoard<T> }> {
 	private collisionMap = [
 		[ true,  true,  true,  true, false],
@@ -28,7 +27,6 @@ export default class CollisionSystem<T extends IGameObjectState, S extends { obj
 
 	constructor(
 		public onCollision = (source: IGameBoardObject<T>, target: IGameBoardObject<T>, impact: number) => {},
-		public onOverlap = (source: IGameBoardObject<T>, target: IGameBoardObject<T>) => {},
 		public filter = (obj: IGameBoardObject<T>) => true,
 	) { }
 
