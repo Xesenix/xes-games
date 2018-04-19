@@ -3,7 +3,8 @@ import { IGameBoardObject, IGameObjectState } from 'lib/game/board/interface';
 import { IOverlapableState } from 'lib/game/system/overlap';
 import OverlapSystem from 'lib/game/system/overlap';
 
-import { ARROW_OBJECT_ASPECT, ARROW_KILLABLE_ASPECT } from './../aspects';
+const ARROW_OBJECT_ASPECT = Symbol.for('ARROW_OBJECT_ASPECT');
+const ARROW_TARGET_ASPECT = Symbol.for('ARROW_TARGET_ASPECT');
 
 @inject(['kill'])
 export default class ArrowSystem<T extends IGameObjectState, S extends IOverlapableState<T>> {
@@ -12,7 +13,7 @@ export default class ArrowSystem<T extends IGameObjectState, S extends IOverlapa
 	constructor(
 		private kill: (target: IGameBoardObject) => void,
 	) {
-		this.overlapSystem = new OverlapSystem<T, S>(ARROW_OBJECT_ASPECT, ARROW_KILLABLE_ASPECT,
+		this.overlapSystem = new OverlapSystem<T, S>(ARROW_OBJECT_ASPECT, ARROW_TARGET_ASPECT,
 			(state: S, visitable: IGameBoardObject<T>, visitor: IGameBoardObject<T>) => {
 				if (visitable.state.alive) {
 					kill(visitor);

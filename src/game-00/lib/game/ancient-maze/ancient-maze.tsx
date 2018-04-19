@@ -16,13 +16,13 @@ import { IRenderer, ReactRenderer } from 'lib/renderer/react-renderer';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
-import { DESTRUCTIBLE_OBJECT_ASPECT,  KILL_ON_OVERLAP_OBJECT_ASPECT } from './aspects';
 import OverlapSystem from 'lib/game/system/overlap';
 import ArrowSystem from 'lib/game/ancient-maze/system/arrow-system';
+import RockSystem from 'lib/game/ancient-maze/system/rock-system';
 
 export type CommandType = 'up' | 'down' | 'left' | 'right' | undefined;
-export interface IAncientMazeState {
-	objects: IGameBoardObject[];
+export interface IAncientMazeState<T> {
+	objects: IGameBoardObject<T>[];
 	inputBuffer: CommandType[];
 	finished: boolean;
 	command: CommandType;
@@ -30,7 +30,7 @@ export interface IAncientMazeState {
 	collected: { [key: number]: number };
 	initialCollectableCount: { [key: number]: number };
 	steps: number;
-	board: Board;
+	board: Board<T>;
 }
 
 @inject([
@@ -40,107 +40,35 @@ export interface IAncientMazeState {
 	'collision-system',
 	'lifespan-system',
 	'arrow-system',
+	'rock-system',
+	'map-system',
+	'dead-bodies-system',
+	'collectable-system',
+	'spawner-system',
+	'exit-system',
 	'debug:console'
 ])
-export default class AncientMaze {
+export default class AncientMaze<T> {
 	constructor(
 		private algorithm: Algorithm, // game-engine
-		private state: IAncientMazeState, // game-state
+		private state: IAncientMazeState<T>, // game-state
 		private renderer: ReactRenderer, // ui:renderer
 		private collisionSystem: CollisionSystem<IGameObjectState>, // collision-system
 		private lifespanSystem: LifespanSystem, // lifespan-system
 		private arrowSystem: ArrowSystem, // arrow-system
+		private rockSystem: RockSystem, // rock-system
+		private mapSystem: MapSystem, // map-system
+		private deadBodiesSystem: DeadBodiesSystem, // dead-bodies-system
+		private collectableSystem: CollectableSystem, // collectable-system
+		private spawnSystem: SpawnSystem, // spawner-system
+		private exitSystem: EndPortalSystem, // exit-system
 		private console: Console, // debug:console
 	) {	}
 
 	public boot() {
-		const state: IAncientMazeState = this.state;
-		const renderer: ReactRenderer = this.renderer;
-		const algorithm: Algorithm = this.algorithm;
-		const collisionSystem: CollisionSystem<IGameObjectState> = this.collisionSystem;
-		const lifespanSystem: LifespanSystem = this.lifespanSystem;
-		const arrowSystem: ArrowSystem = this.arrowSystem;
+		this.mapSystem.load(this.state);
 
-		const ARROW_SPAWNER = 0;
-
-		const mapSystem = new MapSystem(state);
-		mapSystem.load();
-
-		const spawnSystem: SpawnSystem = new SpawnSystem({
-			[ARROW_SPAWNER]: (x: number, y: number, dx: number, dy: number) => [ mapSystem.buildArrow({ x, y }, { x: dx, y: dy }) ],
-		});
-		const deadBodiesSystem: DeadBodiesSystem = new DeadBodiesSystem(mapSystem);
-		const collectableSystem: CollectableSystem = new CollectableSystem();
-		const exitSystem: EndPortalSystem = new EndPortalSystem();
-
-		const updateView = () => {
-			state.objects.forEach((obj) => {
-				state.board.remove(obj.state.position.x, obj.state.position.y, obj);
-				state.board.add(obj.state.position.x, obj.state.position.y, obj);
-			});
-
-			renderer.setOutlet(<GameBoardComponent board={ state.board }/>);
-			renderer.setOutlet(<GameStateConsoleComponent state={ state }/>, 'console');
-			renderer.render();
-		};
-
-		function *gameLoop() {
-			collectableSystem.onLevelInit(state);
-
-			while (!state.finished) {
-				while (state.inputBuffer.length === 0) {
-					yield;
-				}
-
-				state.command = state.inputBuffer.shift();
-				state.executedCommands.push(state.command);
-
-				switch (state.command) {
-					case 'up':
-						algorithm.commandMoveUp(state);
-						break;
-					case 'down':
-						algorithm.commandMoveDown(state);
-						break;
-					case 'left':
-						algorithm.commandMoveLeft(state);
-						break;
-					case 'right':
-						algorithm.commandMoveRight(state);
-						break;
-				}
-
-				spawnSystem.update(state);
-				algorithm.commandAction(state);
-				state.objects.forEach((obj) => {
-					obj.state.impact = 0;
-				});
-				lifespanSystem.update(state);
-
-				state.steps++;
-
-				while (!algorithm.resolved(state)) {
-					algorithm.update(state);
-					collisionSystem.update(state);
-					arrowSystem.update(state);
-
-					// switch collected to dead
-					collectableSystem.update(state);
-
-					// add bodies
-					deadBodiesSystem.update(state);
-
-					exitSystem.update(state);
-
-					requestAnimationFrame(updateView);
-					yield;
-				}
-			}
-			renderer.setOutlet(<div>Victory</div>);
-			renderer.render();
-		}
-
-		const gen = gameLoop();
+		const gen = this.gameLoop();
 
 		const resolve = () => {
 			const step = gen.next();
@@ -152,28 +80,95 @@ export default class AncientMaze {
 
 		const intervalHandle = setInterval(resolve, 20);
 
-		document.addEventListener('keydown', (ev) => {
-			this.console.log('ev', ev, state.objects);
+		document.addEventListener('keydown', (ev: KeyboardEvent) => {
+			this.console.log('ev', ev, this.state.objects);
 			switch (ev.code) {
 				case 'KeyW':
 				case 'ArrowUp':
-					state.inputBuffer.push('up');
+					this.state.inputBuffer.push('up');
 					break;
 				case 'KeyS':
 				case 'ArrowDown':
-					state.inputBuffer.push('down');
+					this.state.inputBuffer.push('down');
 					break;
 				case 'KeyA':
 				case 'ArrowLeft':
-					state.inputBuffer.push('left');
+					this.state.inputBuffer.push('left');
 					break;
 				case 'KeyD':
 				case 'ArrowRight':
-					state.inputBuffer.push('right');
+					this.state.inputBuffer.push('right');
 					break;
 			}
 		});
 
-		requestAnimationFrame(updateView);
+		requestAnimationFrame(this.updateView);
+	}
+
+	private *gameLoop() {
+		this.collectableSystem.onLevelInit(this.state);
+
+		while (!this.state.finished) {
+			while (this.state.inputBuffer.length === 0) {
+				yield;
+			}
+
+			this.state.command = this.state.inputBuffer.shift();
+			this.state.executedCommands.push(this.state.command);
+
+			switch (this.state.command) {
+				case 'up':
+					this.algorithm.commandMoveUp(this.state);
+					break;
+				case 'down':
+					this.algorithm.commandMoveDown(this.state);
+					break;
+				case 'left':
+					this.algorithm.commandMoveLeft(this.state);
+					break;
+				case 'right':
+					this.algorithm.commandMoveRight(this.state);
+					break;
+			}
+
+			this.spawnSystem.update(this.state);
+			this.algorithm.commandAction(this.state);
+			this.state.objects.forEach((obj) => {
+				obj.state.impact = 0;
+			});
+			this.lifespanSystem.update(this.state);
+
+			this.state.steps++;
+
+			while (!this.algorithm.resolved(this.state)) {
+				this.algorithm.update(this.state);
+				this.collisionSystem.update(this.state);
+				this.arrowSystem.update(this.state);
+
+				// switch collected to dead
+				this.collectableSystem.update(this.state);
+
+				// add bodies
+				this.deadBodiesSystem.update(this.state);
+
+				this.exitSystem.update(this.state);
+
+				requestAnimationFrame(this.updateView);
+				yield;
+			}
+		}
+		this.renderer.setOutlet(<div>Victory</div>);
+		this.renderer.render();
+	}
+
+	private updateView = () => {
+		this.state.objects.forEach((obj) => {
+			this.state.board.remove(obj.state.position.x, obj.state.position.y, obj);
+			this.state.board.add(obj.state.position.x, obj.state.position.y, obj);
+		});
+
+		this.renderer.setOutlet(<GameBoardComponent board={ this.state.board }/>);
+		this.renderer.setOutlet(<GameStateConsoleComponent state={ this.state }/>, 'console');
+		this.renderer.render();
 	}
 }

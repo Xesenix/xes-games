@@ -27,7 +27,8 @@ export interface IGameBoardObject<T extends IGameObjectState> {
 	 * Some specific state id like alive, dead or something more complicated lik burning flying etc
 	 */
 	state: T;
-	type: number;
+	type: symbol;
+	aspects: symbol[];
 	collisionGroup: number;
 }
 

@@ -1,4 +1,4 @@
-import { inject } from 'lib/di';
+import { injectable } from 'lib/di';
 import { IGameBoard, IGameBoardObject, IGameObjectState } from 'lib/game/board/interface';
 
 // wall   = 0
@@ -15,7 +15,9 @@ import { IGameBoard, IGameBoardObject, IGameObjectState } from 'lib/game/board/i
 // 3|1|0|0|0|0
 // 4|0|0|0|0|0
 
-@inject(['on-collision', 'on-collision-filter'])
+export type CollisionListenerType<T> = (source: IGameBoardObject<T>, target: IGameBoardObject<T>) => void;
+
+@injectable()
 export default class CollisionSystem<T extends IGameObjectState, S extends { objects: IGameBoardObject<T>[], board: IGameBoard<T> }> {
 	private collisionMap = [
 		[ true,  true,  true,  true, false],
@@ -25,10 +27,7 @@ export default class CollisionSystem<T extends IGameObjectState, S extends { obj
 		[false, false, false, false, false],
 	];
 
-	constructor(
-		public onCollision = (source: IGameBoardObject<T>, target: IGameBoardObject<T>, impact: number) => {},
-		public filter = (obj: IGameBoardObject<T>) => true,
-	) { }
+	private onCollisionListeners: CollisionListenerType<T>[] = [];
 
 	public checkCollision(obj: IGameBoardObject<T>, targets: IGameBoardObject<T>[]): boolean {
 		return this.collectCollisions(obj, targets).length > 0;
@@ -48,7 +47,15 @@ export default class CollisionSystem<T extends IGameObjectState, S extends { obj
 			.forEach((obj: IGameBoardObject<T>) => {
 				const { n = { x: 0, y: 0 }, position = { x: 0, y: 0 } } = obj.state as any;
 				const targetCellObjects: IGameBoardObject<T>[] = board.get(position.x + n.x, position.y + n.y, null);
-				this.collectCollisions(obj, targetCellObjects).forEach((target: IGameBoardObject<T>) => this.onCollision(obj, target, 0));
+				this.collectCollisions(obj, targetCellObjects).forEach((target: IGameBoardObject<T>) => this.onCollision(obj, target));
 			});
+	}
+
+	public listenToCollision(listener: CollisionListenerType<T>): void {
+		this.onCollisionListeners.push(listener);
+	}
+
+	public onCollision(source: IGameBoardObject<T>, target: IGameBoardObject<T>): void {
+		this.onCollisionListeners.forEach((listener: CollisionListenerType<T>) => listener(source, target));
 	}
 }

@@ -2,7 +2,8 @@ import { inject } from 'lib/di';
 import { IGameBoard, IGameBoardObject, IGameObjectState } from 'lib/game/board/interface';
 import { CollisionSystem } from 'lib/game/system/collision';
 
-import { CONTROLLABLE_ASPECT, MOVABLE_ASPECT } from './aspects';
+const CONTROLLABLE_ASPECT = Symbol.for('CONTROLLABLE_ASPECT');
+const MOVABLE_ASPECT = Symbol.for('MOVABLE_ASPECT');
 
 @inject(['collision-system'])
 export default class Algorithm<T extends IGameObjectState, S extends { objects: IGameBoardObject<T>[], board: IGameBoard }> {
@@ -12,7 +13,7 @@ export default class Algorithm<T extends IGameObjectState, S extends { objects: 
 
 	public commandMoveUp(state: S): void {
 		const { objects } = state;
-		objects.filter((obj: IGameBoardObject<T>) => (obj.type & CONTROLLABLE_ASPECT) === CONTROLLABLE_ASPECT).forEach((obj) => {
+		objects.filter((obj: IGameBoardObject<T>) => obj.aspects.includes(CONTROLLABLE_ASPECT)).forEach((obj: IGameBoardObject<T>) => {
 			obj.state.direction = {
 				x: 0,
 				y: -1,
@@ -23,7 +24,7 @@ export default class Algorithm<T extends IGameObjectState, S extends { objects: 
 
 	public commandMoveDown(state: S): void {
 		const { objects } = state;
-		objects.filter((obj: IGameBoardObject<T>) => (obj.type & CONTROLLABLE_ASPECT) === CONTROLLABLE_ASPECT).forEach((obj) => {
+		objects.filter((obj: IGameBoardObject<T>) => obj.aspects.includes(CONTROLLABLE_ASPECT)).forEach((obj: IGameBoardObject<T>) => {
 			obj.state.direction = {
 				x: 0,
 				y: 1,
@@ -34,7 +35,7 @@ export default class Algorithm<T extends IGameObjectState, S extends { objects: 
 
 	public commandMoveLeft(state: S): void {
 		const { objects } = state;
-		objects.filter((obj: IGameBoardObject<T>) => (obj.type & CONTROLLABLE_ASPECT) === CONTROLLABLE_ASPECT).forEach((obj) => {
+		objects.filter((obj: IGameBoardObject<T>) => obj.aspects.includes(CONTROLLABLE_ASPECT)).forEach((obj: IGameBoardObject<T>) => {
 			obj.state.direction = {
 				x: -1,
 				y: 0,
@@ -45,7 +46,7 @@ export default class Algorithm<T extends IGameObjectState, S extends { objects: 
 
 	public commandMoveRight(state: S): void {
 		const { objects } = state;
-		objects.filter((obj: IGameBoardObject<T>) => (obj.type & CONTROLLABLE_ASPECT) === CONTROLLABLE_ASPECT).forEach((obj) => {
+		objects.filter((obj: IGameBoardObject<T>) => obj.aspects.includes(CONTROLLABLE_ASPECT)).forEach((obj: IGameBoardObject<T>) => {
 			obj.state.direction = {
 				x: 1,
 				y: 0,
@@ -56,7 +57,7 @@ export default class Algorithm<T extends IGameObjectState, S extends { objects: 
 
 	public commandAction(state: S): void {
 		const { objects } = state;
-		objects.filter((obj: IGameBoardObject<T>) => (obj.type & MOVABLE_ASPECT) === MOVABLE_ASPECT).forEach((obj) => {
+		objects.filter((obj: IGameBoardObject<T>) => obj.aspects.includes(MOVABLE_ASPECT)).forEach((obj: IGameBoardObject<T>) => {
 			obj.state.n = {
 				...obj.state.direction,
 			};
@@ -67,7 +68,7 @@ export default class Algorithm<T extends IGameObjectState, S extends { objects: 
 	public update(state: S): void {
 		const { objects, board } = state;
 		// we need to resolve positions of movable objects
-		const movable = objects.filter((obj: IGameBoardObject<T>) => (obj.type & MOVABLE_ASPECT) === MOVABLE_ASPECT);
+		const movable = objects.filter((obj: IGameBoardObject<T>) => obj.aspects.includes(MOVABLE_ASPECT));
 
 		// first move faster objects then determine order by position on board
 		let ordered = movable.sort((a: IGameBoardObject<T>, b: IGameBoardObject<T>) => a.state.steps < b.state.steps
