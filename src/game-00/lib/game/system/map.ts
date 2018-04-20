@@ -77,6 +77,17 @@ export default class MapSystem<T extends IGameObjectState, S extends { objects: 
 		this.builder.build(state, EXIT_TYPE, { x: 10, y: 6 });
 		this.builder.build(state, KEY_TYPE, { x: 6, y: 5 });
 		this.builder.build(state, KEY_TYPE, { x: 1, y: 5 });
+
+		// filter walls from object list
+		state.objects = state.objects.filter((obj: IGameBoardObject<T>) => {
+			if (obj.type !== WALL_TYPE) {
+				return true;
+			}
+
+			state.board.add(obj.state.position.x, obj.state.position.y, obj);
+
+			return false;
+		});
 	}
 
 	public export() {

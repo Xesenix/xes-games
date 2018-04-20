@@ -30,7 +30,7 @@ export default class ReplaceDeadWithBodySystem<T extends IGameObjectState, S ext
 				}
 			}
 		});
-		console.log('spawned', spawned);
+		console.log('spawned bodies', spawned);
 		objects.push(...spawned);
 	}
 
