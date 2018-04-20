@@ -1,17 +1,10 @@
+import { inject } from 'lib/di';
+import { ObjectFactory } from 'lib/game/ancient-maze/object-factory';
 import { IGameBoardObject, IGameObjectState } from 'lib/game/board/interface';
-import MapSystem, { BROKEN_ARROW_FACTORY, BROKEN_ROCK_FACTORY } from 'lib/game/system/map';
 import ReplaceDeadWithBodySystem, { IMortalState } from 'lib/game/system/replace-dead-with-body';
 
+@inject(['game-objects-factory'])
 export default class DeadBodiesSystem<T extends IGameObjectState, S extends IMortalState<T>> extends ReplaceDeadWithBodySystem<T, S> {
-	constructor(
-		mapSystem: MapSystem,
-	) {
-		super({
-			[BROKEN_ARROW_FACTORY]: (x: number, y: number, dx: number, dy: number) => [ mapSystem.buildBrokenArrow({ x, y }, { x: dx, y: dy }) ],
-			[BROKEN_ROCK_FACTORY]: (x: number, y: number, dx: number, dy: number) => [ mapSystem.buildBrokenRock({ x, y }, { x: dx, y: dy }) ],
-		});
-	}
-
 	public update(state: S): void {
 		super.update(state);
 

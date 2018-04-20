@@ -1,4 +1,4 @@
-import { ACTOR_ASPECT, EXIT_ASPECT } from 'lib/game/ancient-maze/aspects';
+import { injectable } from 'lib/di';
 import { IGameBoardObject, IGameObjectState } from 'lib/game/board/interface';
 import OverlapSystem, { IOverlapableState } from 'lib/game/system/overlap';
 
@@ -9,10 +9,22 @@ export interface IFinishableState<T> extends IOverlapableState<T> {
 	finished: boolean;
 }
 
-export default class EndPortalSystem<T extends IGameObjectState, S extends IFinishableState<T>> extends OverlapSystem<T, S> {
+const ACTOR_ASPECT = Symbol.for('ACTOR_ASPECT');
+const EXIT_ASPECT = Symbol.for('EXIT_ASPECT');
+
+@injectable()
+export default class EndPortalSystem<T extends IGameObjectState, S extends IFinishableState<T>> {
+	private overlapSystem: OverlapSystem<T, S>;
+
 	constructor() {
-		super(EXIT_ASPECT, ACTOR_ASPECT, (state: S, visitable: IGameBoardObject, visitor: IGameBoardObject) => {
-			state.finished = state.collected[visitable.state.keyItemId] === state.initialCollectableCount[visitable.state.keyItemId];
-		});
+		this.overlapSystem = new OverlapSystem<T, S>(EXIT_ASPECT, ACTOR_ASPECT,
+			(state: S, visitable: IGameBoardObject, visitor: IGameBoardObject) => {
+				state.finished = state.collected[visitable.state.keyItemId] === state.initialCollectableCount[visitable.state.keyItemId];
+			}
+		);
+	}
+
+	public update(state: S): void {
+		this.overlapSystem.update(state);
 	}
 }
