@@ -14,6 +14,8 @@ export interface IGameStateConsoleComponentProps {
 export interface IGameStateConsoleComponentState {
 }
 
+const KEY_ITEM_TYPE = Symbol.for('KEY_ITEM_TYPE');
+
 class GameStateConsoleComponent extends React.Component<IGameStateConsoleComponentProps, IGameStateConsoleComponentState> {
 	public render(): any {
 		const { state } = this.props;
@@ -21,7 +23,7 @@ class GameStateConsoleComponent extends React.Component<IGameStateConsoleCompone
 		return (
 			<div className="console">
 				{ __('Command') }: { state.command }<br/>
-				{ __('Keys') }: { state.collected[0] } / { state.initialCollectableCount[0] }<br/>
+				{ __('Keys') }: { state.collected[KEY_ITEM_TYPE] } / { state.initialCollectableCount[KEY_ITEM_TYPE] }<br/>
 				{ __('Steps') }: { state.steps }<br/>
 				{ __('Executed moves') }: { state.executedCommands.map((cmd: CommandType, index: number) => <span key={index} className="pill">'{ cmd }'</span>) }
 			</div>

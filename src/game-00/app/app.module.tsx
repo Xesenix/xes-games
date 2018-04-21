@@ -19,6 +19,8 @@ import { ThemeModule } from 'lib/theme/theme.module';
 
 declare const process: any;
 
+const KEY_ITEM_TYPE = Symbol.for('KEY_ITEM_TYPE');
+
 /**
  * Main module for application. Defines all dependencies and provides default setup for configuration variables.
  *
@@ -80,8 +82,8 @@ export class AppModule extends Container {
 			finished: false,
 			command: undefined,
 			executedCommands: [],
-			collected: { 0: 0 },
-			initialCollectableCount: { 0: 0 },
+			collected: { [KEY_ITEM_TYPE]: 0 },
+			initialCollectableCount: { [KEY_ITEM_TYPE]: 0 },
 			steps: 0,
 			board: new Board(12, 9),
 		});
