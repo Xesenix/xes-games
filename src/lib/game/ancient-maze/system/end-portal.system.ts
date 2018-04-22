@@ -2,7 +2,7 @@ import { injectable } from 'lib/di';
 import { IGameBoardObject, IGameObjectState } from 'lib/game/board/interface';
 import OverlapSystem, { IOverlapableState } from 'lib/game/system/overlap.system';
 
-export interface IFinishableState<T> extends IOverlapableState<T> {
+export interface IFinishableState<T extends IGameObjectState> extends IOverlapableState<T> {
 	objects: IGameBoardObject<T>[];
 	initialCollectableCount: { [key: number]: number };
 	collected: { [key: number]: number };
@@ -18,8 +18,9 @@ export default class EndPortalSystem<T extends IGameObjectState, S extends IFini
 
 	constructor() {
 		this.overlapSystem = new OverlapSystem<T, S>(EXIT_ASPECT, ACTOR_ASPECT,
-			(state: S, visitable: IGameBoardObject, visitor: IGameBoardObject) => {
-				state.finished = state.collected[visitable.state.keyItemId] === state.initialCollectableCount[visitable.state.keyItemId];
+			(state: S, visitable: IGameBoardObject<T>, visitor: IGameBoardObject<T>) => {
+				const { keyItemId = Symbol.for('KEY_ITEM_TYPE') } = visitable.state;
+				state.finished = state.collected[keyItemId] === state.initialCollectableCount[keyItemId];
 				console.log('finished?', state.finished, visitable, visitor, state.collected, state.initialCollectableCount);
 			},
 		);

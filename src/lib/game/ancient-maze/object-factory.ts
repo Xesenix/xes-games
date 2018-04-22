@@ -142,12 +142,12 @@ export const objectStatePrototype = {
 export class ObjectFactory<T extends IGameObjectState, S extends { objects: IGameBoardObject<T>[], board: IGameBoard<T> }> {
 	private spawnIndex = 0;
 
-	public build(state: S, type: symbol, position: { x: number, y: number }, direction: { x: number, y: number }): void {
+	public build(state: S, type: symbol, position: { x: number, y: number }, direction: { x: number, y: number } = { x: 0, y: 0 }): void {
 		state.objects.push(this.create(type, position, direction));
 	}
 
-	public create(type: symbol, position: { x: number, y: number }, direction: { x: number, y: number }): IGameBoardObject<T> {
-		return new GameBoardObject(
+	public create(type: symbol, position: { x: number, y: number }, direction: { x: number, y: number } = { x: 0, y: 0 }): IGameBoardObject<T> {
+		return new GameBoardObject<T>(
 			this.spawnIndex++,
 			type,
 			aspects[type],

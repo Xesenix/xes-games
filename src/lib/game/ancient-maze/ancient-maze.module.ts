@@ -6,7 +6,7 @@ import CollectableSystem from 'lib/game/ancient-maze/system/collectable.system';
 import DeadBodiesSystem from 'lib/game/ancient-maze/system/dead-bodies.system';
 import EndPortalSystem from 'lib/game/ancient-maze/system/end-portal.system';
 import RockSystem from 'lib/game/ancient-maze/system/rock.system';
-import { IGameBoardObject, IGameObjectState } from 'lib/game/board/interface';
+import { IGameBoardObject, IGameObjectState, IMovableGameObjectState } from 'lib/game/board/interface';
 import CollisionSystem from 'lib/game/system/collision.system';
 import LifespanSystem from 'lib/game/system/lifespan.system';
 import MapSystem from 'lib/game/system/map.system';
@@ -27,7 +27,7 @@ export const AncientMazeModule = () => new ContainerModule((bind: interfaces.Bin
 		.to(ObjectFactory)
 		.inSingletonScope();
 
-	bind<CollisionSystem<IGameObjectState>>('collision-system').to(CollisionSystem).inSingletonScope();
+	bind<CollisionSystem<IMovableGameObjectState, IAncientMazeState<IMovableGameObjectState>>>('collision-system').to(CollisionSystem).inSingletonScope();
 	bind<LifespanSystem>('lifespan-system').to(LifespanSystem).inSingletonScope();
 	bind<ArrowSystem>('arrow-system').to(ArrowSystem).inSingletonScope();
 	bind<RockSystem>('rock-system').to(RockSystem).inSingletonScope();

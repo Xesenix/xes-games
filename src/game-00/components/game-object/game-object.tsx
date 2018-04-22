@@ -1,21 +1,21 @@
 import * as React from 'react';
 import { hot } from 'react-hot-loader';
 
-import { IGameBoardObject, IGameObjectState } from 'lib/game/board/interface';
+import { IGameBoardObject, IGameObjectState, IMovableGameObjectState } from 'lib/game/board/interface';
 
 import './game-object.scss';
 
-export interface IGameObjectComponentProps<T extends IGameObjectState> {
+export interface IGameObjectComponentProps<T extends IGameObjectState | IMovableGameObjectState> {
 	object: IGameBoardObject<T>;
 }
 
 export interface IGameObjectComponentState {
 }
 
-class GameObjectComponent<T extends IGameObjectState> extends React.Component<IGameObjectComponentProps<T>, IGameObjectComponentState> {
+class GameObjectComponent<T extends IGameObjectState | IMovableGameObjectState>
+extends React.Component<IGameObjectComponentProps<T>, IGameObjectComponentState> {
 	public render(): any {
 		const { object } = this.props;
-		const { type = 0 } = object;
 		const { collided = false, steps = 0, lifespan = 0 } = object.state;
 
 		return (

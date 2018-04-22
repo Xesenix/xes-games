@@ -15,7 +15,7 @@ import { IGameBoard, IGameBoardObject, IGameObjectState } from 'lib/game/board/i
 // 3|1|0|0|0|0
 // 4|0|0|0|0|0
 
-export type CollisionListenerType<T> = (source: IGameBoardObject<T>, target: IGameBoardObject<T>) => void;
+export type CollisionListenerType<T extends IGameObjectState> = (source: IGameBoardObject<T>, target: IGameBoardObject<T> | null) => void;
 
 @injectable()
 export default class CollisionSystem<T extends IGameObjectState, S extends { objects: IGameBoardObject<T>[], board: IGameBoard<T> }> {
@@ -33,7 +33,7 @@ export default class CollisionSystem<T extends IGameObjectState, S extends { obj
 		return this.collectCollisions(obj, targets).length > 0;
 	}
 
-	public collectCollisions(source: IGameBoardObject<T>, targets: IGameBoardObject<T>[]): IGameBoardObject<T>[] {
+	public collectCollisions(source: IGameBoardObject<T>, targets: IGameBoardObject<T>[]): (IGameBoardObject<T> | null)[] {
 		if (targets === null) {
 			return [ null ];
 		}
@@ -47,7 +47,7 @@ export default class CollisionSystem<T extends IGameObjectState, S extends { obj
 			.forEach((obj: IGameBoardObject<T>) => {
 				const { n = { x: 0, y: 0 }, position = { x: 0, y: 0 } } = obj.state as any;
 				const targetCellObjects: IGameBoardObject<T>[] = board.get(position.x + n.x, position.y + n.y, null);
-				this.collectCollisions(obj, targetCellObjects).forEach((target: IGameBoardObject<T>) => this.onCollision(obj, target));
+				this.collectCollisions(obj, targetCellObjects).forEach((target: IGameBoardObject<T> | null) => this.onCollision(obj, target));
 			});
 	}
 
@@ -55,7 +55,7 @@ export default class CollisionSystem<T extends IGameObjectState, S extends { obj
 		this.onCollisionListeners.push(listener);
 	}
 
-	public onCollision(source: IGameBoardObject<T>, target: IGameBoardObject<T>): void {
+	public onCollision(source: IGameBoardObject<T>, target: IGameBoardObject<T> | null): void {
 		this.onCollisionListeners.forEach((listener: CollisionListenerType<T>) => listener(source, target));
 	}
 }

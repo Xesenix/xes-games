@@ -2,13 +2,13 @@ import { inject } from 'lib/di';
 import { ObjectFactory } from 'lib/game/ancient-maze/object-factory';
 import { IGameBoard, IGameBoardObject, IGameObjectState } from 'lib/game/board/interface';
 
-export const ARROW_CANNON_TYPE = Symbol.for('ARROW_CANNON_TYPE');
-export const BOX_TYPE = Symbol.for('BOX_TYPE');
-export const EXIT_TYPE = Symbol.for('EXIT_TYPE');
-export const WALL_TYPE = Symbol.for('WALL_TYPE');
-export const KEY_TYPE = Symbol.for('KEY_TYPE');
-export const PLAYER_TYPE = Symbol.for('PLAYER_TYPE');
-export const ROCK_TYPE = Symbol.for('ROCK_TYPE');
+const ARROW_CANNON_TYPE = Symbol.for('ARROW_CANNON_TYPE');
+const BOX_TYPE = Symbol.for('BOX_TYPE');
+const EXIT_TYPE = Symbol.for('EXIT_TYPE');
+const WALL_TYPE = Symbol.for('WALL_TYPE');
+const KEY_TYPE = Symbol.for('KEY_TYPE');
+const PLAYER_TYPE = Symbol.for('PLAYER_TYPE');
+const ROCK_TYPE = Symbol.for('ROCK_TYPE');
 
 @inject(['game-objects-factory'])
 export default class MapSystem<T extends IGameObjectState, S extends { objects: IGameBoardObject<T>[], board: IGameBoard<T> }> {

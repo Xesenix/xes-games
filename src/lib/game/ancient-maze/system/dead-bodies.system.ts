@@ -1,5 +1,4 @@
 import { inject } from 'lib/di';
-import { ObjectFactory } from 'lib/game/ancient-maze/object-factory';
 import { IGameBoardObject, IGameObjectState } from 'lib/game/board/interface';
 import ReplaceDeadWithBodySystem, { IMortalState } from 'lib/game/system/replace-dead-with-body.system';
 

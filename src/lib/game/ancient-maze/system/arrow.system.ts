@@ -1,6 +1,6 @@
 import { inject } from 'lib/di';
 import { IGameBoardObject, IGameObjectState } from 'lib/game/board/interface';
-import { CollisionSystem } from 'lib/game/system/collision.system';
+import CollisionSystem from 'lib/game/system/collision.system';
 import OverlapSystem, { IOverlapableState } from 'lib/game/system/overlap.system';
 
 const ARROW_OBJECT_ASPECT = Symbol.for('ARROW_OBJECT_ASPECT');
@@ -12,8 +12,8 @@ export default class ArrowSystem<T extends IGameObjectState, S extends IOverlapa
 	private overlapSystem: OverlapSystem<T, S>;
 
 	constructor(
-		private kill: (target: IGameBoardObject) => void,
-		private collisionSystem: CollisionSystem,
+		private kill: (target: IGameBoardObject<T>) => void,
+		private collisionSystem: CollisionSystem<T, S>,
 	) {
 		this.overlapSystem = new OverlapSystem<T, S>(ARROW_OBJECT_ASPECT, ARROW_TARGET_ASPECT,
 			(state: S, visitable: IGameBoardObject<T>, visitor: IGameBoardObject<T>) => {

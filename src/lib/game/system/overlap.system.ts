@@ -1,8 +1,7 @@
 import { injectable } from 'lib/di';
-import { IGameBoard } from 'lib/game/ancient-maze/aspects';
-import { IGameBoardObject, IGameObjectState } from 'lib/game/board/interface';
+import { IGameBoard, IGameBoardObject, IGameObjectState } from 'lib/game/board/interface';
 
-export interface IOverlapableState<T> {
+export interface IOverlapableState<T extends IGameObjectState> {
 	objects: IGameBoardObject<T>[];
 	board: IGameBoard<T>;
 }

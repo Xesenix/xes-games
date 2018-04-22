@@ -1,11 +1,11 @@
 import { inject } from 'lib/di';
 import { ObjectFactory } from 'lib/game/ancient-maze/object-factory';
-import { IGameBoardObject, IGameObjectState } from 'lib/game/board/interface';
+import { IGameBoard, IGameBoardObject, IGameObjectState } from 'lib/game/board/interface';
 
 export const SPAWNER_OBJECT_ASPECT = Symbol.for('SPAWNER_OBJECT_ASPECT');
 
 @inject(['game-objects-factory'])
-export default class SpawnSystem<T extends IGameObjectState, S extends { objects: IGameBoardObject<T>[] }> {
+export default class SpawnSystem<T extends IGameObjectState, S extends { objects: IGameBoardObject<T>[], board: IGameBoard<T> }> {
 	constructor(
 		private builder: ObjectFactory<T, S>,
 	) { }

@@ -5,7 +5,7 @@ import { IAppDataState, IPreloadState } from 'app/reducer';
 import { DataStore } from 'lib/data-store/data-store';
 
 export interface IGameViewProps {
-	dataStore: DataStore<IAppDataState>;
+	dataStore?: DataStore<IAppDataState>;
 }
 
 export interface IGameViewState {
@@ -32,8 +32,6 @@ class GameView extends React.Component<IGameViewProps, IGameViewState> {
 	}
 
 	public render(): any {
-		const { preload } = this.state;
-
 		return (<div className="panel panel-primary">
 			<div className="panel-heading">Game</div>
 			<div className="panel-body">

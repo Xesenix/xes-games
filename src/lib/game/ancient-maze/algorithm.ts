@@ -1,14 +1,14 @@
 import { inject } from 'lib/di';
-import { IGameBoard, IGameBoardObject, IGameObjectState } from 'lib/game/board/interface';
+import { IGameBoard, IGameBoardObject, IMovableGameObjectState } from 'lib/game/board/interface';
 import { CollisionSystem } from 'lib/game/system/collision.system';
 
 const CONTROLLABLE_ASPECT = Symbol.for('CONTROLLABLE_ASPECT');
 const MOVABLE_ASPECT = Symbol.for('MOVABLE_ASPECT');
 
 @inject(['collision-system'])
-export default class Algorithm<T extends IGameObjectState, S extends { objects: IGameBoardObject<T>[], board: IGameBoard }> {
+export default class Algorithm<T extends IMovableGameObjectState, S extends { objects: IGameBoardObject<T>[], board: IGameBoard<T> }> {
 	constructor(
-		private collisionSystem: CollisionSystem,
+		private collisionSystem: CollisionSystem<T, S>,
 	) { }
 
 	public commandMoveUp(state: S): void {
@@ -98,13 +98,13 @@ export default class Algorithm<T extends IGameObjectState, S extends { objects: 
 			.forEach((obj: IGameBoardObject<T>) => {
 				const { alive = false, steps = 0, collided = false } = obj.state as any;
 				if (collided || (alive && steps > 0)) {
-					console.log('collided', obj);
+					// console.log('collided', obj);
 					// everything that didn't move can't move
 					obj.state.steps = 0;
 					obj.state.collided = true;
 					// this.collisionSystem.addCollision(obj, targetCellObjects);
 				} else {
-					console.log('moved', obj);
+					// console.log('moved', obj);
 				}
 			});
 	}
@@ -113,7 +113,7 @@ export default class Algorithm<T extends IGameObjectState, S extends { objects: 
 		const { objects } = state;
 		return objects.reduce((acc: boolean, obj: IGameBoardObject<T>) => {
 			const { alive = false, steps = 0 } = obj.state || {};
-			console.log('is resolved ', acc, obj.id, steps);
+			// console.log('is resolved ', acc, obj.id, steps);
 			if (alive) {
 				return acc && steps === 0;
 			}
@@ -139,7 +139,7 @@ export default class Algorithm<T extends IGameObjectState, S extends { objects: 
 				obj.state.position.x += n.x;
 				obj.state.position.y += n.y;
 				board.add(obj.state.position.x, obj.state.position.y, obj);
-				console.log('moved', obj);
+				// console.log('moved', obj);
 
 				return false; // moved
 			}

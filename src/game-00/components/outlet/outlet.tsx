@@ -7,10 +7,10 @@ export interface IOutletProps {
 export interface IOutletState {
 }
 
-class Outlet extends React.Component<IOutletProps, IOutletState> {
+class OutletComponent extends React.Component<IOutletProps, IOutletState> {
 	public render(): any {
-		return (<>{this.props.children}</>);
+		return (<>{ this.props.children }</>);
 	}
 }
 
-export default hot(module)(Outlet);
+export default hot(module)(OutletComponent);

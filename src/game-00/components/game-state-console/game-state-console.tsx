@@ -8,7 +8,7 @@ import { __ } from 'lib/localize';
 import './game-state-console.scss';
 
 export interface IGameStateConsoleComponentProps {
-	state: IAncientMazeState;
+	state: IAncientMazeState<IGameObjectState>;
 }
 
 export interface IGameStateConsoleComponentState {

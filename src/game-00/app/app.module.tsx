@@ -4,7 +4,7 @@ import * as ReactDOM from 'react-dom';
 import { EventEmitter } from 'events';
 import { Container } from 'inversify';
 
-import OutletComponent from 'components/outlet/outlet';
+import OutletComponent from 'game-00/components/outlet/outlet';
 import { FlatDictionary } from 'lib/dictionary/flat-dictionary';
 import { IDictionary } from 'lib/dictionary/interfaces';
 import AncientMaze from 'lib/game/ancient-maze/ancient-maze';
@@ -16,6 +16,7 @@ import { IRenderer, ReactRenderer } from 'lib/renderer/react-renderer';
 import { ThemeModule } from 'lib/theme/theme.module';
 
 // import { IAppDataState, reducer } from './reducer';
+import { IGameObjectState } from 'lib/game/board/interface';
 
 declare const process: any;
 
@@ -103,7 +104,7 @@ export class AppModule extends Container {
 	public boot() {
 		this.banner();
 
-		const game = this.get<AncientMaze>('game');
+		const game = this.get<AncientMaze<IGameObjectState, IAncientMazeState<IGameObjectState>>>('game');
 		game.boot();
 	}
 }

@@ -2,7 +2,7 @@ import { injectable } from 'lib/di';
 import { IGameBoardObject, IGameObjectState } from 'lib/game/board/interface';
 import OverlapSystem, { IOverlapableState } from 'lib/game/system/overlap.system';
 
-export interface ICollectableState<T> extends IOverlapableState<T> {
+export interface ICollectableState<T extends IGameObjectState> extends IOverlapableState<T> {
 	objects: IGameBoardObject<T>[];
 	initialCollectableCount: { [key: number]: number };
 	collected: { [key: number]: number };
@@ -19,7 +19,8 @@ export default class CollectableSystem<T extends IGameObjectState, S extends ICo
 		this.overlapSystem = new OverlapSystem<T, S>(COLLECTABLE_ASPECT, COLLECTOR_ASPECT,
 			(state: S, visitable: IGameBoardObject<T>, visitor: IGameBoardObject<T>) => {
 				if (visitable.state.alive) {
-					state.collected[visitable.state.collectableId] ++;
+					const { collectableId = 0 } = visitable.state;
+					state.collected[collectableId] ++;
 					visitable.state.alive = false;
 				}
 			},
@@ -29,7 +30,8 @@ export default class CollectableSystem<T extends IGameObjectState, S extends ICo
 	public onLevelInit(state: S): void {
 		state.objects.forEach((obj: IGameBoardObject<T>) => {
 			if (obj.aspects.includes(COLLECTABLE_ASPECT)) {
-				state.initialCollectableCount[obj.state.collectableId] ++;
+				const { collectableId = 0 } = obj.state;
+				state.initialCollectableCount[collectableId] ++;
 			}
 		});
 	}

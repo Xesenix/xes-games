@@ -1,5 +1,5 @@
-import GameBoardComponent from 'components/game-board/game-board';
-import GameStateConsoleComponent from 'components/game-state-console/game-state-console';
+import GameBoardComponent from 'game-00/components/game-board/game-board';
+import GameStateConsoleComponent from 'game-00/components/game-state-console/game-state-console';
 import { inject } from 'lib/di';
 import Algorithm from 'lib/game/ancient-maze/algorithm';
 import ArrowSystem from 'lib/game/ancient-maze/system/arrow.system';
@@ -17,18 +17,24 @@ import { ReactRenderer } from 'lib/renderer/react-renderer';
 import cloneDeep from 'lodash.clonedeep';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
+import { IGameBoard } from 'lib/game/ancient-maze/aspects';
 
 export type CommandType = 'up' | 'down' | 'left' | 'right' | 'back' | undefined;
-export interface IAncientMazeState<T> {
+
+export interface IAncientMazeGameObjectState extends IGameObjectState {
+
+}
+
+export interface IAncientMazeState<T extends IGameObjectState> {
 	objects: IGameBoardObject<T>[];
 	inputBuffer: CommandType[];
 	finished: boolean;
 	command: CommandType;
 	executedCommands: CommandType[];
-	collected: { [key: number]: number };
-	initialCollectableCount: { [key: number]: number };
+	collected: { [key: symbol]: number };
+	initialCollectableCount: { [key: symbol]: number };
 	steps: number;
-	board: Board<T>;
+	board: IGameBoard<T>;
 }
 
 @inject([
@@ -46,20 +52,20 @@ export interface IAncientMazeState<T> {
 	'exit-system',
 	'debug:console',
 ])
-export default class AncientMaze<T> {
+export default class AncientMaze<T extends IGameObjectState, S extends IAncientMazeState<T>> {
 	constructor(
-		private algorithm: Algorithm, // game-engine
+		private algorithm: Algorithm<T, S>, // game-engine
 		private state: IAncientMazeState<T>, // game-state
 		private renderer: ReactRenderer, // ui:renderer
-		private collisionSystem: CollisionSystem<IGameObjectState>, // collision-system
-		private lifespanSystem: LifespanSystem, // lifespan-system
-		private arrowSystem: ArrowSystem, // arrow-system
-		private rockSystem: RockSystem, // rock-system
-		private mapSystem: MapSystem, // map-system
-		private deadBodiesSystem: DeadBodiesSystem, // dead-bodies-system
-		private collectableSystem: CollectableSystem, // collectable-system
-		private spawnSystem: SpawnSystem, // spawner-system
-		private exitSystem: EndPortalSystem, // exit-system
+		private collisionSystem: CollisionSystem<T, S>, // collision-system
+		private lifespanSystem: LifespanSystem<T, S>, // lifespan-system
+		private arrowSystem: ArrowSystem<T, S>, // arrow-system
+		private rockSystem: RockSystem<T>, // rock-system
+		private mapSystem: MapSystem<T, S>, // map-system
+		private deadBodiesSystem: DeadBodiesSystem<T, S>, // dead-bodies-system
+		private collectableSystem: CollectableSystem<T, S>, // collectable-system
+		private spawnSystem: SpawnSystem<T, S>, // spawner-system
+		private exitSystem: EndPortalSystem<T, S>, // exit-system
 		private console: Console, // debug:console
 	) {	}
 
@@ -183,9 +189,6 @@ export default class AncientMaze<T> {
 
 				this.spawnSystem.update(this.state);
 				this.algorithm.commandAction(this.state);
-				this.state.objects.forEach((obj) => {
-					obj.state.impact = 0;
-				});
 				this.lifespanSystem.update(this.state);
 
 				while (!this.step()) {

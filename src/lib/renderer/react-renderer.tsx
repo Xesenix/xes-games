@@ -1,4 +1,4 @@
-import { inject, injectable } from 'lib/di';
+import { inject } from 'lib/di';
 import * as React from 'react';
 import { render } from 'react-dom';
 

@@ -8,8 +8,8 @@ const ROCK_TARGET_ASPECT = Symbol.for('ROCK_TARGET_ASPECT');
 @inject(['kill', 'collision-system'])
 export default class RockSystem<T extends IGameObjectState> {
 	constructor(
-		private kill: (target: IGameBoardObject) => void,
-		private collisionSystem: CollisionSystem,
+		private kill: (target: IGameBoardObject<T>) => void,
+		private collisionSystem: CollisionSystem<T>,
 	) {
 		this.collisionSystem.listenToCollision(this.onCollision.bind(this));
 	}

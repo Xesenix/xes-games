@@ -1,13 +1,17 @@
 export interface IGameObjectState {
 	alive: boolean;
+	collided?: boolean;
 	lifespan?: number;
-	spawnFactoryId?: number;
-	bodyFactoryId?: number;
+	spawnFactoryId?: symbol;
+	bodyFactoryId?: symbol;
+	collectableId?: symbol;
+	keyItemId?: symbol;
 	appearance: number;
 	position: {
 		x: number;
 		y: number;
 	};
+	steps?: number;
 }
 
 export interface IMovableGameObjectState extends IGameObjectState {
@@ -38,7 +42,7 @@ export interface IGameBoard<T extends IGameObjectState> {
 	get(x: number, y: number, v: IGameBoardObject<T>[] | null): IGameBoardObject<T>[];
 	set(x: number, y: number, v: IGameBoardObject<T>[]): void;
 	add(x: number, y: number, v: IGameBoardObject<T>): void;
+	addUnique(x: number, y: number, v: IGameBoardObject<T>): boolean;
 	remove(x: number, y: number, v: IGameBoardObject<T>): void;
-	clone(): IGameBoard<T>;
 	tiles(): { x: number, y: number, v: IGameBoardObject<T>[] }[];
 }

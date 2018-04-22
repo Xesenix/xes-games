@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { hot } from 'react-hot-loader';
 
-import GameObjectComponent from 'components/game-object/game-object';
+import GameObjectComponent from 'game-00/components/game-object/game-object';
 import { IGameBoardObject, IGameObjectState } from 'lib/game/board/interface';
 
 import './game-tile.scss';

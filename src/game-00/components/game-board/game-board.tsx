@@ -1,13 +1,13 @@
 import * as React from 'react';
 import { hot } from 'react-hot-loader';
 
-import { IGameBoard } from 'app/reducer/game-board';
-import GameTileComponent from 'components/game-tile/game-tile';
+import GameTileComponent from 'game-00/components/game-tile/game-tile';
+import { IGameBoard, IGameObjectState } from 'lib/game/board/interface';
 
 import './game-board.scss';
 
 export interface IGameBoardProps {
-	board: IGameBoard;
+	board: IGameBoard<IGameObjectState>;
 }
 
 export interface IGameBoardState {
