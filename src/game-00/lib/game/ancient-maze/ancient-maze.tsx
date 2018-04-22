@@ -15,14 +15,11 @@ import LifespanSystem from 'lib/game/system/lifespan';
 import MapSystem, { BROKEN_ARROW_FACTORY, BROKEN_ROCK_FACTORY } from 'lib/game/system/map';
 import SpawnSystem from 'lib/game/system/spawn';
 import { IRenderer, ReactRenderer } from 'lib/renderer/react-renderer';
+import cloneDeep from 'lodash.clonedeep';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
-import OverlapSystem from 'lib/game/system/overlap';
-import ArrowSystem from 'lib/game/ancient-maze/system/arrow-system';
-import RockSystem from 'lib/game/ancient-maze/system/rock-system';
-
-export type CommandType = 'up' | 'down' | 'left' | 'right' | undefined;
+export type CommandType = 'up' | 'down' | 'left' | 'right' | 'back' | undefined;
 export interface IAncientMazeState<T> {
 	objects: IGameBoardObject<T>[];
 	inputBuffer: CommandType[];
@@ -101,76 +98,118 @@ export default class AncientMaze<T> {
 				case 'ArrowRight':
 					this.state.inputBuffer.push('right');
 					break;
+				case 'KeyB':
+				case 'Backspace':
+					this.state.inputBuffer.push('back');
+					break;
 			}
 		});
 
 		requestAnimationFrame(this.updateView);
 	}
 
+	public move() {
+
+	}
+
+	public step(): boolean {
+		this.algorithm.update(this.state);
+		this.collisionSystem.update(this.state);
+		this.arrowSystem.update(this.state);
+
+		// switch collected to dead
+		this.collectableSystem.update(this.state);
+
+		// add bodies
+		this.deadBodiesSystem.update(this.state);
+
+		this.exitSystem.update(this.state);
+
+		requestAnimationFrame(this.updateView);
+
+		return this.algorithm.resolved(this.state);
+	}
+
 	private *gameLoop() {
 		this.collectableSystem.onLevelInit(this.state);
 
-		while (!this.state.finished) {
+		const history: IAncientMazeState<T>[] = [];
+
+		while (true) {
 			while (this.state.inputBuffer.length === 0) {
 				yield;
 			}
 
 			this.state.command = this.state.inputBuffer.shift();
+
+			console.log('=== handling command ===', this.state.command);
 			this.state.executedCommands.push(this.state.command);
-
-			switch (this.state.command) {
-				case 'up':
-					this.algorithm.commandMoveUp(this.state);
-					break;
-				case 'down':
-					this.algorithm.commandMoveDown(this.state);
-					break;
-				case 'left':
-					this.algorithm.commandMoveLeft(this.state);
-					break;
-				case 'right':
-					this.algorithm.commandMoveRight(this.state);
-					break;
-			}
-
-			this.spawnSystem.update(this.state);
-			this.algorithm.commandAction(this.state);
-			this.state.objects.forEach((obj) => {
-				obj.state.impact = 0;
-			});
-			this.lifespanSystem.update(this.state);
-
 			this.state.steps++;
 
-			while (!this.algorithm.resolved(this.state)) {
-				this.algorithm.update(this.state);
-				this.collisionSystem.update(this.state);
-				this.arrowSystem.update(this.state);
+			if (this.state.command === 'back') {
+				if (history.length > 0) {
+					this.state = {
+						...this.state,
+						...history.pop(),
+						// things immune from reverting
+						inputBuffer: this.state.inputBuffer,
+						command: this.state.command,
+						executedCommands: this.state.executedCommands,
+						steps: this.state.steps,
+					};
 
-				// switch collected to dead
-				this.collectableSystem.update(this.state);
+					requestAnimationFrame(this.updateView);
+					console.log('history', history);
+					console.log('reverted state', this.state);
+				}
+			} else {
+				history.push(cloneDeep(this.state));
+				console.log('history', history);
+				console.log('stored state', this.state);
 
-				// add bodies
-				this.deadBodiesSystem.update(this.state);
+				switch (this.state.command) {
+					case 'up':
+						this.algorithm.commandMoveUp(this.state);
+						break;
+					case 'down':
+						this.algorithm.commandMoveDown(this.state);
+						break;
+					case 'left':
+						this.algorithm.commandMoveLeft(this.state);
+						break;
+					case 'right':
+						this.algorithm.commandMoveRight(this.state);
+						break;
+				}
 
-				this.exitSystem.update(this.state);
+				this.spawnSystem.update(this.state);
+				this.algorithm.commandAction(this.state);
+				this.state.objects.forEach((obj) => {
+					obj.state.impact = 0;
+				});
+				this.lifespanSystem.update(this.state);
 
-				requestAnimationFrame(this.updateView);
-				yield;
+				while (!this.step()) {
+					yield;
+				}
 			}
 		}
-		this.renderer.setOutlet(<div>Victory</div>);
-		this.renderer.render();
 	}
 
 	private updateView = () => {
-		this.state.objects.forEach((obj) => {
-			this.state.board.remove(obj.state.position.x, obj.state.position.y, obj);
-			this.state.board.add(obj.state.position.x, obj.state.position.y, obj);
-		});
+		if (this.state.finished) {
+			this.renderer.setOutlet(<div>Victory</div>);
+			this.renderer.setOutlet(<GameStateConsoleComponent state={ this.state }/>, 'console');
+			this.renderer.render();
+		} else {
+			this.state.objects.forEach((obj) => {
+				this.state.board.remove(obj.state.position.x, obj.state.position.y, obj);
+				this.state.board.add(obj.state.position.x, obj.state.position.y, obj);
+			});
 
-		this.renderer.setOutlet(<GameBoardComponent board={ this.state.board }/>);
-		this.renderer.setOutlet(<GameStateConsoleComponent state={ this.state }/>, 'console');
-		this.renderer.render();
+			this.renderer.setOutlet(<GameBoardComponent board={ this.state.board }/>);
+			this.renderer.setOutlet(<GameStateConsoleComponent state={ this.state }/>, 'console');
+			this.renderer.render();
+		}
 	}
 }

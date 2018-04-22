@@ -22,10 +22,20 @@ class GameStateConsoleComponent extends React.Component<IGameStateConsoleCompone
 
 		return (
 			<div className="console">
+				{ __('Finished') }: { state.finished ? 'yes' : 'no' }<br/>
 				{ __('Command') }: { state.command }<br/>
 				{ __('Keys') }: { state.collected[KEY_ITEM_TYPE] } / { state.initialCollectableCount[KEY_ITEM_TYPE] }<br/>
 				{ __('Steps') }: { state.steps }<br/>
-				{ __('Executed moves') }: { state.executedCommands.map((cmd: CommandType, index: number) => <span key={index} className="pill">'{ cmd }'</span>) }
+				{ __('Command buffer') }: {
+					state.inputBuffer.map(
+						(cmd: CommandType, index: number) => <span key={index}><span className="pill">'{ cmd }'</span>, </span>,
+					)
+				}<br/>
+				{ __('Executed moves') }: {
+					state.executedCommands.map(
+						(cmd: CommandType, index: number) => <span key={index}><span className="pill">'{ cmd }'</span>, </span>,
+					)
+				}
 			</div>
 		);
 	}
