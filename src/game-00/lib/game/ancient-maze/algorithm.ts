@@ -1,6 +1,6 @@
 import { inject } from 'lib/di';
 import { IGameBoard, IGameBoardObject, IGameObjectState } from 'lib/game/board/interface';
-import { CollisionSystem } from 'lib/game/system/collision';
+import { CollisionSystem } from 'lib/game/system/collision.system';
 
 const CONTROLLABLE_ASPECT = Symbol.for('CONTROLLABLE_ASPECT');
 const MOVABLE_ASPECT = Symbol.for('MOVABLE_ASPECT');

@@ -21,19 +21,19 @@ export default class ArrowSystem<T extends IGameObjectState, S extends IOverlapa
 					kill(visitable);
 					kill(visitor);
 				}
-			}
+			},
 		);
 
 		this.collisionSystem.listenToCollision(this.onCollision.bind(this));
+	}
+
+	public update(state: S): void {
+		this.overlapSystem.update(state);
 	}
 
 	private onCollision(source: IGameBoardObject<T>, target: IGameBoardObject<T>): void {
 		if (source.aspects.includes(ARROW_OBJECT_ASPECT) && !!target && target.aspects.includes(COLLISION_ASPECT)) {
 			this.kill(source);
 		}
-	}
-
-	public update(state: S): void {
-		this.overlapSystem.update(state);
 	}
 }

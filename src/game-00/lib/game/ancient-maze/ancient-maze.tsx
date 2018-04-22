@@ -1,6 +1,5 @@
 import GameBoardComponent from 'components/game-board/game-board';
 import GameStateConsoleComponent from 'components/game-state-console/game-state-console';
-import { Container } from 'inversify';
 import { inject } from 'lib/di';
 import Algorithm from 'lib/game/ancient-maze/algorithm';
 import ArrowSystem from 'lib/game/ancient-maze/system/arrow.system';
@@ -10,11 +9,11 @@ import EndPortalSystem from 'lib/game/ancient-maze/system/end-portal.system';
 import RockSystem from 'lib/game/ancient-maze/system/rock.system';
 import Board from 'lib/game/board/board';
 import { IGameBoardObject, IGameObjectState } from 'lib/game/board/interface';
-import CollisionSystem from 'lib/game/system/collision';
-import LifespanSystem from 'lib/game/system/lifespan';
-import MapSystem, { BROKEN_ARROW_FACTORY, BROKEN_ROCK_FACTORY } from 'lib/game/system/map';
-import SpawnSystem from 'lib/game/system/spawn';
-import { IRenderer, ReactRenderer } from 'lib/renderer/react-renderer';
+import CollisionSystem from 'lib/game/system/collision.system';
+import LifespanSystem from 'lib/game/system/lifespan.system';
+import MapSystem from 'lib/game/system/map.system';
+import SpawnSystem from 'lib/game/system/spawn.system';
+import { ReactRenderer } from 'lib/renderer/react-renderer';
 import cloneDeep from 'lodash.clonedeep';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
@@ -45,7 +44,7 @@ export interface IAncientMazeState<T> {
 	'collectable-system',
 	'spawner-system',
 	'exit-system',
-	'debug:console'
+	'debug:console',
 ])
 export default class AncientMaze<T> {
 	constructor(

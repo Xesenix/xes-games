@@ -22,7 +22,7 @@ export default class CollectableSystem<T extends IGameObjectState, S extends ICo
 					state.collected[visitable.state.collectableId] ++;
 					visitable.state.alive = false;
 				}
-			}
+			},
 		);
 	}
 
