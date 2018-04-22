@@ -1,6 +1,6 @@
 import { inject } from 'lib/di';
 import { IGameBoardObject, IGameObjectState } from 'lib/game/board/interface';
-import { CollisionSystem } from 'lib/game/system/collision';
+import { CollisionSystem } from 'lib/game/system/collision.system';
 
 const ROCK_OBJECT_ASPECT = Symbol.for('ROCK_OBJECT_ASPECT');
 const ROCK_TARGET_ASPECT = Symbol.for('ROCK_TARGET_ASPECT');

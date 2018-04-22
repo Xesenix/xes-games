@@ -3,9 +3,11 @@ import GameStateConsoleComponent from 'components/game-state-console/game-state-
 import { Container } from 'inversify';
 import { inject } from 'lib/di';
 import Algorithm from 'lib/game/ancient-maze/algorithm';
-import CollectableSystem from 'lib/game/ancient-maze/system/collectable';
-import DeadBodiesSystem from 'lib/game/ancient-maze/system/dead-bodies';
-import EndPortalSystem from 'lib/game/ancient-maze/system/end-portal';
+import ArrowSystem from 'lib/game/ancient-maze/system/arrow.system';
+import CollectableSystem from 'lib/game/ancient-maze/system/collectable.system';
+import DeadBodiesSystem from 'lib/game/ancient-maze/system/dead-bodies.system';
+import EndPortalSystem from 'lib/game/ancient-maze/system/end-portal.system';
+import RockSystem from 'lib/game/ancient-maze/system/rock.system';
 import Board from 'lib/game/board/board';
 import { IGameBoardObject, IGameObjectState } from 'lib/game/board/interface';
 import CollisionSystem from 'lib/game/system/collision';

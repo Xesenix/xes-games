@@ -1,16 +1,16 @@
 import { ContainerModule, interfaces } from 'inversify';
 import Algorithm from 'lib/game/ancient-maze/algorithm';
 import { IAncientMazeState } from 'lib/game/ancient-maze/ancient-maze';
-import ArrowSystem from 'lib/game/ancient-maze/system/arrow-system';
-import CollectableSystem from 'lib/game/ancient-maze/system/collectable';
-import DeadBodiesSystem from 'lib/game/ancient-maze/system/dead-bodies';
-import EndPortalSystem from 'lib/game/ancient-maze/system/end-portal';
-import RockSystem from 'lib/game/ancient-maze/system/rock-system';
+import ArrowSystem from 'lib/game/ancient-maze/system/arrow.system';
+import CollectableSystem from 'lib/game/ancient-maze/system/collectable.system';
+import DeadBodiesSystem from 'lib/game/ancient-maze/system/dead-bodies.system';
+import EndPortalSystem from 'lib/game/ancient-maze/system/end-portal.system';
+import RockSystem from 'lib/game/ancient-maze/system/rock.system';
 import { IGameBoardObject, IGameObjectState } from 'lib/game/board/interface';
-import CollisionSystem from 'lib/game/system/collision';
-import LifespanSystem from 'lib/game/system/lifespan';
-import MapSystem from 'lib/game/system/map';
-import SpawnSystem from 'lib/game/system/spawn';
+import CollisionSystem from 'lib/game/system/collision.system';
+import LifespanSystem from 'lib/game/system/lifespan.system';
+import MapSystem from 'lib/game/system/map.system';
+import SpawnSystem from 'lib/game/system/spawn.system';
 
 import AncientMaze from './ancient-maze';
 import { ObjectFactory } from './object-factory';

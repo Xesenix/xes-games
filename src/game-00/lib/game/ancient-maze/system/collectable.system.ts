@@ -1,6 +1,6 @@
 import { injectable } from 'lib/di';
 import { IGameBoardObject, IGameObjectState } from 'lib/game/board/interface';
-import OverlapSystem, { IOverlapableState } from 'lib/game/system/overlap';
+import OverlapSystem, { IOverlapableState } from 'lib/game/system/overlap.system';
 
 export interface ICollectableState<T> extends IOverlapableState<T> {
 	objects: IGameBoardObject<T>[];

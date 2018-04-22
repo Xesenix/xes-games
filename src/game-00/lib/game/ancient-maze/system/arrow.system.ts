@@ -1,7 +1,7 @@
 import { inject } from 'lib/di';
 import { IGameBoardObject, IGameObjectState } from 'lib/game/board/interface';
-import { IOverlapableState } from 'lib/game/system/overlap';
-import OverlapSystem from 'lib/game/system/overlap';
+import { CollisionSystem } from 'lib/game/system/collision.system';
+import OverlapSystem, { IOverlapableState } from 'lib/game/system/overlap.system';
 
 const ARROW_OBJECT_ASPECT = Symbol.for('ARROW_OBJECT_ASPECT');
 const ARROW_TARGET_ASPECT = Symbol.for('ARROW_TARGET_ASPECT');
