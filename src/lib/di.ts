@@ -4,15 +4,17 @@ import { helpers } from 'inversify-vanillajs-helpers';
 import { interfaces as vi } from 'inversify-vanillajs-helpers';
 import 'reflect-metadata';
 
+type DependencyType = string | symbol | ii.Newable<any> | ii.Abstract<any> | vi.BasicInjection | vi.NamedInjection | vi.TaggedInjection;
+
 /**
  * Annotate class with constructor dependency injection.
  */
-export function inject(dependencies?: (string | symbol | ii.Newable<any> | ii.Abstract<any> | vi.BasicInjection | vi.NamedInjection | vi.TaggedInjection)[]) {
+export function inject(dependencies?: DependencyType[]): any {
 	return (target, key, descriptor) => {
 		if (process.env.DEBUG) {
 			console.debug('annotation:inject', target.name, dependencies);
 		}
-		return helpers.annotate(target, dependencies);
+		helpers.annotate(target, dependencies);
 	};
 }
 

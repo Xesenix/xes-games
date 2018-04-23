@@ -5,14 +5,14 @@ import { IGameBoardObject, IGameObjectState, IMovableGameObjectState } from 'lib
 
 import './game-object.scss';
 
-export interface IGameObjectComponentProps<T extends IGameObjectState | IMovableGameObjectState> {
+export interface IGameObjectComponentProps<T extends (IGameObjectState | IMovableGameObjectState)> {
 	object: IGameBoardObject<T>;
 }
 
 export interface IGameObjectComponentState {
 }
 
-class GameObjectComponent<T extends IGameObjectState | IMovableGameObjectState>
+class GameObjectComponent<T extends (IGameObjectState | IMovableGameObjectState)>
 extends React.Component<IGameObjectComponentProps<T>, IGameObjectComponentState> {
 	public render(): any {
 		const { object } = this.props;

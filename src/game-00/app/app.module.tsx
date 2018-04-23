@@ -77,7 +77,7 @@ export class AppModule extends Container {
 
 		this.bind<IDictionary>('environment').toConstantValue(new FlatDictionary({}));
 
-		this.bind<IAncientMazeState>('game-state').toConstantValue({
+		this.bind<IAncientMazeState<IGameObjectState>>('game-state').toConstantValue({
 			objects: [],
 			inputBuffer: [],
 			finished: false,

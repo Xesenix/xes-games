@@ -31,8 +31,8 @@ export interface IAncientMazeState<T extends IGameObjectState> {
 	finished: boolean;
 	command: CommandType;
 	executedCommands: CommandType[];
-	collected: { [key: symbol]: number };
-	initialCollectableCount: { [key: symbol]: number };
+	collected: { [key: string]: number };
+	initialCollectableCount: { [key: string]: number };
 	steps: number;
 	board: IGameBoard<T>;
 }
@@ -55,7 +55,7 @@ export interface IAncientMazeState<T extends IGameObjectState> {
 export default class AncientMaze<T extends IGameObjectState, S extends IAncientMazeState<T>> {
 	constructor(
 		private algorithm: Algorithm<T, S>, // game-engine
-		private state: IAncientMazeState<T>, // game-state
+		private state: S, // game-state
 		private renderer: ReactRenderer, // ui:renderer
 		private collisionSystem: CollisionSystem<T, S>, // collision-system
 		private lifespanSystem: LifespanSystem<T, S>, // lifespan-system
@@ -154,14 +154,14 @@ export default class AncientMaze<T extends IGameObjectState, S extends IAncientM
 			if (this.state.command === 'back') {
 				if (history.length > 0) {
 					this.state = {
-						...this.state,
+						...(this.state as object),
 						...history.pop(),
 						// things immune from reverting
 						inputBuffer: this.state.inputBuffer,
 						command: this.state.command,
 						executedCommands: this.state.executedCommands,
 						steps: this.state.steps,
-					};
+					} as S;
 
 					requestAnimationFrame(this.updateView);
 					console.log('history', history);

@@ -1,6 +1,6 @@
 import { inject } from 'lib/di';
-import { IGameBoardObject, IGameObjectState } from 'lib/game/board/interface';
-import { CollisionSystem } from 'lib/game/system/collision.system';
+import { IGameBoard, IGameBoardObject, IGameObjectState } from 'lib/game/board/interface';
+import CollisionSystem from 'lib/game/system/collision.system';
 
 const ROCK_OBJECT_ASPECT = Symbol.for('ROCK_OBJECT_ASPECT');
 const ROCK_TARGET_ASPECT = Symbol.for('ROCK_TARGET_ASPECT');
@@ -9,7 +9,7 @@ const ROCK_TARGET_ASPECT = Symbol.for('ROCK_TARGET_ASPECT');
 export default class RockSystem<T extends IGameObjectState> {
 	constructor(
 		private kill: (target: IGameBoardObject<T>) => void,
-		private collisionSystem: CollisionSystem<T>,
+		private collisionSystem: CollisionSystem<T, { objects: IGameBoardObject<T>[], board: IGameBoard<T> }>,
 	) {
 		this.collisionSystem.listenToCollision(this.onCollision.bind(this));
 	}

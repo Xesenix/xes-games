@@ -26,6 +26,7 @@
 		"game-00:build:dev": "cross-env APP=game-00 npm run build:dev",
 		"game-00:build:prod": "cross-env APP=game-00 npm run build:prod",
 		"game-00:xi18n": "cross-env APP=game-00 ts-node ./scripts/extract.ts",
+		"tsc": "tsc -p tsconfig.json --diagnostics --pretty",
 		"report-coverage": "cat ./coverage/lcov.info | coveralls"
 	},
 	"apps": {
@@ -86,6 +87,7 @@
 		"reflect-metadata": "^0.1.12",
 		"rxjs": "^5.5.7",
 		"ts-node": "^5.0.1",
+		"tsc": "^1.20150623.0",
 		"tslint": "^5.9.1",
 		"typescript": "^2.8.1"
 	},

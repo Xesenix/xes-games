@@ -1,5 +1,5 @@
 import { injectable } from 'lib/di';
-import { IGameBoard, IGameBoardObject, IGameObjectState } from 'lib/game/board/interface';
+import { IGameBoard, IGameBoardObject, IGameObjectState, IMovableGameObjectState } from 'lib/game/board/interface';
 import GameBoardObject from 'lib/game/board/object';
 
 export const ARROW_CANNON_TYPE = Symbol.for('ARROW_CANNON_TYPE');
@@ -139,7 +139,7 @@ export const objectStatePrototype = {
 };
 
 @injectable()
-export class ObjectFactory<T extends IGameObjectState, S extends { objects: IGameBoardObject<T>[], board: IGameBoard<T> }> {
+export class ObjectFactory<T extends (IGameObjectState | IMovableGameObjectState), S extends { objects: IGameBoardObject<T>[], board: IGameBoard<T> }> {
 	private spawnIndex = 0;
 
 	public build(state: S, type: symbol, position: { x: number, y: number }, direction: { x: number, y: number } = { x: 0, y: 0 }): void {
@@ -161,7 +161,7 @@ export class ObjectFactory<T extends IGameObjectState, S extends { objects: IGam
 				...objectStatePrototype[type],
 				position: { ...position },
 				direction: { ...direction },
-			} as IGameObjectState,
+			} as T,
 		);
 	}
 }

@@ -10,7 +10,7 @@ export interface IMortalState<T extends IGameObjectState> {
 const DESTRUCTIBLE_OBJECT_ASPECT = Symbol.for('DESTRUCTIBLE_OBJECT_ASPECT');
 
 @inject(['game-objects-factory'])
-export default class ReplaceDeadWithBodySystem<T extends IMovableGameObjectState, S extends IMortalState<T>> {
+export default class ReplaceDeadWithBodySystem<T extends (IGameObjectState | IMovableGameObjectState), S extends IMortalState<T>> {
 	constructor(
 		private builder: ObjectFactory<T, S>,
 	) { }
@@ -21,7 +21,8 @@ export default class ReplaceDeadWithBodySystem<T extends IMovableGameObjectState
 		objects.forEach((obj: IGameBoardObject<T>) => {
 			if (!obj.state.alive && obj.aspects.includes(DESTRUCTIBLE_OBJECT_ASPECT)) {
 				if (!!obj.state.bodyFactoryId) {
-					const created: IGameBoardObject<T> = this.builder.create(obj.state.bodyFactoryId, obj.state.position, obj.state.direction);
+					const { direction } = obj.state as IMovableGameObjectState;
+					const created: IGameBoardObject<T> = this.builder.create(obj.state.bodyFactoryId, obj.state.position, direction);
 					const isCreated = board.addUnique(created.state.position.x, created.state.position.y, created);
 
 					if (isCreated) {
