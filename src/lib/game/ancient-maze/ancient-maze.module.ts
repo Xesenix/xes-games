@@ -15,6 +15,8 @@ import SpawnSystem from 'lib/game/system/spawn.system';
 import AncientMaze from './ancient-maze';
 import { ObjectFactory } from './object-factory';
 
+type GO = (IGameObjectState | IMovableGameObjectState);
+
 export const AncientMazeModule = () => new ContainerModule((bind: interfaces.Bind) => {
 	console.log('=== AncientMazeModule ===');
 	const kill = (target: IGameBoardObject<IGameObjectState>) => {
@@ -27,17 +29,17 @@ export const AncientMazeModule = () => new ContainerModule((bind: interfaces.Bin
 		.to(ObjectFactory)
 		.inSingletonScope();
 
-	bind<CollisionSystem<IMovableGameObjectState, IAncientMazeState<IMovableGameObjectState>>>('collision-system').to(CollisionSystem).inSingletonScope();
-	bind<LifespanSystem>('lifespan-system').to(LifespanSystem).inSingletonScope();
-	bind<ArrowSystem>('arrow-system').to(ArrowSystem).inSingletonScope();
-	bind<RockSystem>('rock-system').to(RockSystem).inSingletonScope();
-	bind<MapSystem>('map-system').to(MapSystem).inSingletonScope();
-	bind<DeadBodiesSystem>('dead-bodies-system').to(DeadBodiesSystem).inSingletonScope();
-	bind<CollectableSystem>('collectable-system').to(CollectableSystem).inSingletonScope();
-	bind<SpawnSystem>('spawner-system').to(SpawnSystem).inSingletonScope();
-	bind<EndPortalSystem>('exit-system').to(EndPortalSystem).inSingletonScope();
+	bind<CollisionSystem<GO, IAncientMazeState<GO>>>('collision-system').to(CollisionSystem).inSingletonScope();
+	bind<LifespanSystem<GO, IAncientMazeState<GO>>>('lifespan-system').to(LifespanSystem).inSingletonScope();
+	bind<ArrowSystem<GO, IAncientMazeState<GO>>>('arrow-system').to(ArrowSystem).inSingletonScope();
+	bind<RockSystem<GO>>('rock-system').to(RockSystem).inSingletonScope();
+	bind<MapSystem<GO, IAncientMazeState<GO>>>('map-system').to(MapSystem).inSingletonScope();
+	bind<DeadBodiesSystem<GO, IAncientMazeState<GO>>>('dead-bodies-system').to(DeadBodiesSystem).inSingletonScope();
+	bind<CollectableSystem<GO, IAncientMazeState<GO>>>('collectable-system').to(CollectableSystem).inSingletonScope();
+	bind<SpawnSystem<GO, IAncientMazeState<GO>>>('spawner-system').to(SpawnSystem).inSingletonScope();
+	bind<EndPortalSystem<GO, IAncientMazeState<GO>>>('exit-system').to(EndPortalSystem).inSingletonScope();
 
-	bind<Algorithm<IAncientMazeState>>('game-engine').to(Algorithm).inSingletonScope();
-	bind<AncientMaze<IAncientMazeState>>('game').to(AncientMaze);
+	bind<Algorithm<GO, IAncientMazeState<GO>>>('game-engine').to(Algorithm).inSingletonScope();
+	bind<AncientMaze<GO, IAncientMazeState<GO>>>('game').to(AncientMaze);
 	console.log('/// AncientMazeModule ///');
 });

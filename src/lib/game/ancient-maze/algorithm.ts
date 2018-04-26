@@ -1,12 +1,12 @@
 import { inject } from 'lib/di';
-import { IGameBoard, IGameBoardObject, IMovableGameObjectState } from 'lib/game/board/interface';
-import { CollisionSystem } from 'lib/game/system/collision.system';
+import { IGameBoard, IGameBoardObject, IGameObjectState, IMovableGameObjectState } from 'lib/game/board/interface';
+import CollisionSystem from 'lib/game/system/collision.system';
 
 const CONTROLLABLE_ASPECT = Symbol.for('CONTROLLABLE_ASPECT');
 const MOVABLE_ASPECT = Symbol.for('MOVABLE_ASPECT');
 
 @inject(['collision-system'])
-export default class Algorithm<T extends IMovableGameObjectState, S extends { objects: IGameBoardObject<T>[], board: IGameBoard<T> }> {
+export default class Algorithm<T extends (IGameObjectState | IMovableGameObjectState), S extends { objects: IGameBoardObject<T>[], board: IGameBoard<T> }> {
 	constructor(
 		private collisionSystem: CollisionSystem<T, S>,
 	) { }
@@ -14,44 +14,44 @@ export default class Algorithm<T extends IMovableGameObjectState, S extends { ob
 	public commandMoveUp(state: S): void {
 		const { objects } = state;
 		objects.filter((obj: IGameBoardObject<T>) => obj.aspects.includes(CONTROLLABLE_ASPECT)).forEach((obj: IGameBoardObject<T>) => {
-			obj.state.direction = {
+			(obj.state as IMovableGameObjectState).direction = {
 				x: 0,
 				y: -1,
 			};
-			obj.state.steps = obj.state.speed;
+			obj.state.steps = (obj.state as IMovableGameObjectState).speed;
 		});
 	}
 
 	public commandMoveDown(state: S): void {
 		const { objects } = state;
 		objects.filter((obj: IGameBoardObject<T>) => obj.aspects.includes(CONTROLLABLE_ASPECT)).forEach((obj: IGameBoardObject<T>) => {
-			obj.state.direction = {
+			(obj.state as IMovableGameObjectState).direction = {
 				x: 0,
 				y: 1,
 			};
-			obj.state.steps = obj.state.speed;
+			obj.state.steps = (obj.state as IMovableGameObjectState).speed;
 		});
 	}
 
 	public commandMoveLeft(state: S): void {
 		const { objects } = state;
 		objects.filter((obj: IGameBoardObject<T>) => obj.aspects.includes(CONTROLLABLE_ASPECT)).forEach((obj: IGameBoardObject<T>) => {
-			obj.state.direction = {
+			(obj.state as IMovableGameObjectState).direction = {
 				x: -1,
 				y: 0,
 			};
-			obj.state.steps = obj.state.speed;
+			obj.state.steps = (obj.state as IMovableGameObjectState).speed;
 		});
 	}
 
 	public commandMoveRight(state: S): void {
 		const { objects } = state;
 		objects.filter((obj: IGameBoardObject<T>) => obj.aspects.includes(CONTROLLABLE_ASPECT)).forEach((obj: IGameBoardObject<T>) => {
-			obj.state.direction = {
+			(obj.state as IMovableGameObjectState).direction = {
 				x: 1,
 				y: 0,
 			};
-			obj.state.steps = obj.state.speed;
+			obj.state.steps = (obj.state as IMovableGameObjectState).speed;
 		});
 	}
 
@@ -59,9 +59,9 @@ export default class Algorithm<T extends IMovableGameObjectState, S extends { ob
 		const { objects } = state;
 		objects.filter((obj: IGameBoardObject<T>) => obj.aspects.includes(MOVABLE_ASPECT)).forEach((obj: IGameBoardObject<T>) => {
 			obj.state.n = {
-				...obj.state.direction,
+				...(obj.state as IMovableGameObjectState).direction,
 			};
-			obj.state.steps = obj.state.speed;
+			obj.state.steps = (obj.state as IMovableGameObjectState).speed;
 		});
 	}
 

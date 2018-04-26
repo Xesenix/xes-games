@@ -204,7 +204,7 @@ export default class AncientMaze<T extends IGameObjectState, S extends IAncientM
 			this.renderer.setOutlet(<GameStateConsoleComponent state={ this.state }/>, 'console');
 			this.renderer.render();
 		} else {
-			this.state.objects.forEach((obj) => {
+			this.state.objects.filter((obj) => obj.state.alive).forEach((obj) => {
 				this.state.board.remove(obj.state.position.x, obj.state.position.y, obj);
 				this.state.board.add(obj.state.position.x, obj.state.position.y, obj);
 			});
