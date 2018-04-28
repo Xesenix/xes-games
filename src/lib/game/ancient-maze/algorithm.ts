@@ -1,12 +1,15 @@
 import { inject } from 'lib/di';
+import { CommandType } from 'lib/game/ancient-maze/ancient-maze';
 import { IGameBoard, IGameBoardObject, IGameObjectState, IMovableGameObjectState } from 'lib/game/board/interface';
 import CollisionSystem from 'lib/game/system/collision.system';
 
 const CONTROLLABLE_ASPECT = Symbol.for('CONTROLLABLE_ASPECT');
 const MOVABLE_ASPECT = Symbol.for('MOVABLE_ASPECT');
 
+type GO = (IGameObjectState | IMovableGameObjectState);
+
 @inject(['collision-system'])
-export default class Algorithm<T extends (IGameObjectState | IMovableGameObjectState), S extends { objects: IGameBoardObject<T>[], board: IGameBoard<T> }> {
+export default class Algorithm<T extends GO, S extends { command: CommandType; objects: IGameBoardObject<T>[], board: IGameBoard<T> }> {
 	constructor(
 		private collisionSystem: CollisionSystem<T, S>,
 	) { }
@@ -56,9 +59,24 @@ export default class Algorithm<T extends (IGameObjectState | IMovableGameObjectS
 	}
 
 	public commandAction(state: S): void {
+		switch (state.command) {
+			case 'up':
+				this.commandMoveUp(state);
+				break;
+			case 'down':
+				this.commandMoveDown(state);
+				break;
+			case 'left':
+				this.commandMoveLeft(state);
+				break;
+			case 'right':
+				this.commandMoveRight(state);
+				break;
+		}
+
 		const { objects } = state;
 		objects.filter((obj: IGameBoardObject<T>) => obj.aspects.includes(MOVABLE_ASPECT)).forEach((obj: IGameBoardObject<T>) => {
-			obj.state.n = {
+			(obj.state as IMovableGameObjectState).n = {
 				...(obj.state as IMovableGameObjectState).direction,
 			};
 			obj.state.steps = (obj.state as IMovableGameObjectState).speed;
@@ -71,24 +89,25 @@ export default class Algorithm<T extends (IGameObjectState | IMovableGameObjectS
 		const movable = objects.filter((obj: IGameBoardObject<T>) => obj.aspects.includes(MOVABLE_ASPECT));
 
 		// first move faster objects then determine order by position on board
-		let ordered = movable.sort((a: IGameBoardObject<T>, b: IGameBoardObject<T>) => a.state.steps < b.state.steps
-			? -1
-			: a.state.steps > b.state.steps
-			? 1
-			: a.state.position.x < b.state.position.x || a.state.position.y < b.state.position.y
-			? -1
-			: a.state.position.x === b.state.position.x && a.state.position.y === b.state.position.y
-			? 0
-			: 1,
+		let ordered = movable.sort((a: IGameBoardObject<T>, b: IGameBoardObject<T>) =>
+				(a.state as IMovableGameObjectState).steps < (b.state as IMovableGameObjectState).steps
+					? -1
+					: (a.state as IMovableGameObjectState).steps > (b.state as IMovableGameObjectState).steps
+					? 1
+					: a.state.position.x < b.state.position.x || a.state.position.y < b.state.position.y
+					? -1
+					: a.state.position.x === b.state.position.x && a.state.position.y === b.state.position.y
+					? 0
+					: 1,
 		);
 		ordered = ordered.filter((obj: IGameBoardObject<T>) => this.resolveCell(obj, board));
 		// for all unresolved reverse board order
 		console.log('=== resolve reverse order');
 		ordered
-			.sort(
-				(a: IGameBoardObject<T>, b: IGameBoardObject<T>) => a.state.steps < b.state.steps
+			.sort((a: IGameBoardObject<T>, b: IGameBoardObject<T>) =>
+				(a.state as IMovableGameObjectState).steps < (b.state as IMovableGameObjectState).steps
 					? -1
-					: a.state.steps > b.state.steps
+					: (a.state as IMovableGameObjectState).steps > (b.state as IMovableGameObjectState).steps
 					? 1
 					: a.state.position.x < b.state.position.x || a.state.position.y < b.state.position.y
 					? 1 : a.state.position.x === b.state.position.x && a.state.position.y === b.state.position.y
@@ -122,7 +141,7 @@ export default class Algorithm<T extends (IGameObjectState | IMovableGameObjectS
 	}
 
 	private resolveCell(obj: IGameBoardObject<T>, board: IGameBoard<T>): boolean {
-		// console.log('resolveCell', obj);
+		console.log('resolveCell', obj);
 		const { alive = false, steps = 0, n = { x: 0, y: 0 }, position = { x: 0, y: 0 } } = obj.state as any;
 
 		if (alive && steps > 0 && (n.x !== 0 || n.y !== 0)) {

@@ -172,6 +172,8 @@ export default class AncientMaze<T extends IGameObjectState, S extends IAncientM
 				console.log('history', history);
 				console.log('stored state', this.state);
 
+				this.spawnSystem.update(this.state);
+
 				switch (this.state.command) {
 					case 'up':
 						this.algorithm.commandMoveUp(this.state);
@@ -186,8 +188,6 @@ export default class AncientMaze<T extends IGameObjectState, S extends IAncientM
 						this.algorithm.commandMoveRight(this.state);
 						break;
 				}
-
-				this.spawnSystem.update(this.state);
 				this.algorithm.commandAction(this.state);
 				this.lifespanSystem.update(this.state);
 

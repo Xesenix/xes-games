@@ -138,8 +138,10 @@ export const objectStatePrototype = {
 	},
 };
 
+type GO = (IGameObjectState | IMovableGameObjectState);
+
 @injectable()
-export class ObjectFactory<T extends (IGameObjectState | IMovableGameObjectState), S extends { objects: IGameBoardObject<T>[], board: IGameBoard<T> }> {
+export class ObjectFactory<T extends GO, S extends { objects: IGameBoardObject<T>[], board: IGameBoard<T> }> {
 	private spawnIndex = 0;
 
 	public build(state: S, type: symbol, position: { x: number, y: number }, direction: { x: number, y: number } = { x: 0, y: 0 }): void {
