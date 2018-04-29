@@ -168,26 +168,12 @@ export default class AncientMaze<T extends IGameObjectState, S extends IAncientM
 					console.log('reverted state', this.state);
 				}
 			} else {
+				console.log('=== STEP ===');
 				history.push(cloneDeep(this.state));
 				console.log('history', history);
 				console.log('stored state', this.state);
 
 				this.spawnSystem.update(this.state);
-
-				switch (this.state.command) {
-					case 'up':
-						this.algorithm.commandMoveUp(this.state);
-						break;
-					case 'down':
-						this.algorithm.commandMoveDown(this.state);
-						break;
-					case 'left':
-						this.algorithm.commandMoveLeft(this.state);
-						break;
-					case 'right':
-						this.algorithm.commandMoveRight(this.state);
-						break;
-				}
 				this.algorithm.commandAction(this.state);
 				this.lifespanSystem.update(this.state);
 
