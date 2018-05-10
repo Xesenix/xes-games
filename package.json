@@ -97,7 +97,7 @@
 		"phaser": "^3.2.0",
 		"react": "^16.2.0",
 		"react-dom": "^16.2.0",
-		"xes-webpack-core": "^0.1.7"
+		"xes-webpack-core": "^0.2.1"
 	},
 	"engines": {
 		"node": ">= 8.0.0"
