@@ -90,42 +90,34 @@ export default class Algorithm<T extends GO, S extends { command: CommandType; o
 
 		// first move faster objects then determine order by position on board
 		let ordered = movable.sort((a: IGameBoardObject<T>, b: IGameBoardObject<T>) =>
-				(a.state as IMovableGameObjectState).steps < (b.state as IMovableGameObjectState).steps
-					? -1
-					: (a.state as IMovableGameObjectState).steps > (b.state as IMovableGameObjectState).steps
-					? 1
-					: a.state.position.x < b.state.position.x || a.state.position.y < b.state.position.y
-					? -1
-					: a.state.position.x === b.state.position.x && a.state.position.y === b.state.position.y
-					? 0
-					: 1,
+			a.state.position.x < b.state.position.x || a.state.position.y < b.state.position.y
+				? -1
+				: a.state.position.x === b.state.position.x && a.state.position.y === b.state.position.y
+				? 0
+				: 1,
 		);
+		// console.info('=== resolve order', ordered);
 		ordered = ordered.filter((obj: IGameBoardObject<T>) => this.resolveCell(obj, board));
 		// for all unresolved reverse board order
-		console.log('=== resolve reverse order');
-		ordered
-			.sort((a: IGameBoardObject<T>, b: IGameBoardObject<T>) =>
-				(a.state as IMovableGameObjectState).steps < (b.state as IMovableGameObjectState).steps
-					? -1
-					: (a.state as IMovableGameObjectState).steps > (b.state as IMovableGameObjectState).steps
-					? 1
-					: a.state.position.x < b.state.position.x || a.state.position.y < b.state.position.y
-					? 1 : a.state.position.x === b.state.position.x && a.state.position.y === b.state.position.y
-					? 0 : -1,
-			)
-			.filter((obj: IGameBoardObject<T>) => this.resolveCell(obj, board))
-			.forEach((obj: IGameBoardObject<T>) => {
-				const { alive = false, steps = 0, collided = false } = obj.state as any;
-				if (collided || (alive && steps > 0)) {
-					// console.log('collided', obj);
-					// everything that didn't move can't move
-					obj.state.steps = 0;
-					obj.state.collided = true;
-					// this.collisionSystem.addCollision(obj, targetCellObjects);
-				} else {
-					// console.log('moved', obj);
-				}
-			});
+		// console.info('=== resolve reverse order', ordered);
+		ordered.sort((a: IGameBoardObject<T>, b: IGameBoardObject<T>) =>
+			a.state.position.x < b.state.position.x || a.state.position.y < b.state.position.y
+				? 1 : a.state.position.x === b.state.position.x && a.state.position.y === b.state.position.y
+				? 0 : -1,
+		)
+		.filter((obj: IGameBoardObject<T>) => this.resolveCell(obj, board))
+		.forEach((obj: IGameBoardObject<T>) => {
+			const { alive = false, steps = 0, collided = false } = obj.state as any;
+			if (collided || (alive && steps > 0)) {
+				// console.log('collided', obj);
+				// everything that didn't move can't move
+				obj.state.steps = 0;
+				obj.state.collided = true;
+				// this.collisionSystem.addCollision(obj, targetCellObjects);
+			} else {
+				// console.log('moved', obj);
+			}
+		});
 	}
 
 	public resolved(state: S): boolean {

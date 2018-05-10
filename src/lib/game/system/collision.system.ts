@@ -20,8 +20,8 @@ export type CollisionListenerType<T extends IGameObjectState> = (source: IGameBo
 @injectable()
 export default class CollisionSystem<T extends IGameObjectState, S extends { objects: IGameBoardObject<T>[], board: IGameBoard<T> }> {
 	private collisionMap = [
-		[ true,  true,  true,  true, false],
-		[ true,  true,  true,  true, false],
+		[ true,  true,  true, false, false],
+		[ true,  true,  true, false, false],
 		[ true,  true,  true, false, false],
 		[ true, false,  true, false, false],
 		[false, false, false, false, false],
