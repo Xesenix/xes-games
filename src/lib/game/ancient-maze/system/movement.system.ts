@@ -9,7 +9,7 @@ const MOVABLE_ASPECT = Symbol.for('MOVABLE_ASPECT');
 type GO = (IGameObjectState | IMovableGameObjectState);
 
 @inject(['collision-system'])
-export default class Algorithm<T extends GO, S extends { command: CommandType; objects: IGameBoardObject<T>[], board: IGameBoard<T> }> {
+export default class MovementSystem<T extends GO, S extends { command: CommandType; objects: IGameBoardObject<T>[], board: IGameBoard<T> }> {
 	constructor(
 		private collisionSystem: CollisionSystem<T, S>,
 	) { }

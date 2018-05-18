@@ -1,14 +1,13 @@
 import GameBoardComponent from 'game-00/components/game-board/game-board';
 import GameStateConsoleComponent from 'game-00/components/game-state-console/game-state-console';
 import { inject } from 'lib/di';
-import Algorithm from 'lib/game/ancient-maze/algorithm';
 import ArrowSystem from 'lib/game/ancient-maze/system/arrow.system';
 import CollectableSystem from 'lib/game/ancient-maze/system/collectable.system';
 import DeadBodiesSystem from 'lib/game/ancient-maze/system/dead-bodies.system';
 import EndPortalSystem from 'lib/game/ancient-maze/system/end-portal.system';
+import MovementSystem from 'lib/game/ancient-maze/system/movement.system';
 import RockSystem from 'lib/game/ancient-maze/system/rock.system';
-import Board from 'lib/game/board/board';
-import { IGameBoardObject, IGameObjectState } from 'lib/game/board/interface';
+import { IGameBoard, IGameBoardObject, IGameObjectState } from 'lib/game/board/interface';
 import CollisionSystem from 'lib/game/system/collision.system';
 import LifespanSystem from 'lib/game/system/lifespan.system';
 import MapSystem from 'lib/game/system/map.system';
@@ -17,7 +16,6 @@ import { ReactRenderer } from 'lib/renderer/react-renderer';
 import cloneDeep from 'lodash.clonedeep';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { IGameBoard } from 'lib/game/ancient-maze/aspects';
 
 export type CommandType = 'up' | 'down' | 'left' | 'right' | 'back' | undefined;
 
@@ -38,7 +36,7 @@ export interface IAncientMazeState<T extends IGameObjectState> {
 }
 
 @inject([
-	'game-engine',
+	'movement-system',
 	'game-state',
 	'ui:renderer',
 	'collision-system',
@@ -54,7 +52,7 @@ export interface IAncientMazeState<T extends IGameObjectState> {
 ])
 export default class AncientMaze<T extends IGameObjectState, S extends IAncientMazeState<T>> {
 	constructor(
-		private algorithm: Algorithm<T, S>, // game-engine
+		private movementSystem: MovementSystem<T, S>, // movement-system
 		private state: S, // game-state
 		private renderer: ReactRenderer, // ui:renderer
 		private collisionSystem: CollisionSystem<T, S>, // collision-system
@@ -118,7 +116,7 @@ export default class AncientMaze<T extends IGameObjectState, S extends IAncientM
 	}
 
 	public step(): boolean {
-		this.algorithm.update(this.state);
+		this.movementSystem.update(this.state);
 		this.collisionSystem.update(this.state);
 		this.arrowSystem.update(this.state);
 
@@ -132,7 +130,7 @@ export default class AncientMaze<T extends IGameObjectState, S extends IAncientM
 
 		requestAnimationFrame(this.updateView);
 
-		return this.algorithm.resolved(this.state);
+		return this.movementSystem.resolved(this.state);
 	}
 
 	private *gameLoop() {
@@ -145,10 +143,13 @@ export default class AncientMaze<T extends IGameObjectState, S extends IAncientM
 				yield;
 			}
 
+			// get next command from input buffer
 			this.state.command = this.state.inputBuffer.shift();
 
 			console.log('=== handling command ===', this.state.command);
+			// add command to game resolving steps for latter validation or reverting
 			this.state.executedCommands.push(this.state.command);
+			// increase number of game steps counter
 			this.state.steps++;
 
 			if (this.state.command === 'back') {
@@ -174,7 +175,7 @@ export default class AncientMaze<T extends IGameObjectState, S extends IAncientM
 				console.log('stored state', this.state);
 
 				this.spawnSystem.update(this.state);
-				this.algorithm.commandAction(this.state);
+				this.movementSystem.commandAction(this.state);
 				this.lifespanSystem.update(this.state);
 
 				while (!this.step()) {

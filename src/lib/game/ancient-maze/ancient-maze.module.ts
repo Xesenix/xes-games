@@ -1,10 +1,10 @@
 import { ContainerModule, interfaces } from 'inversify';
-import Algorithm from 'lib/game/ancient-maze/algorithm';
 import { IAncientMazeState } from 'lib/game/ancient-maze/ancient-maze';
 import ArrowSystem from 'lib/game/ancient-maze/system/arrow.system';
 import CollectableSystem from 'lib/game/ancient-maze/system/collectable.system';
 import DeadBodiesSystem from 'lib/game/ancient-maze/system/dead-bodies.system';
 import EndPortalSystem from 'lib/game/ancient-maze/system/end-portal.system';
+import MovementSystem from 'lib/game/ancient-maze/system/movement.system';
 import RockSystem from 'lib/game/ancient-maze/system/rock.system';
 import { IGameBoardObject, IGameObjectState, IMovableGameObjectState } from 'lib/game/board/interface';
 import CollisionSystem from 'lib/game/system/collision.system';
@@ -39,7 +39,7 @@ export const AncientMazeModule = () => new ContainerModule((bind: interfaces.Bin
 	bind<SpawnSystem<GO, IAncientMazeState<GO>>>('spawner-system').to(SpawnSystem).inSingletonScope();
 	bind<EndPortalSystem<GO, IAncientMazeState<GO>>>('exit-system').to(EndPortalSystem).inSingletonScope();
 
-	bind<Algorithm<GO, IAncientMazeState<GO>>>('game-engine').to(Algorithm).inSingletonScope();
+	bind<MovementSystem<GO, IAncientMazeState<GO>>>('movement-system').to(MovementSystem).inSingletonScope();
 	bind<AncientMaze<GO, IAncientMazeState<GO>>>('game').to(AncientMaze);
 	console.log('/// AncientMazeModule ///');
 });

@@ -5,21 +5,21 @@ import { IGameObjectState, IMovableGameObjectState } from 'lib/game/board/interf
 import GameBoardObject from 'lib/game/board/object';
 import CollisionSystem from 'lib/game/system/collision.system';
 
-import Algorithm from './algorithm';
+import MovementSystem from './movement.system';
 import { ARROW_TYPE, BOX_TYPE, ObjectFactory, PLAYER_TYPE, ROCK_TYPE } from './object-factory';
 
 type GO = (IGameObjectState | IMovableGameObjectState);
 
 const resolveState = (di: Container, state: IAncientMazeState<GO>) => {
-	const algorithm: Algorithm<GO, IAncientMazeState<GO>> = di.get('game-engine');
-	algorithm.commandAction(state);
+	const movementSystem: MovementSystem<GO, IAncientMazeState<GO>> = di.get('movement-system');
+	movementSystem.commandAction(state);
 	do {
 		state.objects.filter((obj) => obj.state.alive).forEach((obj) => {
 			state.board.remove(obj.state.position.x, obj.state.position.y, obj);
 			state.board.add(obj.state.position.x, obj.state.position.y, obj);
 		});
-		algorithm.update(state);
-	} while (!algorithm.resolved(state));
+		movementSystem.update(state);
+	} while (!movementSystem.resolved(state));
 };
 
 describe('commands', () => {
@@ -28,7 +28,7 @@ describe('commands', () => {
 	beforeEach(() => {
 		di = new Container();
 		di.bind<CollisionSystem<GO, IAncientMazeState<GO>>>('collision-system').to(CollisionSystem).inSingletonScope();
-		di.bind<Algorithm<GO, IAncientMazeState<GO>>>('game-engine').to(Algorithm).inSingletonScope();
+		di.bind<MovementSystem<GO, IAncientMazeState<GO>>>('movement-system').to(MovementSystem).inSingletonScope();
 		di.bind<IAncientMazeState<GO>>('state').toConstantValue({
 			objects: [],
 			inputBuffer: [],
