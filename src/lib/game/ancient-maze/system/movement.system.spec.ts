@@ -1,5 +1,5 @@
 import { Container } from 'inversify';
-import { IAncientMazeState } from 'lib/game/ancient-maze/ancient-maze';
+import { IAncientMazeState, CommandType } from 'lib/game/ancient-maze/ancient-maze';
 import Board from 'lib/game/board/board';
 import { IGameObjectState, IMovableGameObjectState } from 'lib/game/board/interface';
 import GameBoardObject from 'lib/game/board/object';
@@ -42,49 +42,32 @@ describe('commands', () => {
 		} as IAncientMazeState<GO>);
 	});
 
-	describe('up', () => {
-		beforeEach(() => {
-			const state: IAncientMazeState<GO> = di.get('state');
-			state.command = 'up';
-		});
-
+	describe('should move (box, arrow) if they are entering the same cell', () => {
 		[
-			{ posX: 0, posY: 1 },
-			{ posX: 2, posY: 3 },
-		].forEach(({ posX, posY }) => {
-			it('should move (rock, box, player) up if they are adjacent one over each other', () => {
+			{ command: 'down', pos: { x: 2, y: 2 }, direction: { x: 0, y: -1 } },
+			{ command: 'up', pos: { x: 2, y: 2 }, direction: { x: 0, y: 1 } },
+			{ command: 'left', pos: { x: 2, y: 2 }, direction: { x: 1, y: 0 } },
+			{ command: 'right', pos: { x: 2, y: 2 }, direction: { x: -1, y: 0 } },
+		].forEach(({ command, pos, direction }) => {
+			it(`move box: ${command}, arrow (${pos.x + direction.y}, ${pos.y + direction.x}) -> (${pos.x}, ${pos.y})`, () => {
 				const objectFactory = new ObjectFactory();
 				const state: IAncientMazeState<GO> = di.get('state');
+				state.command = command as CommandType;
 
 				// setup board
-				const rock: GameBoardObject<GO> = objectFactory.create(ROCK_TYPE, { x: posX, y: posY });
-				const box: GameBoardObject<GO> = objectFactory.create(BOX_TYPE, { x: posX, y: posY + 1 });
-				const player: GameBoardObject<GO> = objectFactory.create(PLAYER_TYPE, { x: posX, y: posY + 2 });
-
-				state.objects.push(rock);
-				state.objects.push(box);
-				state.objects.push(player);
-
-				// start execution
-				resolveState(di, state);
-
-				expect(rock.state.position).toEqual({ x: posX, y: 0 }, 'should move rock');
-				expect(box.state.position).toEqual({ x: posX, y: posY }, 'should move box');
-				expect(player.state.position).toEqual({ x: posX, y: posY + 1 }, 'should move player');
-			});
-		});
-
-		[
-			{ posX: 1, posY: 1 },
-			{ posX: 2, posY: 3 },
-		].forEach(({ posX, posY }) => {
-			it('should move (box, arrow) if they are entering the same cell', () => {
-				const objectFactory = new ObjectFactory();
-				const state: IAncientMazeState<GO> = di.get('state');
-
-				// setup board
-				const box: GameBoardObject<GO> = objectFactory.create(BOX_TYPE, { x: posX, y: posY + 1 });
-				const arrow: GameBoardObject<GO> = objectFactory.create(ARROW_TYPE, { x: posX + 1, y: posY }, { x: -1, y: 0 });
+				const box: GameBoardObject<GO> = objectFactory.create(
+					BOX_TYPE, {
+						x: pos.x + direction.x,
+						y: pos.y + direction.y,
+					});
+				const arrow: GameBoardObject<GO> = objectFactory.create(
+					ARROW_TYPE, {
+						x: pos.x + direction.y,
+						y: pos.y + direction.x,
+					}, {
+						x: -direction.y,
+						y: -direction.x,
+					});
 
 				state.objects.push(box);
 				state.objects.push(arrow);
@@ -92,31 +75,68 @@ describe('commands', () => {
 				// start execution
 				resolveState(di, state);
 
-				expect(box.state.position).toEqual({ x: posX, y: posY }, 'should move box');
-				expect(arrow.state.position).toEqual({ x: posX + 1, y: posY }, 'should move arrow');
+				expect(box.state.position).toEqual({ x: pos.x, y: pos.y }, 'should move box');
+				expect(arrow.state.position).toEqual({ x: pos.x + direction.y, y: pos.y + direction.x }, 'should move arrow');
+				expect(arrow.state.collided).toEqual(true, 'arrow should stop');
+			});
+
+			it(`move box: ${command}, arrow (${pos.x - direction.y}, ${pos.y - direction.x}) -> (${pos.x}, ${pos.y}) ${direction.x},${direction.y}`, () => {
+				const objectFactory = new ObjectFactory();
+				const state: IAncientMazeState<GO> = di.get('state');
+				state.command = command as CommandType;
+
+				// setup board
+				const box: GameBoardObject<GO> = objectFactory.create(
+					BOX_TYPE, {
+						x: pos.x + direction.x,
+						y: pos.y + direction.y,
+					});
+				const arrow: GameBoardObject<GO> = objectFactory.create(
+					ARROW_TYPE, {
+						x: pos.x - direction.y,
+						y: pos.y - direction.x,
+					}, {
+						x: direction.y,
+						y: direction.x,
+					});
+
+				state.objects.push(box);
+				state.objects.push(arrow);
+
+				// start execution
+				resolveState(di, state);
+
+				expect(box.state.position).toEqual({ x: pos.x, y: pos.y }, 'should move box');
+				expect(arrow.state.position).toEqual({ x: pos.x - direction.y, y: pos.y - direction.x }, 'should move arrow');
 				expect(arrow.state.collided).toEqual(true, 'arrow should stop');
 			});
 		});
 	});
 
-	describe('down', () => {
-		beforeEach(() => {
-			const state: IAncientMazeState<GO> = di.get('state');
-			state.command = 'down';
-		});
-
+	describe('should move (rock, box, player) if they are adjacent to each other', () => {
 		[
-			{ posX: 0, posY: 1 },
-			{ posX: 2, posY: 0 },
-		].forEach(({ posX, posY }) => {
-			it('should move (rock, box, player) up if they are adjacent one over each other', () => {
+			{ command: 'down', pos: { x: 0, y: 2 }, direction: { x: 0, y: 1 }, expected: { player: { x: 0, y: 2 }, box: { x: 0, y: 3 }, rock: { x: 0, y: 4 } } },
+			{ command: 'down', pos: { x: 0, y: 1 }, direction: { x: 0, y: 1 }, expected: { player: { x: 0, y: 2 }, box: { x: 0, y: 3 }, rock: { x: 0, y: 4 } } },
+			{ command: 'down', pos: { x: 1, y: 0 }, direction: { x: 0, y: 1 }, expected: { player: { x: 1, y: 1 }, box: { x: 1, y: 2 }, rock: { x: 1, y: 4 } } },
+			{ command: 'up', pos: { x: 0, y: 2 }, direction: { x: 0, y: -1 }, expected: { player: { x: 0, y: 2 }, box: { x: 0, y: 1 }, rock: { x: 0, y: 0 } } },
+			{ command: 'up', pos: { x: 0, y: 3 }, direction: { x: 0, y: -1 }, expected: { player: { x: 0, y: 2 }, box: { x: 0, y: 1 }, rock: { x: 0, y: 0 } } },
+			{ command: 'up', pos: { x: 1, y: 4 }, direction: { x: 0, y: -1 }, expected: { player: { x: 1, y: 3 }, box: { x: 1, y: 2 }, rock: { x: 1, y: 0 } } },
+			{ command: 'right', pos: { x: 0, y: 1 }, direction: { x: 1, y: 0 }, expected: { player: { x: 1, y: 1 }, box: { x: 2, y: 1 }, rock: { x: 4, y: 1 } } },
+			{ command: 'right', pos: { x: 1, y: 0 }, direction: { x: 1, y: 0 }, expected: { player: { x: 2, y: 0 }, box: { x: 3, y: 0 }, rock: { x: 4, y: 0 } } },
+			{ command: 'right', pos: { x: 2, y: 0 }, direction: { x: 1, y: 0 }, expected: { player: { x: 2, y: 0 }, box: { x: 3, y: 0 }, rock: { x: 4, y: 0 } } },
+			{ command: 'left', pos: { x: 2, y: 1 }, direction: { x: -1, y: 0 }, expected: { player: { x: 2, y: 1 }, box: { x: 1, y: 1 }, rock: { x: 0, y: 1 } } },
+			{ command: 'left', pos: { x: 3, y: 1 }, direction: { x: -1, y: 0 }, expected: { player: { x: 2, y: 1 }, box: { x: 1, y: 1 }, rock: { x: 0, y: 1 } } },
+			{ command: 'left', pos: { x: 4, y: 0 }, direction: { x: -1, y: 0 }, expected: { player: { x: 3, y: 0 }, box: { x: 2, y: 0 }, rock: { x: 0, y: 0 } } },
+		].forEach(({ command, pos, direction, expected }) => {
+			it(`move: ${command}, from player pos: (${pos.x}, ${pos.y})`, () => {
 				const objectFactory = new ObjectFactory();
 				const state: IAncientMazeState<GO> = di.get('state');
+				state.command = command as CommandType;
 
 				// setup board
-				const player: GameBoardObject<GO> = objectFactory.create(PLAYER_TYPE, { x: posX, y: posY  });
-				const box: GameBoardObject<GO> = objectFactory.create(BOX_TYPE, { x: posX, y: posY + 1 });
-				const rock: GameBoardObject<GO> = objectFactory.create(ROCK_TYPE, { x: posX, y: posY + 2 });
+				const player: GameBoardObject<GO> = objectFactory.create(PLAYER_TYPE, { x: pos.x, y: pos.y });
+				const box: GameBoardObject<GO> = objectFactory.create(BOX_TYPE, { x: pos.x + direction.x, y: pos.y + direction.y });
+				const rock: GameBoardObject<GO> = objectFactory.create(ROCK_TYPE, { x: pos.x + 2 * direction.x, y: pos.y + 2 * direction.y });
 
 				state.objects.push(rock);
 				state.objects.push(box);
@@ -125,147 +145,9 @@ describe('commands', () => {
 				// start execution
 				resolveState(di, state);
 
-				expect(rock.state.position).toEqual({ x: posX, y: 4 }, 'should move rock');
-				expect(box.state.position).toEqual({ x: posX, y: posY + 2 }, 'should move box');
-				expect(player.state.position).toEqual({ x: posX, y: posY + 1 }, 'should move player');
-			});
-		});
-
-		[
-			{ posX: 1, posY: 1 },
-			{ posX: 2, posY: 3 },
-		].forEach(({ posX, posY }) => {
-			it('should move (box, arrow) if they are entering the same cell', () => {
-				const objectFactory = new ObjectFactory();
-				const state: IAncientMazeState<GO> = di.get('state');
-
-				// setup board
-				const box: GameBoardObject<GO> = objectFactory.create(BOX_TYPE, { x: posX, y: posY - 1 });
-				const arrow: GameBoardObject<GO> = objectFactory.create(ARROW_TYPE, { x: posX + 1, y: posY }, { x: -1, y: 0 });
-
-				state.objects.push(box);
-				state.objects.push(arrow);
-
-				// start execution
-				resolveState(di, state);
-
-				expect(box.state.position).toEqual({ x: posX, y: posY }, 'should move box');
-				expect(arrow.state.position).toEqual({ x: posX + 1, y: posY }, 'should move arrow');
-				expect(arrow.state.collided).toEqual(true, 'arrow should stop');
-			});
-		});
-	});
-
-	fdescribe('right', () => {
-		beforeEach(() => {
-			const state: IAncientMazeState<GO> = di.get('state');
-			state.command = 'right';
-		});
-
-		[
-			{ posX: 0, posY: 1 },
-			{ posX: 1, posY: 0 },
-		].forEach(({ posX, posY }) => {
-			it('should move (rock, box, player) right if they are adjacent one after other', () => {
-				const objectFactory = new ObjectFactory();
-				const state: IAncientMazeState<GO> = di.get('state');
-
-				// setup board
-				const player: GameBoardObject<GO> = objectFactory.create(PLAYER_TYPE, { x: posX, y: posY  });
-				const box: GameBoardObject<GO> = objectFactory.create(BOX_TYPE, { x: posX + 1, y: posY });
-				const rock: GameBoardObject<GO> = objectFactory.create(ROCK_TYPE, { x: posX + 2, y: posY });
-
-				state.objects.push(rock);
-				state.objects.push(box);
-				state.objects.push(player);
-
-				// start execution
-				resolveState(di, state);
-
-				expect(rock.state.position).toEqual({ x: 4, y: posY }, 'should move rock');
-				expect(box.state.position).toEqual({ x: posX + 2, y: posY }, 'should move box');
-				expect(player.state.position).toEqual({ x: posX + 1, y: posY }, 'should move player');
-			});
-		});
-
-		[
-			{ posX: 1, posY: 1 },
-			{ posX: 2, posY: 3 },
-		].forEach(({ posX, posY }) => {
-			it('should move (box, arrow) if they are entering the same cell', () => {
-				const objectFactory = new ObjectFactory();
-				const state: IAncientMazeState<GO> = di.get('state');
-
-				// setup board
-				const box: GameBoardObject<GO> = objectFactory.create(BOX_TYPE, { x: posX - 1, y: posY });
-				const arrow: GameBoardObject<GO> = objectFactory.create(ARROW_TYPE, { x: posX, y: posY + 1 }, { x: 0, y: -1 });
-
-				state.objects.push(box);
-				state.objects.push(arrow);
-
-				// start execution
-				resolveState(di, state);
-
-				expect(box.state.position).toEqual({ x: posX, y: posY }, 'should move box');
-				expect(arrow.state.position).toEqual({ x: posX, y: posY + 1 }, 'should move arrow');
-				expect(arrow.state.collided).toEqual(true, 'arrow should stop');
-			});
-		});
-	});
-
-	fdescribe('left', () => {
-		beforeEach(() => {
-			const state: IAncientMazeState<GO> = di.get('state');
-			state.command = 'left';
-		});
-
-		[
-			{ posX: 1, posY: 1 },
-			{ posX: 2, posY: 0 },
-		].forEach(({ posX, posY }) => {
-			it('should move (rock, box, player) left if they are adjacent one after other', () => {
-				const objectFactory = new ObjectFactory();
-				const state: IAncientMazeState<GO> = di.get('state');
-
-				// setup board
-				const rock: GameBoardObject<GO> = objectFactory.create(ROCK_TYPE, { x: posX, y: posY });
-				const box: GameBoardObject<GO> = objectFactory.create(BOX_TYPE, { x: posX + 1, y: posY });
-				const player: GameBoardObject<GO> = objectFactory.create(PLAYER_TYPE, { x: posX + 2, y: posY });
-
-				state.objects.push(rock);
-				state.objects.push(box);
-				state.objects.push(player);
-
-				// start execution
-				resolveState(di, state);
-
-				expect(rock.state.position).toEqual({ x: 0, y: posY }, 'should move rock');
-				expect(box.state.position).toEqual({ x: posX, y: posY }, 'should move box');
-				expect(player.state.position).toEqual({ x: posX + 1, y: posY }, 'should move player');
-			});
-		});
-
-		[
-			{ posX: 1, posY: 1 },
-			// { posX: 2, posY: 3 },
-		].forEach(({ posX, posY }) => {
-			it('should move (box, arrow) if they are entering the same cell', () => {
-				const objectFactory = new ObjectFactory();
-				const state: IAncientMazeState<GO> = di.get('state');
-
-				// setup board
-				const box: GameBoardObject<GO> = objectFactory.create(BOX_TYPE, { x: posX + 1, y: posY });
-				const arrow: GameBoardObject<GO> = objectFactory.create(ARROW_TYPE, { x: posX, y: posY + 1 }, { x: 0, y: -1 });
-
-				state.objects.push(box);
-				state.objects.push(arrow);
-
-				// start execution
-				resolveState(di, state);
-
-				expect(box.state.position).toEqual({ x: posX, y: posY }, 'should move box');
-				expect(arrow.state.position).toEqual({ x: posX, y: posY + 1 }, 'should move arrow');
-				expect(arrow.state.collided).toEqual(true, 'arrow should stop');
+				expect(player.state.position).toEqual(expected.player, 'should move player');
+				expect(box.state.position).toEqual(expected.box, 'should move box');
+				expect(rock.state.position).toEqual(expected.rock, 'should move rock');
 			});
 		});
 	});
