@@ -30,6 +30,28 @@
 		"report-coverage": "cat ./coverage/lcov.info | coveralls"
 	},
 	"apps": {
+		"app": {
+			"main": [
+				"game-00/main.ts"
+			],
+			"moduleImportPaths": [
+				"src"
+			],
+			"test": "main.test.ts",
+			"templateData": {
+				"title": "Ancient Maze",
+				"author": "Paweł Kapalla aka Xesenix"
+			},
+			"assets": [
+				"game-00/assets"
+			],
+			"styles": [ "game-00/styles/styles.scss" ],
+			"stylesImportPaths": [
+				"game-00/styes"
+			],
+			"localesDir": "game-00/locales",
+			"vendor": []
+		},
 		"game-00": {
 			"rootDir": "src/game-00",
 			"outDir": "dist/game-00",

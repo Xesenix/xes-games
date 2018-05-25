@@ -3,7 +3,7 @@ const fs = require('fs');
 const { application, webpack } = require('xes-webpack-core');
 
 const app = application.getEnvApp();
-const appWebpack = `./webpack.${app}.config.js`;
+const appWebpack = `./webpack.game-00.config.js`;
 
 const config = {
 	useBabelrc: false,
