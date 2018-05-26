@@ -1,17 +1,20 @@
 import { Container } from 'inversify';
-import { IAncientMazeState, CommandType } from 'lib/game/ancient-maze/ancient-maze';
+import { CommandType, IAncientMazeState } from 'lib/game/ancient-maze/ancient-maze';
 import Board from 'lib/game/board/board';
-import { IGameObjectState, IMovableGameObjectState } from 'lib/game/board/interface';
+import { IGameBoardObject, IGameObjectState, IMovableGameObjectState } from 'lib/game/board/interface';
 import GameBoardObject from 'lib/game/board/object';
 import CollisionSystem from 'lib/game/system/collision.system';
 
 import { ARROW_TYPE, BOX_TYPE, ObjectFactory, PLAYER_TYPE, ROCK_TYPE } from '../object-factory';
+import ArrowSystem from './arrow.system';
 import MovementSystem from './movement.system';
 
 type GO = (IGameObjectState | IMovableGameObjectState);
 
 const resolveState = (di: Container, state: IAncientMazeState<GO>) => {
 	const movementSystem: MovementSystem<GO, IAncientMazeState<GO>> = di.get('movement-system');
+	const collisionSystem: CollisionSystem<GO, IAncientMazeState<GO>> = di.get('collision-system');
+	const arrowSystem: ArrowSystem<GO, IAncientMazeState<GO>> = di.get('arrow-system');
 	movementSystem.commandAction(state);
 	do {
 		state.objects.filter((obj) => obj.state.alive).forEach((obj) => {
@@ -19,6 +22,8 @@ const resolveState = (di: Container, state: IAncientMazeState<GO>) => {
 			state.board.add(obj.state.position.x, obj.state.position.y, obj);
 		});
 		movementSystem.update(state);
+		collisionSystem.update(state);
+		arrowSystem.update(state);
 	} while (!movementSystem.resolved(state));
 };
 
@@ -27,8 +32,14 @@ describe('commands', () => {
 
 	beforeEach(() => {
 		di = new Container();
+		const kill = (target: IGameBoardObject<IGameObjectState>) => {
+			target.state = { ...target.state, alive: false };
+		};
+
+		di.bind('kill').toConstantValue(kill);
 		di.bind<CollisionSystem<GO, IAncientMazeState<GO>>>('collision-system').to(CollisionSystem).inSingletonScope();
 		di.bind<MovementSystem<GO, IAncientMazeState<GO>>>('movement-system').to(MovementSystem).inSingletonScope();
+		di.bind<ArrowSystem<GO, IAncientMazeState<GO>>>('arrow-system').to(ArrowSystem).inSingletonScope();
 		di.bind<IAncientMazeState<GO>>('state').toConstantValue({
 			objects: [],
 			inputBuffer: [],
@@ -80,7 +91,8 @@ describe('commands', () => {
 				expect(arrow.state.collided).toEqual(true, 'arrow should stop');
 			});
 
-			it(`move box: ${command}, arrow (${pos.x - direction.y}, ${pos.y - direction.x}) -> (${pos.x}, ${pos.y}) ${direction.x},${direction.y}`, () => {
+			it(`move box: ${command}, arrow (${pos.x - direction.y}, ${pos.y - direction.x}) -> (${pos.x}, ${pos.y})`, () => {
+				console.log('move box', command, pos, direction);
 				const objectFactory = new ObjectFactory();
 				const state: IAncientMazeState<GO> = di.get('state');
 				state.command = command as CommandType;

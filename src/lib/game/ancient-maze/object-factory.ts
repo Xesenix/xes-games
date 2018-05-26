@@ -104,19 +104,23 @@ export const objectStatePrototype = {
 		appearance: 1,
 		bodyFactoryId: BROKEN_ARROW_TYPE,
 		speed: 15,
+		priority: 0,
 	},
 	[PLAYER_TYPE]: {
 		appearance: 2,
 		speed: 1,
+		priority: 1,
 	},
 	[ROCK_TYPE]: {
 		appearance: 3,
 		bodyFactoryId: BROKEN_ROCK_TYPE,
 		speed: 15,
+		priority: 2,
 	},
 	[BOX_TYPE]: {
 		appearance: 4,
 		speed: 1,
+		priority: 1,
 	},
 	[WALL_TYPE]: {
 		appearance: 0,
@@ -163,6 +167,7 @@ export class ObjectFactory<T extends GO, S extends { objects: IGameBoardObject<T
 				n: { x: 0, y: 0 },
 				speed: 0,
 				steps: 0,
+				priority: 0,
 				impact: 0,
 				...objectStatePrototype[type],
 				position: { ...position },

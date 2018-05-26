@@ -90,22 +90,30 @@ export default class MovementSystem<T extends GO, S extends { command: CommandTy
 
 		// first move faster objects then determine order by position on board
 		let ordered = movable.sort((a: IGameBoardObject<T>, b: IGameBoardObject<T>) =>
-			a.state.position.x < b.state.position.x || a.state.position.y < b.state.position.y
-				? -1
-				: a.state.position.x === b.state.position.x && a.state.position.y === b.state.position.y
-				? 0
-				: 1,
+			(a.state as IMovableGameObjectState).priority < (b.state as IMovableGameObjectState).priority
+			? 1
+			: (a.state as IMovableGameObjectState).priority > (b.state as IMovableGameObjectState).priority
+			? -1
+			: a.state.position.x < b.state.position.x || a.state.position.y < b.state.position.y
+			? -1
+			: a.state.position.x === b.state.position.x && a.state.position.y === b.state.position.y
+			? 0
+			: 1,
 		);
 		// console.info('=== resolve order', ordered);
 		ordered = ordered.filter((obj: IGameBoardObject<T>) => this.resolveCell(obj, board));
 		// for all unresolved reverse board order
 		// console.info('=== resolve reverse order', ordered);
 		ordered.sort((a: IGameBoardObject<T>, b: IGameBoardObject<T>) =>
-			a.state.position.x < b.state.position.x || a.state.position.y < b.state.position.y
-				? 1
-				: a.state.position.x === b.state.position.x && a.state.position.y === b.state.position.y
-				? 0
-				: -1,
+			(a.state as IMovableGameObjectState).priority < (b.state as IMovableGameObjectState).priority
+			? 1
+			: (a.state as IMovableGameObjectState).priority > (b.state as IMovableGameObjectState).priority
+			? -1
+			: a.state.position.x < b.state.position.x || a.state.position.y < b.state.position.y
+			? 1
+			: a.state.position.x === b.state.position.x && a.state.position.y === b.state.position.y
+			? 0
+			: -1,
 		)
 		.filter((obj: IGameBoardObject<T>) => this.resolveCell(obj, board))
 		.forEach((obj: IGameBoardObject<T>) => {
@@ -135,7 +143,7 @@ export default class MovementSystem<T extends GO, S extends { command: CommandTy
 	}
 
 	private resolveCell(obj: IGameBoardObject<T>, board: IGameBoard<T>): boolean {
-		console.log('resolveCell', obj.type, { ...(obj.state as any) });
+		console.log('resolveCell', obj.type, obj.state.position, obj.state.direction, { ...(obj.state as any) });
 		const { alive = false, steps = 0, n = { x: 0, y: 0 }, position = { x: 0, y: 0 } } = obj.state as any;
 
 		if (alive && steps > 0 && (n.x !== 0 || n.y !== 0)) {

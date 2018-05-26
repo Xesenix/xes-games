@@ -60,6 +60,10 @@ export interface IMovableGameObjectState extends IGameObjectState {
 	 */
 	speed: number;
 	/**
+	 * Decides order of resolving movement.
+	 */
+	priority: number;
+	/**
 	 * Game object velocity describes current movement direction durning movement resolving.
 	 */
 	n: { x: number; y: number; };
