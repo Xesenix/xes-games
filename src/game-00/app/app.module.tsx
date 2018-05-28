@@ -15,7 +15,6 @@ import { PhaserModule } from 'lib/phaser/phaser.module';
 import { IRenderer, ReactRenderer } from 'lib/renderer/react-renderer';
 import { ThemeModule } from 'lib/theme/theme.module';
 
-// import { IAppDataState, reducer } from './reducer';
 import { IGameObjectState } from 'lib/game/board/interface';
 
 declare const process: any;
@@ -53,22 +52,16 @@ export class AppModule extends Container {
 		this.bind<EventEmitter>('event-manager').toConstantValue(new EventEmitter());
 
 		// phaser
-		this.load(ThemeModule());
-		this.load(PhaserModule());
-		this.load(AncientMazeModule());
+		// this.load(ThemeModule());
+		// this.load(PhaserModule());
 
-		// state management
-		// this.load(StateManagerModule());
-		// this.load(UIStatesModule());
-		// this.load(GameStatesModule());
+		// game
+		this.load(AncientMazeModule());
 
 		// rendering DOM
 		this.bind<HTMLElement>('ui:root').toConstantValue(document.getElementById('app') as HTMLElement);
 		this.bind<React.Component>('ui:outlet-component').toConstantValue(OutletComponent);
 		this.bind<IRenderer>('ui:renderer').to(ReactRenderer).inSingletonScope();
-
-		// setup data store
-		// this.load(DataStoreModule<IAppDataState>({}, reducer, process.env.DEBUG));
 
 		// environment
 		this.bind<IDictionary>('player-pref').toConstantValue(new FlatDictionary({
