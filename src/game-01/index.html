@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title><%= htmlWebpackPlugin.options.data.title %></title>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1, maximum-scale=1, user-scalable=0">
+
+	<link rel="icon" sizes="16x16" href="assets/icons/favicon_16x16.png">
+	<link rel="icon" sizes="32x32" href="assets/icons/favicon_32x32.png">
+</head>
+<body>
+	<div class="container">
+		<h1><%= htmlWebpackPlugin.options.data.title %></h1>
+
+		<div id="app"><h3>Loading...</h3></div>
+	</div>
+
+	<div class="footer">
+		Build version: <%= htmlWebpackPlugin.options.packageConfig.version %>
+	</div>
+
+	<script src="phaser.min.js"></script>
+</body>
+</html>

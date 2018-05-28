@@ -26,6 +26,14 @@
 		"game-00:build:dev": "cross-env APP=game-00 npm run build:dev",
 		"game-00:build:prod": "cross-env APP=game-00 npm run build:prod",
 		"game-00:xi18n": "cross-env APP=game-00 ts-node ./scripts/extract.ts",
+		"game-01:analyze": "cross-env APP=game-01 npm run analyze",
+		"game-01:tdd": "cross-env APP=game-01 npm run tdd",
+		"game-01:test": "cross-env APP=game-01 npm run test",
+		"game-01:start": "http-server ./dist/game-01",
+		"game-01:serve": "cross-env APP=game-01 npm run serve",
+		"game-01:build:dev": "cross-env APP=game-01 npm run build:dev",
+		"game-01:build:prod": "cross-env APP=game-01 npm run build:prod",
+		"game-01:xi18n": "cross-env APP=game-01 ts-node ./scripts/extract.ts",
 		"tsc": "tsc -p tsconfig.json --diagnostics --pretty",
 		"report-coverage": "cat ./coverage/lcov.info | coveralls"
 	},
@@ -45,7 +53,9 @@
 			"assets": [
 				"game-00/assets"
 			],
-			"styles": [ "game-00/styles/styles.scss" ],
+			"styles": [
+				"game-00/styles/styles.scss"
+			],
 			"stylesImportPaths": [
 				"game-00/styes"
 			],
@@ -57,6 +67,28 @@
 			"outDir": "dist/game-00",
 			"main": [
 				"main.ts"
+			],
+			"moduleImportPaths": [
+				"src"
+			],
+			"test": "main.test.ts",
+			"templateData": {
+				"title": "Ancient Maze",
+				"author": "Paweł Kapalla aka Xesenix"
+			},
+			"assets": [
+				"assets"
+			],
+			"stylesImportPaths": [
+				"styles"
+			],
+			"vendor": []
+		},
+		"game-01": {
+			"rootDir": "src/game-01",
+			"outDir": "dist/game-01",
+			"main": [
+				"main.tsx"
 			],
 			"moduleImportPaths": [
 				"src"
@@ -111,7 +143,7 @@
 		"ts-node": "^5.0.1",
 		"tsc": "^1.20150623.0",
 		"tslint": "^5.9.1",
-		"typescript": "^2.8.1"
+		"typescript": "^2.8.3"
 	},
 	"dependencies": {
 		"@types/lodash.clonedeep": "^4.5.3",
