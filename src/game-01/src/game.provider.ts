@@ -36,7 +36,7 @@ const gameProvider = (canvas: HTMLCanvasElement): Phaser.Game => {
 		disableContextMenu: true,
 		fps,
 		render,
-		backgroundColor: 0x300000,
+		backgroundColor: 0x000000,
 		callbacks: {
 			preBoot: () => console.log('=== PRE BOOT'),
 			postBoot: () => console.log('=== POST BOOT'),
