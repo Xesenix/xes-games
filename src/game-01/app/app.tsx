@@ -3,7 +3,7 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { hot } from 'react-hot-loader';
 
-import GameView from 'game-00/components/game-view/game-view';
+import GameView from 'game-01/components/game-view/game-view';
 
 class App extends React.Component {
 	public render() {
