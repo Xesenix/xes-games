@@ -1,6 +1,4 @@
-import * as React from 'react';
-import { render } from 'react-dom';
+import { AppModule } from 'game-01/app/app.module';
 
-import App from './app/app';
-
-render(<App/>, document.getElementById('app') as HTMLElement);
+const app = new AppModule();
+app.boot();

@@ -8,7 +8,7 @@ import GameView from 'game-01/components/game-view/game-view';
 class App extends React.Component {
 	public render() {
 		return (<div>
-			<h3>{ __('PHASER Game Test') }</h3>
+			<h3>{ __('PHASER 3 Game Test') }</h3>
 			<GameView/>
 		</div>);
 	}

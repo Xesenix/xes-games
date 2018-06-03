@@ -1,15 +1,18 @@
+import { Container } from 'inversify';
 import Phaser from 'phaser';
 import * as React from 'react';
 import { hot } from 'react-hot-loader';
 
-import gameProvider from 'game-01/src/game.provider';
-
+import { DIContext } from 'game-01/app/app.module';
+import { IPhaserGameProvider } from 'game-01/src/phaser/game.provider';
 import './phaser-view.scss';
 
 let game: Phaser.Game | null;
 let gameContainer: HTMLDivElement | null;
+let di: Container | null;
 
 export interface IPhaserViewProps {
+	di: Container | null;
 	keepInstanceOnRemove: boolean;
 }
 export interface IPhaserViewState {
@@ -27,14 +30,29 @@ class PhaserViewComponent extends React.Component<IPhaserViewProps, IPhaserViewS
 	}
 
 	public componentDidMount() {
+		di = this.props.di;
 		console.log('PhaserViewComponent:componentDidMount', game, gameContainer);
 
-		if (gameContainer) {
+		if (!!di && gameContainer) {
 			if (game && game.isBooted) {
 				game.loop.wake();
 				gameContainer.appendChild(game.canvas);
 			} else {
-				game = gameProvider(gameContainer);
+				di.bind<HTMLElement | null>('phaser:container').toDynamicValue(() => gameContainer);
+				di.get<IPhaserGameProvider>('phaser:game-provider')().then((result: Phaser.Game) => game = result);
+			}
+		}
+	}
+
+	public componentDidUpdate() {
+		if (game) {
+			if (this.state.pause) {
+				/** that probably should be pause @see https://github.com/photonstorm/phaser3-docs/issues/40 */
+				game.loop.sleep();
+				game.sound.mute = true;
+			} else {
+				game.loop.wake();
+				game.sound.mute = this.state.mute;
 			}
 		}
 	}
@@ -66,44 +84,14 @@ class PhaserViewComponent extends React.Component<IPhaserViewProps, IPhaserViewS
 	private bindContainer = (el: HTMLDivElement) => gameContainer = el;
 
 	private togglePause = () => {
-		if (game) {
-			// debugger;
-			if (game.loop.running) {
-				/** that probably should be pause @see https://github.com/photonstorm/phaser3-docs/issues/40 */
-				game.loop.sleep();
-				game.sound.mute = true;
-			} else {
-				game.loop.wake();
-				game.sound.mute = this.state.mute;
-			}
-		}
 		this.setState({ pause: !this.state.pause });
 	}
 
 	private toggleMute = () => {
-		this.setState({ mute: !this.state.mute }, () => {
-			if (game) {
-				if (game.loop.running) {
-					game.sound.mute = this.state.mute;
-				}
-			}
-		});
+		this.setState({ mute: !this.state.mute });
 	}
 }
 
-export default hot(module)(PhaserViewComponent);
-
-// HMR: For changes in Phaser related classes we reload whole Phaser game instance
-if (module.hot) {
-	module.hot.accept('game-01/src/game.provider', () => {
-		console.log('%c[HMR]: RELOAD PHASER INSTANCE', 'color: yellow');
-		if (game) {
-			game.destroy(true);
-			game = null;
-		}
-
-		if (gameContainer) {
-			game = gameProvider(gameContainer);
-		}
-	});
-}
+export default hot(module)((props: IPhaserViewProps) => (
+	<DIContext.Consumer>{ (container: Container | null) => <PhaserViewComponent {...props} di={container}/> }</DIContext.Consumer>
+));

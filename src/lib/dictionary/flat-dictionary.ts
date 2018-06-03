@@ -1,4 +1,4 @@
-import { injectable } from 'inversify';
+import { injectable } from 'lib/di';
 
 import { IDictionary } from './interfaces';
 

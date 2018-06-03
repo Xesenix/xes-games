@@ -1,4 +1,4 @@
-import { injectable } from 'inversify';
+import { injectable } from 'lib/di';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
 
