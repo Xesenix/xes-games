@@ -27,7 +27,7 @@ class PhaserViewComponent extends React.Component<IPhaserViewProps, IPhaserViewS
 
 		if (gameContainer) {
 			if (game && game.isBooted) {
-				game.loop.resume();
+				game.loop.wake();
 				gameContainer.appendChild(game.canvas);
 			} else {
 				game = gameProvider(gameContainer);
@@ -39,7 +39,7 @@ class PhaserViewComponent extends React.Component<IPhaserViewProps, IPhaserViewS
 		console.log('PhaserViewComponent:componentWillUnmount', game);
 		if (game) {
 			if (this.props.keepInstanceOnRemove) {
-				game.loop.pause();
+				game.loop.sleep();
 			} else {
 				game.destroy(true);
 				game = null;
@@ -59,7 +59,11 @@ class PhaserViewComponent extends React.Component<IPhaserViewProps, IPhaserViewS
 
 	private togglePause = () => {
 		if (game) {
-			game.loop.pause();
+			if (game.loop.running) {
+				game.loop.sleep();
+			} else {
+				game.loop.wake();
+			}
 		}
 		this.setState({ pause: !this.state.pause });
 	}
@@ -71,8 +75,10 @@ export default hot(module)(PhaserViewComponent);
 if (module.hot) {
 	module.hot.accept('game-01/src/game.provider', () => {
 		console.log('%c[HMR]: RELOAD PHASER INSTANCE', 'color: yellow');
-		game.destroy(true);
-		game = null;
+		if (game) {
+			game.destroy(true);
+			game = null;
+		}
 
 		if (gameContainer) {
 			game = gameProvider(gameContainer);
