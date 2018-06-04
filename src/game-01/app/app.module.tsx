@@ -5,6 +5,7 @@ import { EventEmitter } from 'events';
 import { Container } from 'inversify';
 
 import OutletComponent from 'game-00/components/outlet/outlet'; // TODO: move outside game-00
+import { DIContext } from 'game-01/src/di.context';
 import { FlatDictionary } from 'lib/dictionary/flat-dictionary';
 import { IDictionary } from 'lib/dictionary/interfaces';
 // import AncientMaze from 'lib/game/ancient-maze/ancient-maze';
@@ -20,8 +21,6 @@ import App from './app';
 declare const process: any;
 
 // const KEY_ITEM_TYPE = Symbol.for('KEY_ITEM_TYPE');
-
-export const DIContext = React.createContext<Container | null>(null);
 
 /**
  * Main module for application. Defines all dependencies and provides default setup for configuration variables.

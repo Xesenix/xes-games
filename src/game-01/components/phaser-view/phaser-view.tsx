@@ -3,7 +3,7 @@ import Phaser from 'phaser';
 import * as React from 'react';
 import { hot } from 'react-hot-loader';
 
-import { DIContext } from 'game-01/app/app.module';
+import { connectToDI } from 'game-01/src/di.context';
 import { IPhaserGameProvider } from 'game-01/src/phaser/game.provider';
 import './phaser-view.scss';
 
@@ -12,7 +12,7 @@ let gameContainer: HTMLDivElement | null;
 let di: Container | null;
 
 export interface IPhaserViewProps {
-	di: Container | null;
+	di?: Container | null;
 	keepInstanceOnRemove: boolean;
 }
 export interface IPhaserViewState {
@@ -92,6 +92,4 @@ class PhaserViewComponent extends React.Component<IPhaserViewProps, IPhaserViewS
 	}
 }
 
-export default hot(module)((props: IPhaserViewProps) => (
-	<DIContext.Consumer>{ (container: Container | null) => <PhaserViewComponent {...props} di={container}/> }</DIContext.Consumer>
-));
+export default hot(module)(connectToDI<IPhaserViewProps>(PhaserViewComponent));
