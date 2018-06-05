@@ -24,6 +24,14 @@ export default class MusicScene extends Phaser.Scene {
 
 		this.label = this.add.text(400, 300, '', { font: '64px Consolas', fill: '#ffffff' });
 		this.label.setOrigin(0.5, 0.5);
+
+		this.input.keyboard.on('keydown_P', () => {
+			if (!this.scene.isActive('music')) {
+				this.scene.resume('music');
+			} else {
+				this.scene.pause('music');
+			}
+		});
 	}
 
 	public destroy() {
