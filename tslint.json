@@ -3,7 +3,10 @@
 	"extends": [
 		"tslint:recommended"
 	],
-	"jsRules": {},
+	"jsRules": {
+		"indent": [true, "tabs", 2],
+		"quotemark": [true, "single", "jsx-double"]
+	},
 	"rules": {
 		"array-type": [true, "array"],
 		"max-line-length": {

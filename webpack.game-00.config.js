@@ -12,8 +12,8 @@ module.exports = (config) => {
 	if (process.env.ENV === 'test') {
 		config.plugins.push(new webpackBase.DefinePlugin({
 			// required by Phaser 3
-			'WEBGL_RENDERER': JSON.stringify(false),
 			'CANVAS_RENDERER': JSON.stringify(true),
+			'WEBGL_RENDERER': JSON.stringify(false),
 		}));
 	} else {
 		config.devtool = 'cheap-module-source-map';
@@ -21,13 +21,13 @@ module.exports = (config) => {
 		config.externals = {
 			...config.externals,
 			phaser: 'Phaser',
-		}
+		};
 
 		config.plugins.push(new CopyWebpackPlugin([
 			{
 				from: './node_modules/phaser/dist/phaser.min.js',
 				to: 'phaser.min.js',
-			}
+			},
 		]));
 	}
 
