@@ -74,7 +74,7 @@ class PhaserViewComponent extends React.Component<IPhaserViewProps, IPhaserViewS
 	public render(): any {
 		console.log('PhaserViewComponent:render', this.state);
 		return (<div className="phaser-view" ref={ this.bindContainer }>
-			<ul className="actions">
+			<ul className="menu-vertical">
 				<li><a className={['btn', this.state.pause ? 'active' : null].filter((c) => !!c).join(' ')} onClick={this.togglePause}>Pause</a></li>
 				<li><a className={['btn', this.state.mute ? 'active' : null].filter((c) => !!c).join(' ')} onClick={this.toggleMute}>Mute</a></li>
 			</ul>

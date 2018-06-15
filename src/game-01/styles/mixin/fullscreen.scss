@@ -1,0 +1,11 @@
+@mixin fullscreen {
+	&:-webkit-full-screen {
+		@content;
+	}
+	&:-moz-full-screen {
+		@content;
+	}
+	&:fullscreen {
+		@content;
+	}
+}

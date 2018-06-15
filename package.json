@@ -102,7 +102,8 @@
 				"assets"
 			],
 			"stylesImportPaths": [
-				"styles"
+				"src/game-01/styles",
+				"src/styles"
 			],
 			"vendor": []
 		}
