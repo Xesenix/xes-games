@@ -66,6 +66,7 @@
 			"rootDir": "src/game-00",
 			"outDir": "dist/game-00",
 			"main": [
+				"babel-polyfill",
 				"main.ts"
 			],
 			"moduleImportPaths": [
@@ -147,7 +148,9 @@
 		"typescript": "^2.8.3"
 	},
 	"dependencies": {
+		"@babel/preset-stage-2": "^7.0.0-beta.51",
 		"@types/lodash.clonedeep": "^4.5.3",
+		"babel-polyfill": "^6.26.0",
 		"lodash.clonedeep": "^4.5.0",
 		"phaser": "^3.9.0",
 		"react": "^16.4.0",

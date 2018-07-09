@@ -1,0 +1,45 @@
+{
+	"compact": false,
+	"presets": [
+		["@babel/preset-env", {
+			"targets": {
+				"browsers": [
+					"last 2 versions"
+				]
+			},
+			"loose": true,
+			"useBuiltIns": "usage",
+			"modules": false,
+			"debug": true,
+			"spec": false
+		}],
+		"@babel/preset-react",
+		"@babel/preset-typescript",
+		["@babel/preset-stage-3", {
+			"decoratorsLegacy": true
+		}]
+	],
+	"plugins": [
+		"transform-decorators-legacy",
+		"@babel/plugin-proposal-class-properties",
+		"@babel/plugin-proposal-object-rest-spread"
+	],
+	"env": {
+		"test": {
+			"presets": [
+				["@babel/preset-env", {
+					"targets": {
+						"esmodules": true
+					},
+					"loose": true,
+					"modules": false,
+					"debug": true,
+					"spec": false
+				}],
+				"@babel/preset-react",
+				"@babel/preset-typescript",
+				"@babel/preset-stage-3"
+			]
+		}
+	}
+}

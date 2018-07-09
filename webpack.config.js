@@ -6,7 +6,7 @@ const app = application.getEnvApp();
 const appWebpack = `./webpack.game-00.config.js`;
 
 const config = {
-	useBabelrc: false,
+	useBabelrc: true,
 }
 
 if (fs.existsSync(appWebpack)) {
