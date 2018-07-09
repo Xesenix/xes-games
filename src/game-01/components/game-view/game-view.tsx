@@ -3,6 +3,7 @@ import { hot } from 'react-hot-loader';
 
 import FullScreenComponent from 'game-01/components/fullscreen/fullscreen';
 import PhaserViewComponent from 'game-01/components/phaser-view/phaser-view';
+import { __ } from 'lib/localize';
 
 import './game-view.scss';
 
@@ -29,9 +30,9 @@ class GameViewComponent extends React.Component<IGameViewProps, IGameViewState> 
 		return (<FullScreenComponent fullscreen={fullscreen}>
 			<div className="panel panel-primary" ref={(el: HTMLDivElement) => this.fullScreenContainer = el}>
 				<ul className="menu-vertical">
-					{ tab === 'configuration' ? <li><a className="btn" onClick={this.backHandle}>Back</a></li> : null }
-					{ tab === 'game' ? <li><a className="btn" onClick={this.openConfigurationHandle}>Configuration</a></li> : null }
-					<li><a className="btn" onClick={this.toggleFullScreen}>Fullscreen</a></li>
+					{ tab === 'configuration' ? <li><a className="btn" onClick={this.backHandle}>{ __('Back') }</a></li> : null }
+					{ tab === 'game' ? <li><a className="btn" onClick={this.openConfigurationHandle}>{ __('Configuration') }</a></li> : null }
+					<li><a className="btn" onClick={this.toggleFullScreen}>{ __('Fullscreen') }</a></li>
 				</ul>
 				{ tab === 'configuration' ? <div key={'configuration'}>CONFIGURATION</div> : null }
 				{ tab === 'game' ? <PhaserViewComponent keepInstanceOnRemove={true}/> : null }

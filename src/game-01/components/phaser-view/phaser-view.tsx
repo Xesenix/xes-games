@@ -5,11 +5,13 @@ import { hot } from 'react-hot-loader';
 
 import { connectToDI } from 'game-01/src/di.context';
 import { IPhaserGameProvider } from 'game-01/src/phaser/game.provider';
+import { __ } from 'lib/localize';
+
 import './phaser-view.scss';
 
 let game: Phaser.Game | null;
 let gameContainer: HTMLDivElement | null;
-let di: Container | null;
+let di: Container | null | undefined;
 
 export interface IPhaserViewProps {
 	di?: Container | null;
@@ -75,8 +77,8 @@ class PhaserViewComponent extends React.Component<IPhaserViewProps, IPhaserViewS
 		console.log('PhaserViewComponent:render', this.state);
 		return (<div className="phaser-view" ref={ this.bindContainer }>
 			<ul className="menu-vertical">
-				<li><a className={['btn', this.state.pause ? 'active' : null].filter((c) => !!c).join(' ')} onClick={this.togglePause}>Pause</a></li>
-				<li><a className={['btn', this.state.mute ? 'active' : null].filter((c) => !!c).join(' ')} onClick={this.toggleMute}>Mute</a></li>
+				<li><a className={['btn', this.state.pause ? 'active' : null].filter((c) => !!c).join(' ')} onClick={this.togglePause}>{ __('Pause') }</a></li>
+				<li><a className={['btn', this.state.mute ? 'active' : null].filter((c) => !!c).join(' ')} onClick={this.toggleMute}>{ __('Mute') }</a></li>
 			</ul>
 		</div>);
 	}
