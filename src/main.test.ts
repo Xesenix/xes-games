@@ -2,13 +2,6 @@ import Enzyme from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 import 'reflect-metadata';
 
-/**
- * Required to import interceptor during tests to prevent:
- * TypeError: Cannot read property 'call' of undefined
- * @see https://github.com/theKashey/rewiremock#webpack-troubleshooting
- */
-import 'rewiremock/webpack/interceptor';
-
 Enzyme.configure({ adapter: new Adapter() });
 
 const excludeRegexp: RegExp = /\..*\/(main|index)\./;

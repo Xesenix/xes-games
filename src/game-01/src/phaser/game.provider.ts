@@ -2,8 +2,6 @@ import { interfaces } from 'inversify';
 
 import MusicScene from 'lib/scene/music.scene';
 
-import { IPhaserState } from './state';
-
 export type IPhaserGameProvider = (forceNew?: boolean) => Promise<Phaser.Game>;
 
 // singleton
