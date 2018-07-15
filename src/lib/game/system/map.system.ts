@@ -11,7 +11,7 @@ const PLAYER_TYPE = Symbol.for('PLAYER_TYPE');
 const ROCK_TYPE = Symbol.for('ROCK_TYPE');
 
 @inject(['game-objects-factory'])
-export default class MapSystem<T extends IGameObjectState, S extends { objects: IGameBoardObject<T>[], board: IGameBoard<T> }> {
+export class MapSystem<T extends IGameObjectState, S extends { objects: IGameBoardObject<T>[], board: IGameBoard<T> }> {
 	constructor(
 		private builder: ObjectFactory<T, S>,
 	) {}

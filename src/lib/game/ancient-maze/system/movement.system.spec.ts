@@ -1,13 +1,13 @@
 import { Container } from 'inversify';
 import { CommandType, IAncientMazeState } from 'lib/game/ancient-maze/ancient-maze';
-import Board from 'lib/game/board/board';
+import { Board } from 'lib/game/board/board';
 import { IGameBoardObject, IGameObjectState, IMovableGameObjectState } from 'lib/game/board/interface';
-import GameBoardObject from 'lib/game/board/object';
-import CollisionSystem from 'lib/game/system/collision.system';
+import { GameBoardObject } from 'lib/game/board/object';
+import { CollisionSystem } from 'lib/game/system/collision.system';
 
 import { ARROW_TYPE, BOX_TYPE, ObjectFactory, PLAYER_TYPE, ROCK_TYPE } from '../object-factory';
-import ArrowSystem from './arrow.system';
-import MovementSystem from './movement.system';
+import { ArrowSystem } from './arrow.system';
+import { MovementSystem } from './movement.system';
 
 type GO = (IGameObjectState | IMovableGameObjectState);
 

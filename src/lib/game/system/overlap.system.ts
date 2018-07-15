@@ -7,7 +7,7 @@ export interface IOverlapableState<T extends IGameObjectState> {
 }
 
 @injectable()
-export default class OverlapSystem<T extends IGameObjectState, S extends IOverlapableState<T>> {
+export class OverlapSystem<T extends IGameObjectState, S extends IOverlapableState<T>> {
 	constructor(
 		private visitableType: symbol,
 		private visitorType: symbol,

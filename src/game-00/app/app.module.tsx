@@ -7,13 +7,11 @@ import { Container } from 'inversify';
 import OutletComponent from 'game-00/components/outlet/outlet';
 import { FlatDictionary } from 'lib/dictionary/flat-dictionary';
 import { IDictionary } from 'lib/dictionary/interfaces';
-import AncientMaze from 'lib/game/ancient-maze/ancient-maze';
+import { AncientMaze } from 'lib/game/ancient-maze/ancient-maze';
 import { IAncientMazeState } from 'lib/game/ancient-maze/ancient-maze';
 import { AncientMazeModule } from 'lib/game/ancient-maze/ancient-maze.module';
-import Board from 'lib/game/board/board';
-import { PhaserModule } from 'lib/phaser/phaser.module';
+import { Board } from 'lib/game/board/board';
 import { IRenderer, ReactRenderer } from 'lib/renderer/react-renderer';
-import { ThemeModule } from 'lib/theme/theme.module';
 
 import { IGameObjectState } from 'lib/game/board/interface';
 
@@ -53,7 +51,6 @@ export class AppModule extends Container {
 
 		// phaser
 		// this.load(ThemeModule());
-		// this.load(PhaserModule());
 
 		// game
 		this.load(AncientMazeModule());
@@ -72,7 +69,13 @@ export class AppModule extends Container {
 
 		this.bind<IAncientMazeState<IGameObjectState>>('game-state').toConstantValue({
 			objects: [],
-			inputBuffer: [],
+			inputBuffer: [
+				'left', 'up', 'up', 'right', 'down', 'down', 'left', 'right',
+				'right', 'right', 'down', 'down', 'right', 'right', 'right',
+				'up', 'right', 'up', 'up', 'up', 'right', 'up', 'left', 'left',
+				'down', 'down', 'up', 'up', 'right', 'right', 'right', 'up',
+				'right', 'down', 'down', 'down',
+			],
 			finished: false,
 			command: undefined,
 			executedCommands: [],

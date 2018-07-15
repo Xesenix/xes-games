@@ -10,7 +10,7 @@ export interface IMortalState<T extends IGameObjectState> {
 const DESTRUCTIBLE_OBJECT_ASPECT = Symbol.for('DESTRUCTIBLE_OBJECT_ASPECT');
 
 @inject(['game-objects-factory'])
-export default class ReplaceDeadWithBodySystem<T extends (IGameObjectState | IMovableGameObjectState), S extends IMortalState<T>> {
+export class ReplaceDeadWithBodySystem<T extends (IGameObjectState | IMovableGameObjectState), S extends IMortalState<T>> {
 	constructor(
 		private builder: ObjectFactory<T, S>,
 	) { }

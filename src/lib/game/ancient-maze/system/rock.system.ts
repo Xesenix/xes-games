@@ -1,12 +1,12 @@
 import { inject } from 'lib/di';
 import { IGameBoard, IGameBoardObject, IGameObjectState } from 'lib/game/board/interface';
-import CollisionSystem from 'lib/game/system/collision.system';
+import { CollisionSystem } from 'lib/game/system/collision.system';
 
 const ROCK_OBJECT_ASPECT = Symbol.for('ROCK_OBJECT_ASPECT');
 const ROCK_TARGET_ASPECT = Symbol.for('ROCK_TARGET_ASPECT');
 
 @inject(['kill', 'collision-system'])
-export default class RockSystem<T extends IGameObjectState> {
+export class RockSystem<T extends IGameObjectState> {
 	constructor(
 		private kill: (target: IGameBoardObject<T>) => void,
 		private collisionSystem: CollisionSystem<T, { objects: IGameBoardObject<T>[], board: IGameBoard<T> }>,

@@ -1,6 +1,6 @@
 import { injectable } from 'lib/di';
 import { IGameBoard, IGameBoardObject, IGameObjectState, IMovableGameObjectState } from 'lib/game/board/interface';
-import GameBoardObject from 'lib/game/board/object';
+import { GameBoardObject } from 'lib/game/board/object';
 
 export const ARROW_CANNON_TYPE = Symbol.for('ARROW_CANNON_TYPE');
 export const ARROW_TYPE = Symbol.for('ARROW_TYPE');

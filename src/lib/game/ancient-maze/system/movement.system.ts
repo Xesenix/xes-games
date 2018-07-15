@@ -1,7 +1,7 @@
 import { inject } from 'lib/di';
 import { CommandType } from 'lib/game/ancient-maze/ancient-maze';
 import { IGameBoard, IGameBoardObject, IGameObjectState, IMovableGameObjectState } from 'lib/game/board/interface';
-import CollisionSystem from 'lib/game/system/collision.system';
+import { CollisionSystem } from 'lib/game/system/collision.system';
 
 const CONTROLLABLE_ASPECT = Symbol.for('CONTROLLABLE_ASPECT');
 const MOVABLE_ASPECT = Symbol.for('MOVABLE_ASPECT');
@@ -9,7 +9,7 @@ const MOVABLE_ASPECT = Symbol.for('MOVABLE_ASPECT');
 type GO = (IGameObjectState | IMovableGameObjectState);
 
 @inject(['collision-system'])
-export default class MovementSystem<T extends GO, S extends { command: CommandType; objects: IGameBoardObject<T>[], board: IGameBoard<T> }> {
+export class MovementSystem<T extends GO, S extends { command: CommandType; objects: IGameBoardObject<T>[], board: IGameBoard<T> }> {
 	constructor(
 		private collisionSystem: CollisionSystem<T, S>,
 	) { }

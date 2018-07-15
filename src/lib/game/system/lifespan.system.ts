@@ -4,7 +4,7 @@ import { IGameBoardObject, IGameObjectState } from 'lib/game/board/interface';
 const LIFE_SPAN_ASPECT = Symbol.for('LIFE_SPAN_ASPECT');
 
 @inject(['kill'])
-export default class LifespanSystem<T extends IGameObjectState, S extends { objects: IGameBoardObject<T>[] }> {
+export class LifespanSystem<T extends IGameObjectState, S extends { objects: IGameBoardObject<T>[] }> {
 	constructor(
 		private kill = (obj: IGameBoardObject<T>) => {},
 	) {	}

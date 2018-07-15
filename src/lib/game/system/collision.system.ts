@@ -18,7 +18,7 @@ import { IGameBoard, IGameBoardObject, IGameObjectState } from 'lib/game/board/i
 export type CollisionListenerType<T extends IGameObjectState> = (source: IGameBoardObject<T>, target: IGameBoardObject<T> | null) => void;
 
 @injectable()
-export default class CollisionSystem<T extends IGameObjectState, S extends { objects: IGameBoardObject<T>[], board: IGameBoard<T> }> {
+export class CollisionSystem<T extends IGameObjectState, S extends { objects: IGameBoardObject<T>[], board: IGameBoard<T> }> {
 	private collisionMap = [
 		[ true,  true,  true, false, false],
 		[ true,  true,  true, false, false],

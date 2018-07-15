@@ -1,21 +1,22 @@
-import GameBoardComponent from 'game-00/components/game-board/game-board';
-import GameStateConsoleComponent from 'game-00/components/game-state-console/game-state-console';
-import { inject } from 'lib/di';
-import ArrowSystem from 'lib/game/ancient-maze/system/arrow.system';
-import CollectableSystem from 'lib/game/ancient-maze/system/collectable.system';
-import DeadBodiesSystem from 'lib/game/ancient-maze/system/dead-bodies.system';
-import EndPortalSystem from 'lib/game/ancient-maze/system/end-portal.system';
-import MovementSystem from 'lib/game/ancient-maze/system/movement.system';
-import RockSystem from 'lib/game/ancient-maze/system/rock.system';
-import { IGameBoard, IGameBoardObject, IGameObjectState } from 'lib/game/board/interface';
-import CollisionSystem from 'lib/game/system/collision.system';
-import LifespanSystem from 'lib/game/system/lifespan.system';
-import MapSystem from 'lib/game/system/map.system';
-import SpawnSystem from 'lib/game/system/spawn.system';
-import { ReactRenderer } from 'lib/renderer/react-renderer';
 import cloneDeep from 'lodash.clonedeep';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
+
+import GameBoardComponent from 'game-00/components/game-board/game-board';
+import GameStateConsoleComponent from 'game-00/components/game-state-console/game-state-console';
+import { inject } from 'lib/di';
+import { ArrowSystem } from 'lib/game/ancient-maze/system/arrow.system';
+import { CollectableSystem } from 'lib/game/ancient-maze/system/collectable.system';
+import { DeadBodiesSystem } from 'lib/game/ancient-maze/system/dead-bodies.system';
+import { EndPortalSystem } from 'lib/game/ancient-maze/system/end-portal.system';
+import { MovementSystem } from 'lib/game/ancient-maze/system/movement.system';
+import { RockSystem } from 'lib/game/ancient-maze/system/rock.system';
+import { IGameBoard, IGameBoardObject, IGameObjectState } from 'lib/game/board/interface';
+import { CollisionSystem } from 'lib/game/system/collision.system';
+import { LifespanSystem } from 'lib/game/system/lifespan.system';
+import { MapSystem } from 'lib/game/system/map.system';
+import { SpawnSystem } from 'lib/game/system/spawn.system';
+import { ReactRenderer } from 'lib/renderer/react-renderer';
 
 export type CommandType = 'up' | 'down' | 'left' | 'right' | 'back' | undefined;
 
@@ -50,7 +51,7 @@ export interface IAncientMazeState<T extends IGameObjectState> {
 	'exit-system',
 	'debug:console',
 ])
-export default class AncientMaze<T extends IGameObjectState, S extends IAncientMazeState<T>> {
+export class AncientMaze<T extends IGameObjectState, S extends IAncientMazeState<T>> {
 	constructor(
 		private movementSystem: MovementSystem<T, S>, // movement-system
 		private state: S, // game-state

@@ -4,7 +4,7 @@ import { IGameBoard } from 'lib/game/board/interface';
 import { IGameBoardObject, IGameObjectState } from './interface';
 
 @inject(['board:size-x', 'board:size-y'])
-export default class Board<T extends IGameObjectState> implements IGameBoard<T> {
+export class Board<T extends IGameObjectState> implements IGameBoard<T> {
 	private data: IGameBoardObject<T>[][][];
 
 	constructor(

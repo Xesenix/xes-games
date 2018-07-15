@@ -5,7 +5,7 @@ import { IGameBoard, IGameBoardObject, IGameObjectState, IMovableGameObjectState
 export const SPAWNER_OBJECT_ASPECT = Symbol.for('SPAWNER_OBJECT_ASPECT');
 
 @inject(['game-objects-factory'])
-export default class SpawnSystem<T extends (IGameObjectState | IMovableGameObjectState), S extends { objects: IGameBoardObject<T>[], board: IGameBoard<T> }> {
+export class SpawnSystem<T extends (IGameObjectState | IMovableGameObjectState), S extends { objects: IGameBoardObject<T>[], board: IGameBoard<T> }> {
 	constructor(
 		private builder: ObjectFactory<T, S>,
 	) { }

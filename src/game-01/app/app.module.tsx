@@ -8,11 +8,6 @@ import OutletComponent from 'game-00/components/outlet/outlet'; // TODO: move ou
 import { DIContext } from 'game-01/src/di.context';
 import { FlatDictionary } from 'lib/dictionary/flat-dictionary';
 import { IDictionary } from 'lib/dictionary/interfaces';
-// import AncientMaze from 'lib/game/ancient-maze/ancient-maze';
-// import { IAncientMazeState } from 'lib/game/ancient-maze/ancient-maze';
-// import { AncientMazeModule } from 'lib/game/ancient-maze/ancient-maze.module';
-// import Board from 'lib/game/board/board';
-// import { IGameObjectState } from 'lib/game/board/interface';
 import { IRenderer, ReactRenderer } from 'lib/renderer/react-renderer';
 
 import { PhaserGameModule } from '../src/phaser/game.module';

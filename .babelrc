@@ -15,12 +15,12 @@
 		}],
 		"@babel/preset-react",
 		"@babel/preset-typescript",
-		["@babel/preset-stage-3", {
-			"decoratorsLegacy": true
-		}]
+		"@babel/preset-stage-3"
 	],
 	"plugins": [
-		"transform-decorators-legacy",
+		["@babel/plugin-proposal-decorators", {
+			"legacy": true
+		}],
 		"@babel/plugin-proposal-class-properties",
 		"@babel/plugin-proposal-object-rest-spread"
 	],

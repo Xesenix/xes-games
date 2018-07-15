@@ -1,6 +1,6 @@
 import { injectable } from 'lib/di';
 import { IGameBoardObject, IGameObjectState } from 'lib/game/board/interface';
-import OverlapSystem, { IOverlapableState } from 'lib/game/system/overlap.system';
+import { IOverlapableState, OverlapSystem } from 'lib/game/system/overlap.system';
 
 export interface IFinishableState<T extends IGameObjectState> extends IOverlapableState<T> {
 	objects: IGameBoardObject<T>[];
@@ -13,7 +13,7 @@ const ACTOR_ASPECT = Symbol.for('ACTOR_ASPECT');
 const EXIT_ASPECT = Symbol.for('EXIT_ASPECT');
 
 @injectable()
-export default class EndPortalSystem<T extends IGameObjectState, S extends IFinishableState<T>> {
+export class EndPortalSystem<T extends IGameObjectState, S extends IFinishableState<T>> {
 	private overlapSystem: OverlapSystem<T, S>;
 
 	constructor() {

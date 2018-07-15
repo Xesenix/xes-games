@@ -1,18 +1,19 @@
 import { ContainerModule, interfaces } from 'inversify';
-import { IAncientMazeState } from 'lib/game/ancient-maze/ancient-maze';
-import ArrowSystem from 'lib/game/ancient-maze/system/arrow.system';
-import CollectableSystem from 'lib/game/ancient-maze/system/collectable.system';
-import DeadBodiesSystem from 'lib/game/ancient-maze/system/dead-bodies.system';
-import EndPortalSystem from 'lib/game/ancient-maze/system/end-portal.system';
-import MovementSystem from 'lib/game/ancient-maze/system/movement.system';
-import RockSystem from 'lib/game/ancient-maze/system/rock.system';
-import { IGameBoardObject, IGameObjectState, IMovableGameObjectState } from 'lib/game/board/interface';
-import CollisionSystem from 'lib/game/system/collision.system';
-import LifespanSystem from 'lib/game/system/lifespan.system';
-import MapSystem from 'lib/game/system/map.system';
-import SpawnSystem from 'lib/game/system/spawn.system';
 
-import AncientMaze from './ancient-maze';
+import { IAncientMazeState } from 'lib/game/ancient-maze/ancient-maze';
+import { ArrowSystem } from 'lib/game/ancient-maze/system/arrow.system';
+import { CollectableSystem } from 'lib/game/ancient-maze/system/collectable.system';
+import { DeadBodiesSystem } from 'lib/game/ancient-maze/system/dead-bodies.system';
+import { EndPortalSystem } from 'lib/game/ancient-maze/system/end-portal.system';
+import { MovementSystem } from 'lib/game/ancient-maze/system/movement.system';
+import { RockSystem } from 'lib/game/ancient-maze/system/rock.system';
+import { IGameBoardObject, IGameObjectState, IMovableGameObjectState } from 'lib/game/board/interface';
+import { CollisionSystem } from 'lib/game/system/collision.system';
+import { LifespanSystem } from 'lib/game/system/lifespan.system';
+import { MapSystem } from 'lib/game/system/map.system';
+import { SpawnSystem } from 'lib/game/system/spawn.system';
+
+import { AncientMaze } from './ancient-maze';
 import { ObjectFactory } from './object-factory';
 
 type GO = (IGameObjectState | IMovableGameObjectState);
@@ -28,6 +29,8 @@ export const AncientMazeModule = () => new ContainerModule((bind: interfaces.Bin
 	bind<ObjectFactory<IGameObjectState, IAncientMazeState<IGameObjectState>>>('game-objects-factory')
 		.to(ObjectFactory)
 		.inSingletonScope();
+
+	console.log('CollisionSystem', CollisionSystem);
 
 	bind<CollisionSystem<GO, IAncientMazeState<GO>>>('collision-system').to(CollisionSystem).inSingletonScope();
 	bind<LifespanSystem<GO, IAncientMazeState<GO>>>('lifespan-system').to(LifespanSystem).inSingletonScope();

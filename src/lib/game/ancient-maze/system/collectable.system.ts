@@ -1,6 +1,6 @@
 import { injectable } from 'lib/di';
 import { IGameBoardObject, IGameObjectState } from 'lib/game/board/interface';
-import OverlapSystem, { IOverlapableState } from 'lib/game/system/overlap.system';
+import { IOverlapableState, OverlapSystem } from 'lib/game/system/overlap.system';
 
 export interface ICollectableState<T extends IGameObjectState> extends IOverlapableState<T> {
 	objects: IGameBoardObject<T>[];
@@ -12,7 +12,7 @@ const COLLECTABLE_ASPECT = Symbol.for('COLLECTABLE_ASPECT');
 const COLLECTOR_ASPECT = Symbol.for('COLLECTOR_ASPECT');
 
 @injectable()
-export default class CollectableSystem<T extends IGameObjectState, S extends ICollectableState<T>> {
+export class CollectableSystem<T extends IGameObjectState, S extends ICollectableState<T>> {
 	private overlapSystem: OverlapSystem<T, S>;
 
 	constructor() {

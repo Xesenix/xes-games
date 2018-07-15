@@ -1,7 +1,7 @@
 import { Container } from 'inversify';
-import Board from 'lib/game/board/board';
+import { Board } from 'lib/game/board/board';
 
-import AncientMaze from './ancient-maze';
+import { AncientMaze } from './ancient-maze';
 
 const KEY_ITEM_TYPE = Symbol.for('KEY_ITEM_TYPE');
 
