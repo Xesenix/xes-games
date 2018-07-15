@@ -12,7 +12,11 @@ export class OverlapSystem<T extends IGameObjectState, S extends IOverlapableSta
 		private visitableType: symbol,
 		private visitorType: symbol,
 		private onVisit: (state: S, visitable: IGameBoardObject<T>, visitor: IGameBoardObject<T>) => void,
-	) { }
+	) {
+		this.visitableType = visitableType;
+		this.visitorType = visitorType;
+		this.onVisit = onVisit;
+	}
 
 	public update(state: S): void {
 		const { objects, board } = state;

@@ -9,9 +9,11 @@ const ROCK_TARGET_ASPECT = Symbol.for('ROCK_TARGET_ASPECT');
 export class RockSystem<T extends IGameObjectState> {
 	constructor(
 		private kill: (target: IGameBoardObject<T>) => void,
-		private collisionSystem: CollisionSystem<T, { objects: IGameBoardObject<T>[], board: IGameBoard<T> }>,
+		collisionSystem: CollisionSystem<T, { objects: IGameBoardObject<T>[], board: IGameBoard<T> }>,
 	) {
-		this.collisionSystem.listenToCollision(this.onCollision.bind(this));
+		this.kill = kill;
+
+		collisionSystem.listenToCollision(this.onCollision.bind(this));
 	}
 
 	private onCollision(source: IGameBoardObject<T>, target: IGameBoardObject<T>): void {

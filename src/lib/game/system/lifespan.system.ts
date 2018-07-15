@@ -7,7 +7,9 @@ const LIFE_SPAN_ASPECT = Symbol.for('LIFE_SPAN_ASPECT');
 export class LifespanSystem<T extends IGameObjectState, S extends { objects: IGameBoardObject<T>[] }> {
 	constructor(
 		private kill = (obj: IGameBoardObject<T>) => {},
-	) {	}
+	) {
+		this.kill = kill;
+	}
 
 	public update(state: S): void {
 		const { objects } = state;

@@ -8,7 +8,9 @@ export const SPAWNER_OBJECT_ASPECT = Symbol.for('SPAWNER_OBJECT_ASPECT');
 export class SpawnSystem<T extends (IGameObjectState | IMovableGameObjectState), S extends { objects: IGameBoardObject<T>[], board: IGameBoard<T> }> {
 	constructor(
 		private builder: ObjectFactory<T, S>,
-	) { }
+	) {
+		this.builder = builder;
+	}
 
 	public update(state: S) {
 		const { objects } = state;

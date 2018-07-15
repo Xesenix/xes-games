@@ -16,5 +16,11 @@ export class GameBoardObject<T extends IGameObjectState> implements IGameBoardOb
 				y: 0,
 			},
 		} as T,
-	) { }
+	) {
+		this.id = id;
+		this.type = type;
+		this.aspects = aspects;
+		this.collisionGroup = collisionGroup;
+		this.state = state;
+	}
 }

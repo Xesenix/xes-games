@@ -14,7 +14,9 @@ const ROCK_TYPE = Symbol.for('ROCK_TYPE');
 export class MapSystem<T extends IGameObjectState, S extends { objects: IGameBoardObject<T>[], board: IGameBoard<T> }> {
 	constructor(
 		private builder: ObjectFactory<T, S>,
-	) {}
+	) {
+		this.builder = builder;
+	}
 
 	public load(state: S): void {
 		for (let i = 0; i < state.board.sizeX; i ++) {

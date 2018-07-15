@@ -14,8 +14,10 @@ export class ArrowSystem<T extends IGameObjectState, S extends IOverlapableState
 
 	constructor(
 		private kill: (target: IGameBoardObject<T>) => void,
-		private collisionSystem: CollisionSystem<T, S>,
+		public collisionSystem: CollisionSystem<T, S>,
 	) {
+		this.kill = kill;
+
 		this.overlapSystem = new OverlapSystem<T, S>(ARROW_OBJECT_ASPECT, ARROW_TARGET_ASPECT,
 			(state: S, arrow: IGameBoardObject<T>, target: IGameBoardObject<T>) => {
 				if (arrow.state.alive) {

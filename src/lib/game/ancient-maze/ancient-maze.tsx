@@ -66,7 +66,21 @@ export class AncientMaze<T extends IGameObjectState, S extends IAncientMazeState
 		private spawnSystem: SpawnSystem<T, S>, // spawner-system
 		private exitSystem: EndPortalSystem<T, S>, // exit-system
 		private console: Console, // debug:console
-	) {	}
+	) {
+		this.movementSystem = movementSystem;
+		this.state = state;
+		this.renderer = renderer;
+		this.collisionSystem = collisionSystem;
+		this.lifespanSystem = lifespanSystem;
+		this.arrowSystem = arrowSystem;
+		this.rockSystem = rockSystem;
+		this.mapSystem = mapSystem;
+		this.deadBodiesSystem = deadBodiesSystem;
+		this.collectableSystem = collectableSystem;
+		this.spawnSystem = spawnSystem;
+		this.exitSystem = exitSystem;
+		this.console = console;
+	}
 
 	public boot() {
 		this.mapSystem.load(this.state);

@@ -13,7 +13,9 @@ const DESTRUCTIBLE_OBJECT_ASPECT = Symbol.for('DESTRUCTIBLE_OBJECT_ASPECT');
 export class ReplaceDeadWithBodySystem<T extends (IGameObjectState | IMovableGameObjectState), S extends IMortalState<T>> {
 	constructor(
 		private builder: ObjectFactory<T, S>,
-	) { }
+	) {
+		this.builder = builder;
+	}
 
 	public update(state: S) {
 		const { objects, board } = state;

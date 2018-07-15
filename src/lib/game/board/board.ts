@@ -11,6 +11,9 @@ export class Board<T extends IGameObjectState> implements IGameBoard<T> {
 		public sizeX: number,
 		public sizeY: number,
 	) {
+		this.sizeX = sizeX;
+		this.sizeY = sizeY;
+
 		const board = new Array<number[]>(sizeY);
 		board.fill([]);
 		this.data = board.map(() => (new Array<IGameBoardObject<T>[]>(sizeX)).fill([]).map(() => []));

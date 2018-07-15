@@ -15,7 +15,10 @@ export class ReactRenderer implements IRenderer {
 		private uiRoot: HTMLElement,
 		private outlet: React.Component,
 
-	) { }
+	) {
+		this.uiRoot = uiRoot;
+		this.outlet = outlet;
+	}
 
 	public setOutlet(component: any, outlet: string = 'main'): IRenderer {
 		this.outlets[outlet] = component;

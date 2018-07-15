@@ -12,7 +12,9 @@ type GO = (IGameObjectState | IMovableGameObjectState);
 export class MovementSystem<T extends GO, S extends { command: CommandType; objects: IGameBoardObject<T>[], board: IGameBoard<T> }> {
 	constructor(
 		private collisionSystem: CollisionSystem<T, S>,
-	) { }
+	) {
+		this.collisionSystem = collisionSystem;
+	}
 
 	public commandMoveUp(state: S): void {
 		const { objects } = state;
