@@ -1,0 +1,27 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+
+#: src/game-01/components/game-view/game-view.tsx:33
+msgid "Back"
+msgstr ""
+
+#: src/game-01/components/game-view/game-view.tsx:34
+msgid "Configuration"
+msgstr ""
+
+#: src/game-01/components/game-view/game-view.tsx:35
+msgid "Fullscreen"
+msgstr ""
+
+#: src/game-01/components/phaser-view/phaser-view.tsx:81
+msgid "Mute"
+msgstr ""
+
+#: src/game-01/components/phaser-view/phaser-view.tsx:80
+msgid "Pause"
+msgstr ""
+
+#: src/game-01/app/app.tsx:11
+msgid "PHASER 3 Game Test"
+msgstr ""

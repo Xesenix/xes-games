@@ -1,0 +1,27 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+
+#: src/game-00/components/game-state-console/game-state-console.tsx:26
+msgid "Command"
+msgstr ""
+
+#: src/game-00/components/game-state-console/game-state-console.tsx:29
+msgid "Command buffer"
+msgstr ""
+
+#: src/game-00/components/game-state-console/game-state-console.tsx:34
+msgid "Executed moves"
+msgstr ""
+
+#: src/game-00/components/game-state-console/game-state-console.tsx:25
+msgid "Finished"
+msgstr ""
+
+#: src/game-00/components/game-state-console/game-state-console.tsx:27
+msgid "Keys"
+msgstr ""
+
+#: src/game-00/components/game-state-console/game-state-console.tsx:28
+msgid "Steps"
+msgstr ""
