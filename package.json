@@ -146,11 +146,13 @@
 	},
 	"dependencies": {
 		"@types/lodash.clonedeep": "^4.5.3",
+		"babel-polyfill": "^6.26.0",
 		"istanbul": "github:Xesenix/istanbul",
 		"lodash.clonedeep": "^4.5.0",
 		"phaser": "^3.9.0",
 		"react": "^16.4.0",
 		"react-dom": "^16.4.0",
+		"rxjs": "^6.2.2",
 		"ts-node": "^7.0.0",
 		"webpack-dev-server": "^3.1.4",
 		"xes-webpack-core": "^0.6.2"
