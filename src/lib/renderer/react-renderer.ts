@@ -13,11 +13,11 @@ export class ReactRenderer implements IRenderer {
 
 	constructor(
 		private uiRoot: HTMLElement,
-		private outlet: React.Component,
+		private outletFactory: React.ComponentFactory<any, any>,
 
 	) {
 		this.uiRoot = uiRoot;
-		this.outlet = outlet;
+		this.outletFactory = outletFactory;
 	}
 
 	public setOutlet(component: any, outlet: string = 'main'): IRenderer {
@@ -31,11 +31,7 @@ export class ReactRenderer implements IRenderer {
 			if (this.outlets.hasOwnProperty(key)) {
 				const element = this.outlets[key];
 				if (!!element) {
-					content.push((
-						<this.outlet key={key}>
-							{ element }
-						</this.outlet>
-					));
+					content.push(this.outletFactory({ key }, element));
 				}
 			}
 		}

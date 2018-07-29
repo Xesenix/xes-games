@@ -55,7 +55,7 @@ export class AppModule extends Container {
 
 		// rendering DOM
 		this.bind<HTMLElement>('ui:root').toConstantValue(document.getElementById('app') as HTMLElement);
-		this.bind<React.Component>('ui:outlet-component').toConstantValue(OutletComponent);
+		this.bind<React.ComponentFactory<any, any>>('ui:outlet-component').toConstantValue(React.createFactory(OutletComponent));
 		this.bind<IRenderer>('ui:renderer').to(ReactRenderer).inSingletonScope();
 
 		// environment
