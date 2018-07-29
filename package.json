@@ -148,7 +148,7 @@
 		"babel-polyfill": "^6.26.0",
 		"istanbul": "github:Xesenix/istanbul",
 		"lodash.clonedeep": "^4.5.0",
-		"phaser": "^3.9.0",
+		"phaser": "^3.11.0",
 		"react": "^16.4.0",
 		"react-dom": "^16.4.0",
 		"rxjs": "^6.2.2",
