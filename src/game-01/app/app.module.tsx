@@ -6,6 +6,7 @@ import { Container } from 'inversify';
 
 import OutletComponent from 'game-00/components/outlet/outlet'; // TODO: move outside game-00
 import { DIContext } from 'game-01/src/di.context';
+import { UIModule } from 'game-01/src/ui/ui.module';
 import { FlatDictionary } from 'lib/dictionary/flat-dictionary';
 import { IDictionary } from 'lib/dictionary/interfaces';
 import { IRenderer, ReactRenderer } from 'lib/renderer/react-renderer';
@@ -57,6 +58,9 @@ export class AppModule extends Container {
 		this.bind<HTMLElement>('ui:root').toConstantValue(document.getElementById('app') as HTMLElement);
 		this.bind<React.ComponentFactory<any, any>>('ui:outlet-component').toConstantValue(React.createFactory(OutletComponent));
 		this.bind<IRenderer>('ui:renderer').to(ReactRenderer).inSingletonScope();
+
+		// ui
+		this.load(UIModule());
 
 		// environment
 		this.bind<IDictionary>('player-pref').toConstantValue(new FlatDictionary({

@@ -1,4 +1,5 @@
 import { ContainerModule, interfaces } from 'inversify';
+
 import { IPhaserGameProvider, PhaserGameProvider } from './game.provider';
 // import { ConfigurePhaserState, IPhaserSetupProvider } from './phaser-configure-state';
 

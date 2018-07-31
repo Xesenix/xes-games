@@ -1,10 +1,18 @@
 import * as Phaser from 'phaser';
+import { Store } from 'redux';
 
-export default class MusicScene extends Phaser.Scene {
+import { IUIState } from 'game-01/src/ui/reducers';
+import { StorePlugin } from 'lib/phaser/store.plugin';
+
+export class MusicScene extends Phaser.Scene {
 	private soundtrack?: Phaser.Sound.BaseSound;
 	private label?: Phaser.GameObjects.Text;
 
+	private unsubscribe: any;
+	private store: Store;
+
 	constructor() {
+		console.log('MusicScene:constructor');
 		super({
 			key: 'music',
 		});
@@ -15,10 +23,13 @@ export default class MusicScene extends Phaser.Scene {
 		this.load.audio('soundtrack', [
 			'assets/soundtrack.ogg',
 		]);
+
+		this.store = (this.sys.plugins.get('ui:store') as any).store;
 	}
 
 	public create() {
 		console.log('=== CREATE MUSIC');
+
 		this.soundtrack = this.sound.add('soundtrack');
 		this.soundtrack.play('', { loop: true });
 
