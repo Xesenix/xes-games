@@ -9,7 +9,6 @@ export class MusicScene extends Phaser.Scene {
 	private label?: Phaser.GameObjects.Text;
 
 	private unsubscribe: any;
-	private store: Store;
 
 	constructor() {
 		console.log('MusicScene:constructor');
@@ -23,8 +22,6 @@ export class MusicScene extends Phaser.Scene {
 		this.load.audio('soundtrack', [
 			'assets/soundtrack.ogg',
 		]);
-
-		this.store = (this.sys.plugins.get('ui:store') as any).store;
 	}
 
 	public create() {
@@ -46,6 +43,7 @@ export class MusicScene extends Phaser.Scene {
 	}
 
 	public destroy() {
+		console.log('scene:destroy');
 		if (this.soundtrack) {
 			this.soundtrack.destroy();
 		}
@@ -53,6 +51,6 @@ export class MusicScene extends Phaser.Scene {
 
 	public update(time: number, delta: number) {
 		this.label.setText(`total time: ${(time / 1000).toFixed(0)}s\ndelta: ${delta.toFixed(2)}ms`);
-		console.log('update', delta.toFixed(0));
+		// console.log('update', delta.toFixed(0));
 	}
 }

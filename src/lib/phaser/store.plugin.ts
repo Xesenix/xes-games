@@ -10,12 +10,11 @@ export class StorePlugin extends Phaser.Plugins.BasePlugin {
 		console.log('StorePlugin:constructor');
 		this.store = store;
 	}
-
-	private start() {
+	public start() {
 		console.log('StorePlugin:start');
 	}
 
-	private stop() {
+	public stop() {
 		console.log('StorePlugin:stop');
 	}
 }

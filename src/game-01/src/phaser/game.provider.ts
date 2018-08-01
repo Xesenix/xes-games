@@ -1,9 +1,10 @@
 import { interfaces } from 'inversify';
 import { Store } from 'redux';
 
+import { IUIStoreProvider } from 'game-01/src/ui/store.provider';
 import { StorePlugin } from 'lib/phaser/store.plugin';
+import { UIManagerPlugin } from 'lib/phaser/ui-manager.plugin';
 import { MusicScene } from 'lib/scene/music.scene';
-import { IUIStoreProvider } from 'lib/ui/store.provider';
 
 export type IPhaserGameProvider = (forceNew?: boolean) => Promise<Phaser.Game>;
 
@@ -82,10 +83,12 @@ export function PhaserGameProvider(context: interfaces.Context) {
 					global: [
 						{
 							key: 'ui:store',
-							plugin: (pluginManager: Phaser.Plugins.PluginManager) => {
-								console.log('PLUGIN');
-								return new StorePlugin(pluginManager, store);
-							},
+							plugin: (pluginManager: Phaser.Plugins.PluginManager) => new StorePlugin(pluginManager, store),
+							start: true,
+						},
+						{
+							key: 'ui:manager',
+							plugin: (pluginManager: Phaser.Plugins.PluginManager) => new UIManagerPlugin(pluginManager, store),
 							start: true,
 						},
 					],

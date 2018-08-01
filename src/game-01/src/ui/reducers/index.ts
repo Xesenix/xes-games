@@ -4,9 +4,9 @@ import {
 	SET_MUTE,
 	SET_PAUSE,
 	SET_VOLUME,
-	SetMuteAction,
-	SetPauseAction,
-	SetVolumeAction,
+	ISetMuteAction,
+	ISetPauseAction,
+	ISetVolumeAction,
 	UIAction,
 } from '../actions/index';
 
@@ -25,21 +25,21 @@ export const defaultUIState: IUIState = {
 export const ui: Reducer<IUIState, UIAction> = (state: IUIState = defaultUIState, action: UIAction): IUIState => {
 	switch (action.type) {
 		case SET_MUTE: {
-			const { value } = action as SetMuteAction;
+			const { value } = action as ISetMuteAction;
 			return {
 				...state,
 				mute: value,
 			};
 		}
 		case SET_PAUSE: {
-			const { value } = action as SetPauseAction;
+			const { value } = action as ISetPauseAction;
 			return {
 				...state,
 				paused: value,
 			};
 		}
 		case SET_VOLUME: {
-			const { value } = action as SetVolumeAction;
+			const { value } = action as ISetVolumeAction;
 			return {
 				...state,
 				volume: value,

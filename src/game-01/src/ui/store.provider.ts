@@ -1,5 +1,6 @@
 import { interfaces } from 'inversify';
-import { createStore, Store } from 'redux';
+import { applyMiddleware, createStore, Store } from 'redux';
+import thunk from 'redux-thunk';
 
 import { UIAction } from './actions/index';
 import { defaultUIState, IUIState, ui } from './reducers/index';
@@ -21,7 +22,7 @@ export function UIStoreProvider(context: interfaces.Context) {
 		try {
 			const initialState: IUIState = defaultUIState;
 
-			store = createStore<IUIState, UIAction, {}, {}>(ui, initialState);
+			store = createStore<IUIState, UIAction, any, any>(ui, initialState, applyMiddleware(thunk));
 
 			console.debug('UIStoreProvider:store', store);
 			return Promise.resolve(store);
