@@ -5,16 +5,16 @@ import { Store } from 'redux';
 
 import FullScreenComponent from 'game-01/components/fullscreen/fullscreen';
 import PhaserViewComponent from 'game-01/components/phaser-view/phaser-view';
-import { inject } from 'game-01/src/di.context';
 import { createSetMuteAction, createSetPauseAction } from 'game-01/src/ui/actions/index';
 import { IUIState } from 'game-01/src/ui/reducers';
 import { IUIStoreProvider } from 'game-01/src/ui/store.provider';
+import { connectToInjector } from 'lib/di';
 import { __ } from 'lib/localize';
 
 import './game-view.scss';
 
 export interface IGameViewProps {
-	di: Container;
+	di?: Container;
 	store?: Store<IUIState>;
 }
 
@@ -122,7 +122,7 @@ class GameViewComponent extends React.Component<IGameViewProps, IGameViewState> 
 	}
 }
 
-export default hot(module)(inject<IGameViewProps>(GameViewComponent, {
+export default hot(module)(connectToInjector<IGameViewProps>(GameViewComponent, {
 	'ui:store': {
 		name: 'store',
 		value: (provider: IUIStoreProvider) => provider(),

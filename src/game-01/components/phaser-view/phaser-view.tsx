@@ -4,11 +4,11 @@ import * as React from 'react';
 import { hot } from 'react-hot-loader';
 import { Store } from 'redux';
 
-import { inject } from 'game-01/src/di.context';
 import { IPhaserGameProvider } from 'game-01/src/phaser/game.provider';
 import { createSetMuteAction, createSetPauseAction } from 'game-01/src/ui/actions/index';
 import { IUIState } from 'game-01/src/ui/reducers/index';
 import { IUIStoreProvider } from 'game-01/src/ui/store.provider';
+import { connectToInjector } from 'lib/di';
 import { __ } from 'lib/localize';
 
 import './phaser-view.scss';
@@ -104,7 +104,7 @@ class PhaserViewComponent extends React.Component<IPhaserViewProps, IPhaserViewS
 	}
 }
 
-export default hot(module)(inject<IPhaserViewProps>(PhaserViewComponent, {
+export default hot(module)(connectToInjector<IPhaserViewProps>(PhaserViewComponent, {
 	'ui:store': {
 		name: 'store',
 		value: (provider: IUIStoreProvider) => provider(),

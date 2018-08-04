@@ -5,8 +5,8 @@ import { EventEmitter } from 'events';
 import { Container } from 'inversify';
 
 import OutletComponent from 'game-00/components/outlet/outlet'; // TODO: move outside game-00
-import { DIContext } from 'game-01/src/di.context';
 import { UIModule } from 'game-01/src/ui/ui.module';
+import { DIContext } from 'lib/di';
 import { FlatDictionary } from 'lib/dictionary/flat-dictionary';
 import { IDictionary } from 'lib/dictionary/interfaces';
 import { IRenderer, ReactRenderer } from 'lib/renderer/react-renderer';

@@ -5,6 +5,15 @@ import { Container } from 'inversify';
 // tslint:disable:max-classes-per-file
 
 export const DIContext = React.createContext<Container | null>(null);
+
+/**
+ * Add DI container to decorated component properties.
+ *
+ * @export
+ * @template T component properties interface
+ * @param Consumer decorated component
+ * @returns component with injected DI container property
+ */
 export function connectToDI<T>(Consumer) {
 	class DIConsumer extends React.Component<T, {}> {
 		public render() {
@@ -15,7 +24,16 @@ export function connectToDI<T>(Consumer) {
 	return DIConsumer;
 }
 
-export function inject<T>(Consumer, select: { [key: string]: { name: string, value: (value: any) => Promise<any> } }) {
+/**
+ * Map dependencies from DI container into component properties.
+ *
+ * @export
+ * @template T component properties interface
+ * @param Consumer decorated component
+ * @param select select dependencies and map them to properties names
+ * @returns component with injected values from DI container
+ */
+export function connectToInjector<T>(Consumer, select: { [key: string]: { name: string, value: (value: any) => Promise<any> } }) {
 	class DIInjector extends React.Component<T & { di: Container }, {}> {
 		public componentDidMount() {
 			const { di } = this.props;
