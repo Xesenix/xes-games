@@ -5,7 +5,7 @@ import { Store } from 'redux';
 
 import FullScreenComponent from 'game-01/components/fullscreen/fullscreen';
 import PhaserViewComponent from 'game-01/components/phaser-view/phaser-view';
-import { connectToDI } from 'game-01/src/di.context';
+import { inject } from 'game-01/src/di.context';
 import { createSetMuteAction, createSetPauseAction } from 'game-01/src/ui/actions/index';
 import { IUIState } from 'game-01/src/ui/reducers';
 import { IUIStoreProvider } from 'game-01/src/ui/store.provider';
@@ -14,7 +14,8 @@ import { __ } from 'lib/localize';
 import './game-view.scss';
 
 export interface IGameViewProps {
-	di?: Container | null;
+	di: Container;
+	store?: Store<IUIState>;
 }
 
 export interface IGameViewState {
@@ -27,7 +28,6 @@ export interface IGameViewState {
 
 class GameViewComponent extends React.Component<IGameViewProps, IGameViewState> {
 	private fullScreenContainer?: HTMLDivElement;
-	private store?: Store<IUIState>;
 	private unsubscribe?: any;
 
 	constructor(props) {
@@ -42,19 +42,11 @@ class GameViewComponent extends React.Component<IGameViewProps, IGameViewState> 
 	}
 
 	public componentDidMount() {
-		const { di } = this.props;
+		this.bindToStore();
+	}
 
-		if (!!di) {
-			di.get<IUIStoreProvider>('ui:store')().then((store: Store<IUIState>) => {
-				this.store = store;
-				this.unsubscribe = this.store.subscribe(() => {
-					if (this.store) {
-						this.setState(this.store.getState());
-					}
-				});
-				this.setState(this.store.getState());
-			});
-		}
+	public componentDidUpdate() {
+		this.bindToStore();
 	}
 
 	public componentWillUnmount() {
@@ -66,7 +58,6 @@ class GameViewComponent extends React.Component<IGameViewProps, IGameViewState> 
 	}
 
 	public render(): any {
-		console.log('=== GameViewComponent:render');
 		const { tab = 'game', fullscreen, paused, mute } = this.state;
 
 		return (<FullScreenComponent fullscreen={fullscreen}>
@@ -84,41 +75,56 @@ class GameViewComponent extends React.Component<IGameViewProps, IGameViewState> 
 		</FullScreenComponent>);
 	}
 
+	private bindToStore() {
+		const { store } = this.props;
+
+		if (!this.unsubscribe && store) {
+			this.unsubscribe = store.subscribe(() => {
+				if (store) {
+					this.setState(store.getState());
+				}
+			});
+			this.setState(store.getState());
+		}
+	}
+
 	private openConfigurationHandle = (): void => {
-		console.log('=== CLICK:GameViewComponent:openConfigurationHandle');
 		this.setState({
 			tab: 'configuration',
 		});
 	}
 
 	private backHandle = (): void => {
-		console.log('=== CLICK:GameViewComponent:backHandle');
 		this.setState({
 			tab: 'game',
 		});
 	}
 
 	private toggleFullScreen = (): void => {
-		console.log('=== CLICK:GameViewComponent:toggleFullScreen');
 		this.setState({
 			fullscreen: !this.state.fullscreen,
 		});
 	}
 	private togglePause = () => {
-		console.log('=== CLICK:GameViewComponent:togglePause');
+		const { store } = this.props;
 		const { paused } = this.state;
-		if (this.store) {
-			this.store.dispatch(createSetPauseAction(!paused));
+		if (store) {
+			store.dispatch(createSetPauseAction(!paused));
 		}
 	}
 
 	private toggleMute = () => {
-		console.log('=== CLICK:GameViewComponent:toggleMute');
+		const { store } = this.props;
 		const { mute } = this.state;
-		if (this.store) {
-			this.store.dispatch(createSetMuteAction(!mute));
+		if (store) {
+			store.dispatch(createSetMuteAction(!mute));
 		}
 	}
 }
 
-export default hot(module)(connectToDI<IGameViewProps>(GameViewComponent));
+export default hot(module)(inject<IGameViewProps>(GameViewComponent, {
+	'ui:store': {
+		name: 'store',
+		value: (provider: IUIStoreProvider) => provider(),
+	},
+}));

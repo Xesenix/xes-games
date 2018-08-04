@@ -15,20 +15,20 @@ export function connectToDI<T>(Consumer) {
 	return DIConsumer;
 }
 
-export function inject<T>(Consumer, select: { [key: string]: (value: any) => Promise<any> }) {
-	class Inject extends React.Component<T, {}> {
+export function inject<T>(Consumer, select: { [key: string]: { name: string, value: (value: any) => Promise<any> } }) {
+	class DIInjector extends React.Component<T & { di: Container }, {}> {
 		public componentDidMount() {
 			const { di } = this.props;
 
 			if (!!di) {
 				const keys = Object.keys(select);
+				const configs = Object.values(select);
 
 				Promise.all(
-					keys.map((key) => select[key](di.get(key))),
+					keys.map((key) => select[key].value(di.get(key))),
 				).then((values: any[]) => {
 					const state = values.reduce((result, value, index) => {
-						// TODO: finish mapping to properties
-						result[keys[index]] = value;
+						result[configs[index].name] = value;
 						return result;
 					}, {});
 					this.setState(state);
@@ -37,15 +37,13 @@ export function inject<T>(Consumer, select: { [key: string]: (value: any) => Pro
 		}
 
 		public render() {
-			return (<DIContext.Consumer>{
-				(container: Container | null) => (
-					<Consumer
-						{...this.props}
-						{...this.state}
-					/>)
-			}</DIContext.Consumer>);
+			if (!!this.state) {
+				return <Consumer {...this.props} {...this.state}/>;
+			}
+
+			return <>Loading...</>;
 		}
 	}
 
-	return connectToDI<T>(Inject);
+	return connectToDI<T>(DIInjector);
 }
