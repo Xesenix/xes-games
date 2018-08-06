@@ -41,15 +41,15 @@ class GameViewComponent extends React.Component<IGameViewProps, IGameViewState> 
 		};
 	}
 
-	public componentDidMount() {
+	public componentDidMount(): void {
 		this.bindToStore();
 	}
 
-	public componentDidUpdate() {
+	public componentDidUpdate(): void {
 		this.bindToStore();
 	}
 
-	public componentWillUnmount() {
+	public componentWillUnmount(): void {
 		console.log('GameViewComponent:componentWillUnmount');
 
 		if (this.unsubscribe) {
@@ -75,7 +75,7 @@ class GameViewComponent extends React.Component<IGameViewProps, IGameViewState> 
 		</FullScreenComponent>);
 	}
 
-	private bindToStore() {
+	private bindToStore(): void {
 		const { store } = this.props;
 
 		if (!this.unsubscribe && store) {
@@ -105,7 +105,7 @@ class GameViewComponent extends React.Component<IGameViewProps, IGameViewState> 
 			fullscreen: !this.state.fullscreen,
 		});
 	}
-	private togglePause = () => {
+	private togglePause = (): void => {
 		const { store } = this.props;
 		const { paused } = this.state;
 		if (store) {
@@ -113,7 +113,7 @@ class GameViewComponent extends React.Component<IGameViewProps, IGameViewState> 
 		}
 	}
 
-	private toggleMute = () => {
+	private toggleMute = (): void => {
 		const { store } = this.props;
 		const { mute } = this.state;
 		if (store) {

@@ -38,7 +38,7 @@ class PhaserViewComponent extends React.Component<IPhaserViewProps, IPhaserViewS
 		};
 	}
 
-	public componentDidMount() {
+	public componentDidMount(): void {
 		const { di } = this.props;
 
 		if (!!di && gameContainer) {
@@ -53,11 +53,11 @@ class PhaserViewComponent extends React.Component<IPhaserViewProps, IPhaserViewS
 		this.bindToStore();
 	}
 
-	public componentDidUpdate() {
+	public componentDidUpdate(): void {
 		this.bindToStore();
 	}
 
-	public componentWillUnmount() {
+	public componentWillUnmount(): void {
 		if (this.unsubscribe) {
 			this.unsubscribe();
 		}
@@ -72,7 +72,7 @@ class PhaserViewComponent extends React.Component<IPhaserViewProps, IPhaserViewS
 		</div>);
 	}
 
-	private bindToStore() {
+	private bindToStore(): void {
 		const { store } = this.props;
 
 		if (!this.unsubscribe && store) {
@@ -85,9 +85,9 @@ class PhaserViewComponent extends React.Component<IPhaserViewProps, IPhaserViewS
 		}
 	}
 
-	private bindContainer = (el: HTMLDivElement) => gameContainer = el;
+	private bindContainer = (el: HTMLDivElement): void => { gameContainer = el; };
 
-	private togglePause = () => {
+	private togglePause = (): void => {
 		const { store } = this.props;
 		const { paused } = this.state;
 		if (store) {
@@ -95,7 +95,7 @@ class PhaserViewComponent extends React.Component<IPhaserViewProps, IPhaserViewS
 		}
 	}
 
-	private toggleMute = () => {
+	private toggleMute = (): void => {
 		const { store } = this.props;
 		const { mute } = this.state;
 		if (store) {

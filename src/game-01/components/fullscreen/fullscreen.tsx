@@ -20,7 +20,7 @@ class FullScreenComponent extends React.Component<IFullScreenProps, IFullScreenS
 		};
 	}
 
-	public componentDidUpdate() {
+	public componentDidUpdate(): void {
 		if (!!this.fullScreenContainer) {
 			console.log('fullScreenContainer', this.fullScreenContainer);
 			setFullscreen(this.props.fullscreen, this.fullScreenContainer);
