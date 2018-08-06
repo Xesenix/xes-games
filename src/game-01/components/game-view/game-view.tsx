@@ -26,7 +26,7 @@ export interface IGameViewState {
 	volume: number;
 }
 
-class GameViewComponent extends React.Component<IGameViewProps, IGameViewState> {
+class GameViewComponent extends React.PureComponent<IGameViewProps, IGameViewState> {
 	private fullScreenContainer?: HTMLDivElement;
 	private unsubscribe?: any;
 

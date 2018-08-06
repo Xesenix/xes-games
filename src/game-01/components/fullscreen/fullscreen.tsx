@@ -10,7 +10,7 @@ export interface IFullScreenProps {
 }
 export interface IFullScreenState { }
 
-class FullScreenComponent extends React.Component<IFullScreenProps, IFullScreenState> {
+class FullScreenComponent extends React.PureComponent<IFullScreenProps, IFullScreenState> {
 	private fullScreenContainer?: HTMLDivElement;
 
 	constructor(props) {

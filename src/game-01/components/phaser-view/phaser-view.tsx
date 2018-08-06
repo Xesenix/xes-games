@@ -27,7 +27,7 @@ export interface IPhaserViewState {
 	paused: boolean;
 }
 
-class PhaserViewComponent extends React.Component<IPhaserViewProps, IPhaserViewState> {
+class PhaserViewComponent extends React.PureComponent<IPhaserViewProps, IPhaserViewState> {
 	private unsubscribe?: any;
 
 	constructor(props) {
