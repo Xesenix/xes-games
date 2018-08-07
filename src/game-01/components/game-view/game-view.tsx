@@ -1,3 +1,15 @@
+import AppBar from '@material-ui/core/AppBar';
+import Button from '@material-ui/core/Button';
+import { withStyles } from '@material-ui/core/styles';
+import Toolbar from '@material-ui/core/Toolbar';
+import ConfigIcon from '@material-ui/icons/Build';
+import FullScreenIcon from '@material-ui/icons/Fullscreen';
+import FullScreenExitIcon from '@material-ui/icons/FullscreenExit';
+import PausedIcon from '@material-ui/icons/PauseCircleFilled';
+import PlayIcon from '@material-ui/icons/PlayCircleFilled';
+import BackIcon from '@material-ui/icons/Undo';
+import MuteOnIcon from '@material-ui/icons/VolumeOff';
+import MuteOffIcon from '@material-ui/icons/VolumeUp';
 import { Container } from 'inversify';
 import * as React from 'react';
 import { hot } from 'react-hot-loader';
@@ -13,6 +25,15 @@ import { connectToInjector } from 'lib/di';
 import { __ } from 'lib/localize';
 
 import './game-view.scss';
+
+const styles = (theme) => ({
+	button: {
+		margin: theme.spacing.unit,
+	},
+	extendedIcon: {
+		marginRight: theme.spacing.unit,
+	},
+});
 
 export interface IGameViewProps {
 	di?: Container;
@@ -60,18 +81,42 @@ class GameViewComponent extends React.PureComponent<IGameViewProps, IGameViewSta
 
 	public render(): any {
 		const { tab = 'game', fullscreen, paused, mute } = this.state;
+		const { classes } = this.props;
 
 		return (<FullScreenComponent fullscreen={fullscreen}>
-			<div className="panel panel-primary" ref={(el: HTMLDivElement) => this.fullScreenContainer = el}>
-				<ul className="menu-vertical">
-					{ tab === 'configuration' ? <li><a className="btn" onClick={this.backHandle}>{ __('Back') }</a></li> : null }
-					{ tab === 'game' ? <li><a className="btn" onClick={this.openConfigurationHandle}>{ __('Configuration') }</a></li> : null }
-					<li><a className="btn" onClick={this.toggleFullScreen}>{ __('Fullscreen') }</a></li>
-					<li><a className={['btn', paused ? 'active' : null].filter((c) => !!c).join(' ')} onClick={this.togglePause}>{ __('Pause') }</a></li>
-					<li><a className={['btn', mute ? 'active' : null].filter((c) => !!c).join(' ')} onClick={this.toggleMute}>{ __('Mute') }</a></li>
-				</ul>
+			<AppBar position="static">
+				<Toolbar>
+					{ tab === 'configuration'
+						? <Button variant="extendedFab" className={ classes.button } onClick={ this.backHandle }>
+							<BackIcon className={ classes.extendedIcon }/>
+							{ __('Back') }
+						</Button>
+						: null
+					}
+					{ tab === 'game'
+						? <Button variant="extendedFab" className={ classes.button } onClick={ this.openConfigurationHandle }>
+							<ConfigIcon className={ classes.extendedIcon }/>
+							{ __('Configuration') }
+						</Button>
+						: null
+					}
+					<Button color="secondary" variant="extendedFab" className={ classes.button } onClick={ this.toggleFullScreen }>
+						{ fullscreen ? <FullScreenExitIcon className={ classes.extendedIcon }/> : <FullScreenIcon className={ classes.extendedIcon } /> }
+						{ __('Fullscreen') }
+					</Button>
+					<Button color="primary" variant="extendedFab" className={ classes.button } onClick={ this.togglePause }>
+						{ paused ? <PlayIcon className={ classes.extendedIcon } /> : <PausedIcon className={ classes.extendedIcon }/> }
+						{ __('Pause') }
+					</Button>
+					<Button color="primary" variant="extendedFab" className={ classes.button } onClick={ this.toggleMute }>
+						{ mute ? <MuteOnIcon className={ classes.extendedIcon }/> : <MuteOffIcon className={ classes.extendedIcon } /> }
+						{ __('Mute') }
+					</Button>
+				</Toolbar>
+			</AppBar>
+			<div className="panel panel-primary" ref={ (el: HTMLDivElement) => this.fullScreenContainer = el }>
 				{ tab === 'configuration' ? <ConfigurationViewComponent/> : null }
-				{ tab === 'game' ? <PhaserViewComponent keepInstanceOnRemove={true}/> : null }
+				{ tab === 'game' ? <PhaserViewComponent keepInstanceOnRemove={ true }/> : null }
 			</div>
 		</FullScreenComponent>);
 	}
@@ -123,7 +168,7 @@ class GameViewComponent extends React.PureComponent<IGameViewProps, IGameViewSta
 	}
 }
 
-export default hot(module)(connectToInjector<IGameViewProps>(GameViewComponent, {
+export default hot(module)(connectToInjector<IGameViewProps>(withStyles(styles)(GameViewComponent), {
 	'ui:store': {
 		name: 'store',
 		value: (provider: IUIStoreProvider) => provider(),

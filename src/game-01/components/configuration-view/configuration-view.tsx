@@ -1,11 +1,15 @@
+import Checkbox from '@material-ui/core/Checkbox';
+import MuteOffIcon from '@material-ui/icons/VolumeOff';
+import MuteOnIcon from '@material-ui/icons/VolumeUp';
 import * as React from 'react';
 import { hot } from 'react-hot-loader';
-import { Store } from 'redux';
+import { Action, Store } from 'redux';
 
-import { createSetVolumeAction } from 'game-01/src/ui/actions'
+import { createSetMuteAction, createSetVolumeAction } from 'game-01/src/ui/actions';
 import { IUIState } from 'game-01/src/ui/reducers';
 import { IUIStoreProvider } from 'game-01/src/ui/store.provider';
 import { connectToInjector } from 'lib/di';
+import { __ } from 'lib/localize';
 
 export interface IConfigurationProps {
 	store?: Store<IUIState>;
@@ -13,28 +17,43 @@ export interface IConfigurationProps {
 export interface IConfigurationState { }
 
 class ConfigurationViewComponent extends React.Component<IConfigurationProps, IConfigurationState> {
-	private volumeInput: HTMLInputElement;
-
 	public render(): any {
-		const { store } = this.props;
-		const { volume } = store ? store.getState() : { volume: 1 };
-
-		return (<div>
-			Configuration
-			<div>
-				<label>Volume</label>
-				<input type="range" min="0" max="1" step="0.05" ref={ this.bindContainer } value={ volume } onChange={ this.setVolume }/>
+		return (<div className="panel-container">
+			<div className="panel article">
+				<div className="field">
+					<label>{ __('volume') }</label>
+					<input
+						type="range"
+						min={ 0 }
+						max={ 1 }
+						step={ 0.05 }
+						value={ this.getValue<number>('volume', 1) }
+						onChange={ (event) => this.dispatch(createSetVolumeAction(Number.parseFloat(event.target.value))) }
+					/>
+				</div>
+				<div className="field">
+					<label>{ __('mute') }</label>
+					<Checkbox
+						className="field"
+						checkedIcon={ <MuteOffIcon /> }
+						icon={ <MuteOnIcon /> }
+						checked={ this.getValue<boolean>('mute', false) }
+						onChange={ (event, checked: boolean) => this.dispatch(createSetMuteAction(checked)) }
+					/>
+					</div>
 			</div>
 		</div>);
 	}
 
-	private bindContainer = (el: HTMLInputElement): void => { this.volumeInput = el; };
+	private getValue<T>(key: string, defaultValue: T): T {
+		return this.props.store ? this.props.store.getState()[key] : defaultValue;
+	}
 
-	private setVolume = (): void => {
+	private dispatch(action: Action): void {
 		const { store } = this.props;
 
 		if (store) {
-			store.dispatch(createSetVolumeAction(Number.parseFloat(this.volumeInput.value)));
+			store.dispatch(action);
 		}
 	}
 }

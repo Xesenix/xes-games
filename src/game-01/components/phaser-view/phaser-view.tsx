@@ -5,11 +5,9 @@ import { hot } from 'react-hot-loader';
 import { Store } from 'redux';
 
 import { IPhaserGameProvider } from 'game-01/src/phaser/game.provider';
-import { createSetMuteAction, createSetPauseAction } from 'game-01/src/ui/actions/index';
 import { IUIState } from 'game-01/src/ui/reducers/index';
 import { IUIStoreProvider } from 'game-01/src/ui/store.provider';
 import { connectToInjector } from 'lib/di';
-import { __ } from 'lib/localize';
 
 import './phaser-view.scss';
 
@@ -64,12 +62,7 @@ class PhaserViewComponent extends React.PureComponent<IPhaserViewProps, IPhaserV
 	}
 
 	public render(): any {
-		return (<div className="phaser-view" ref={ this.bindContainer }>
-			<ul className="menu-vertical">
-				<li><a className={['btn', this.state.paused ? 'active' : null].filter((c) => !!c).join(' ')} onClick={this.togglePause}>{ __('Pause') }</a></li>
-				<li><a className={['btn', this.state.mute ? 'active' : null].filter((c) => !!c).join(' ')} onClick={this.toggleMute}>{ __('Mute') }</a></li>
-			</ul>
-		</div>);
+		return <div className="phaser-view" ref={ this.bindContainer }></div>;
 	}
 
 	private bindToStore(): void {
@@ -86,22 +79,6 @@ class PhaserViewComponent extends React.PureComponent<IPhaserViewProps, IPhaserV
 	}
 
 	private bindContainer = (el: HTMLDivElement): void => { gameContainer = el; };
-
-	private togglePause = (): void => {
-		const { store } = this.props;
-		const { paused } = this.state;
-		if (store) {
-			store.dispatch(createSetPauseAction(!paused));
-		}
-	}
-
-	private toggleMute = (): void => {
-		const { store } = this.props;
-		const { mute } = this.state;
-		if (store) {
-			store.dispatch(createSetMuteAction(!mute));
-		}
-	}
 }
 
 export default hot(module)(connectToInjector<IPhaserViewProps>(PhaserViewComponent, {
