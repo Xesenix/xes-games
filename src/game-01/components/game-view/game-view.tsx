@@ -3,6 +3,7 @@ import * as React from 'react';
 import { hot } from 'react-hot-loader';
 import { Store } from 'redux';
 
+import ConfigurationViewComponent from 'game-01/components/configuration-view/configuration-view';
 import FullScreenComponent from 'game-01/components/fullscreen/fullscreen';
 import PhaserViewComponent from 'game-01/components/phaser-view/phaser-view';
 import { createSetMuteAction, createSetPauseAction } from 'game-01/src/ui/actions/index';
@@ -69,7 +70,7 @@ class GameViewComponent extends React.PureComponent<IGameViewProps, IGameViewSta
 					<li><a className={['btn', paused ? 'active' : null].filter((c) => !!c).join(' ')} onClick={this.togglePause}>{ __('Pause') }</a></li>
 					<li><a className={['btn', mute ? 'active' : null].filter((c) => !!c).join(' ')} onClick={this.toggleMute}>{ __('Mute') }</a></li>
 				</ul>
-				{ tab === 'configuration' ? <div key={'configuration'}>CONFIGURATION</div> : null }
+				{ tab === 'configuration' ? <ConfigurationViewComponent/> : null }
 				{ tab === 'game' ? <PhaserViewComponent keepInstanceOnRemove={true}/> : null }
 			</div>
 		</FullScreenComponent>);
