@@ -146,6 +146,7 @@
 	"dependencies": {
 		"@material-ui/core": "^1.4.3",
 		"@material-ui/icons": "^2.0.1",
+		"@material-ui/lab": "^1.0.0-alpha.9",
 		"@types/lodash.clonedeep": "^4.5.3",
 		"@types/redux-thunk": "^2.1.0",
 		"babel-polyfill": "^6.26.0",
