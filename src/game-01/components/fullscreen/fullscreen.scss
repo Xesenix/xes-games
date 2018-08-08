@@ -5,11 +5,9 @@
 	display: block;
 	width: 100%;
 	height: 100%;
-	padding: 20px;
-	background-color: red;
-	color: #fff;
+	padding: 0;
 
 	@include fullscreen {
-		background-color: blue;
+		padding: 64px 20px 20px;
 	}
 }
