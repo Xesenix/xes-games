@@ -1,5 +1,6 @@
 import AppBar from '@material-ui/core/AppBar';
 import Button from '@material-ui/core/Button';
+import Grid from '@material-ui/core/Grid';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Paper from '@material-ui/core/Paper';
 import { createStyles, Theme, withStyles, WithStyles } from '@material-ui/core/styles';
@@ -32,6 +33,7 @@ const styles = (theme: Theme) => createStyles({
 	root: {
 		minWidth: '800px',
 		minHeight: '600px',
+		padding: '16px',
 	},
 	button: {
 		margin: theme.spacing.unit,
@@ -86,43 +88,48 @@ class GameViewComponent extends React.PureComponent<IGameViewProps & WithStyles<
 		const { tab = 'game', fullscreen, paused, mute } = this.state;
 		const { classes } = this.props;
 
-		return (<Paper className={ classes.root } elevation={ 1 }>
-			<FullScreenComponent fullscreen={ fullscreen }>
-				<AppBar position="fixed">
-					<Toolbar>
-						{ tab === 'configuration'
-							? <Button variant="extendedFab" className={ classes.button } onClick={ this.backHandle }>
-								<BackIcon className={ classes.extendedIcon }/>
-								{ __('Back') }
-							</Button>
-							: null
-						}
-						{ tab === 'game'
-							? <Button variant="extendedFab" className={ classes.button } onClick={ this.openConfigurationHandle }>
-								<ConfigIcon className={ classes.extendedIcon }/>
-								{ __('Configuration') }
-							</Button>
-							: null
-						}
-						<Button color="secondary" variant="extendedFab" className={ classes.button } onClick={ this.toggleFullScreen }>
-							{ fullscreen ? <FullScreenExitIcon className={ classes.extendedIcon }/> : <FullScreenIcon className={ classes.extendedIcon } /> }
-							{ __('Fullscreen') }
-						</Button>
-						<Button color="primary" variant="extendedFab" className={ classes.button } onClick={ this.togglePause }>
-							{ paused ? <PausedIcon className={ classes.extendedIcon }/> : <PlayIcon className={ classes.extendedIcon }/> }
-							{ __('Pause') }
-						</Button>
-						<Button color="primary" variant="extendedFab" className={ classes.button } onClick={ this.toggleMute }>
-							{ mute ? <MuteOnIcon className={ classes.extendedIcon }/> : <MuteOffIcon className={ classes.extendedIcon }/> }
-							{ __('Mute') }
-						</Button>
-					</Toolbar>
-					<LinearProgress/>
-				</AppBar>
-				{ tab === 'configuration' ? <ConfigurationViewComponent/> : null }
-				{ tab === 'game' ? <PhaserViewComponent keepInstanceOnRemove={ true }/> : null }
-			</FullScreenComponent>
-		</Paper>);
+		return (
+			<Grid container spacing={ 0 } alignItems="center">
+				<Grid item xs={ 12 }>
+					<Paper className={ classes.root } elevation={ 1 }>
+						<FullScreenComponent fullscreen={ fullscreen }>
+							<AppBar position="fixed">
+								<Toolbar>
+									{ tab === 'configuration'
+										? <Button variant="extendedFab" className={ classes.button } onClick={ this.backHandle }>
+											<BackIcon className={ classes.extendedIcon }/>
+											{ __('Back') }
+										</Button>
+										: null
+									}
+									{ tab === 'game'
+										? <Button variant="extendedFab" className={ classes.button } onClick={ this.openConfigurationHandle }>
+											<ConfigIcon className={ classes.extendedIcon }/>
+											{ __('Configuration') }
+										</Button>
+										: null
+									}
+									<Button color="secondary" variant="extendedFab" className={ classes.button } onClick={ this.toggleFullScreen }>
+										{ fullscreen ? <FullScreenExitIcon className={ classes.extendedIcon }/> : <FullScreenIcon className={ classes.extendedIcon } /> }
+										{ __('Fullscreen') }
+									</Button>
+									<Button color="primary" variant="extendedFab" className={ classes.button } onClick={ this.togglePause }>
+										{ paused ? <PausedIcon className={ classes.extendedIcon }/> : <PlayIcon className={ classes.extendedIcon }/> }
+										{ __('Pause') }
+									</Button>
+									<Button color="primary" variant="extendedFab" className={ classes.button } onClick={ this.toggleMute }>
+										{ mute ? <MuteOnIcon className={ classes.extendedIcon }/> : <MuteOffIcon className={ classes.extendedIcon }/> }
+										{ __('Mute') }
+									</Button>
+								</Toolbar>
+								<LinearProgress/>
+							</AppBar>
+							{ tab === 'configuration' ? <ConfigurationViewComponent/> : null }
+							{ tab === 'game' ? <PhaserViewComponent keepInstanceOnRemove={ true }/> : null }
+						</FullScreenComponent>
+					</Paper>
+				</Grid>
+			</Grid>);
 	}
 
 	private bindToStore(): void {

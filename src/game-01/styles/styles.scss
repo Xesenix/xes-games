@@ -5,3 +5,15 @@
 body {
 	padding-top: 64px;
 }
+
+.footer {
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	background-color: black;
+	color: white;
+	font-family: "Oswald", "Helvetica", "Arial", sans-serif;
+	padding: 4px;
+	text-align: right;
+}
