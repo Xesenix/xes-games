@@ -2,6 +2,10 @@ import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Grid from '@material-ui/core/Grid';
 import { createStyles, Theme, withStyles, WithStyles } from '@material-ui/core/styles';
+import SoundOnIcon from '@material-ui/icons/FlashOn';
+import SoundOffIcon from '@material-ui/icons/FlashOff';
+import MusicOnIcon from '@material-ui/icons/MusicNote';
+import MusicOffIcon from '@material-ui/icons/MusicOff';
 import MuteOffIcon from '@material-ui/icons/VolumeOff';
 import MuteOnIcon from '@material-ui/icons/VolumeUp';
 import Slider from '@material-ui/lab/Slider';
@@ -23,6 +27,10 @@ import { connectToInjector } from 'lib/di';
 import { __ } from 'lib/localize';
 
 const styles = (theme: Theme) => createStyles({
+	root: {
+		display: 'block',
+		padding: '24px',
+	},
 	textField: {
 		color: 'red',
 		margin: theme.spacing.unit,
@@ -52,9 +60,9 @@ class ConfigurationViewComponent extends React.Component<IConfigurationProps & W
 	public render(): any {
 		const { classes } = this.props;
 
-		return (<form>
-			<Grid container spacing={0} alignItems="stretch">
-				<Grid item xs={6} sm={4}>
+		return (<form className={ classes.root }>
+			<Grid container spacing={ 0 } alignItems="stretch">
+				<Grid item xs={ 6 } sm={ 4 }>
 					<FormControlLabel
 						className={ classes.margin }
 						label={ __('master mute') }
@@ -68,7 +76,7 @@ class ConfigurationViewComponent extends React.Component<IConfigurationProps & W
 						}
 					/>
 				</Grid>
-				<Grid item xs={6} sm={4}>
+				<Grid item xs={ 6 } sm={ 4 }>
 					<FormControlLabel
 						className={ classes.margin }
 						label={ __('music mute') }
@@ -82,7 +90,7 @@ class ConfigurationViewComponent extends React.Component<IConfigurationProps & W
 						}
 					/>
 				</Grid>
-				<Grid item xs={6} sm={4}>
+				<Grid item xs={ 6 } sm={ 4 }>
 					<FormControlLabel
 						className={ classes.margin }
 						label={ __('fx mute') }
@@ -96,17 +104,21 @@ class ConfigurationViewComponent extends React.Component<IConfigurationProps & W
 						}
 					/>
 				</Grid>
-				<Grid item xs={12} container>
-					<Grid item xs={12} md={3}>
+				<Grid item xs={ 12 } container>
+					<Grid item xs={ 12 } md={ 3 }>
 						<FormControlLabel
 							className={ classes.margin }
 							label={ __('master volume') }
 							control={
-								<span className={ classes.icon }><MuteOnIcon/></span>
+								<span className={ classes.icon }>{
+									this.getValue<boolean>('mute', false)
+									? <MuteOffIcon/>
+									: <MuteOnIcon/>
+								}</span>
 							}
 						/>
 					</Grid>
-					<Grid item xs={12} md={9} className={ classes.scroll }>
+					<Grid item xs={ 12 } md={ 9 } className={ classes.scroll }>
 						<Slider
 							min={ 0 }
 							max={ 1 }
@@ -116,17 +128,21 @@ class ConfigurationViewComponent extends React.Component<IConfigurationProps & W
 						/>
 					</Grid>
 				</Grid>
-				<Grid item xs={12} container>
-					<Grid item xs={12} md={3}>
+				<Grid item xs={ 12 } container>
+					<Grid item xs={ 12 } md={ 3 }>
 						<FormControlLabel
 							className={ classes.margin }
 							label={ __('music volume') }
 							control={
-								<span className={ classes.icon }><MuteOnIcon/></span>
+							<span className={ classes.icon }>{
+								this.getValue<boolean>('mute', false) || this.getValue<boolean>('muteMusic', false)
+								? <MusicOffIcon/>
+								: <MusicOnIcon/>
+							}</span>
 							}
 						/>
 					</Grid>
-					<Grid item xs={12} md={9} className={ classes.scroll }>
+					<Grid item xs={ 12 } md={ 9 } className={ classes.scroll }>
 						<Slider
 							min={ 0 }
 							max={ 1 }
@@ -136,17 +152,21 @@ class ConfigurationViewComponent extends React.Component<IConfigurationProps & W
 						/>
 					</Grid>
 				</Grid>
-				<Grid item xs={12} container>
-					<Grid item xs={12} md={3}>
+				<Grid item xs={ 12 } container>
+					<Grid item xs={ 12 } md={ 3 }>
 						<FormControlLabel
 							className={ classes.margin }
 							label={ __('sound volume') }
 							control={
-								<span className={ classes.icon }><MuteOnIcon /></span>
+								<span className={ classes.icon }>{
+									this.getValue<boolean>('mute', false) || this.getValue<boolean>('muteSound', false)
+									? <SoundOffIcon/>
+									: <SoundOnIcon/>
+								}</span>
 							}
 						/>
 					</Grid>
-					<Grid item xs={12} md={9} className={ classes.scroll }>
+					<Grid item xs={ 12 } md={ 9 } className={ classes.scroll }>
 						<Slider
 							min={ 0 }
 							max={ 1 }
