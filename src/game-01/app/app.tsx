@@ -20,7 +20,7 @@ const styles = (theme: Theme) => createStyles({
 		display: 'flex',
 		flexDirection: 'column',
 		alignItems: 'center',
-		padding: '20px',
+		padding: '20px 4px',
 	},
 	wrapper: {
 		margin: theme.spacing.unit,
@@ -39,7 +39,7 @@ class App extends React.Component<IAppProps & WithStyles<typeof styles>, IAppSta
 	public render() {
 		const { classes } = this.props;
 
-		return (<MuiThemeProvider theme={theme}>
+		return (<MuiThemeProvider theme={ theme }>
 				<CssBaseline/>
 				<Paper className={ classes.root } elevation={ 1 }>
 					<Typography variant="headline" component="h1">{ __('PHASER 3 Game Test') }</Typography>
