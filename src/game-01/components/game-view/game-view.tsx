@@ -22,7 +22,7 @@ import ConfigurationViewComponent from 'game-01/components/configuration-view/co
 import FullScreenComponent from 'game-01/components/fullscreen/fullscreen';
 import PhaserViewComponent from 'game-01/components/phaser-view/phaser-view';
 import { createSetMuteAction, createSetPauseAction } from 'game-01/src/ui/actions/index';
-import { IUIState } from 'game-01/src/ui/reducers';
+import { defaultUIState, IUIState } from 'game-01/src/ui/reducers';
 import { IUIStoreProvider } from 'game-01/src/ui/store.provider';
 import { connectToInjector } from 'lib/di';
 import { __ } from 'lib/localize';
@@ -51,12 +51,9 @@ export interface IGameViewProps {
 export interface IGameViewState {
 	fullscreen: boolean;
 	tab: 'configuration' | 'game';
-	paused: boolean;
-	mute: boolean;
-	volume: number;
 }
 
-class GameViewComponent extends React.PureComponent<IGameViewProps & WithStyles<typeof styles>, IGameViewState> {
+class GameViewComponent extends React.PureComponent<IGameViewProps & WithStyles<typeof styles>, IGameViewState & IUIState> {
 	private unsubscribe?: any;
 
 	constructor(props) {
@@ -64,9 +61,7 @@ class GameViewComponent extends React.PureComponent<IGameViewProps & WithStyles<
 		this.state = {
 			fullscreen: false,
 			tab: 'game',
-			paused: false,
-			mute: false,
-			volume: 1,
+			...defaultUIState,
 		};
 	}
 
