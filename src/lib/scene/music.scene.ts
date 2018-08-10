@@ -1,5 +1,3 @@
-import * as Phaser from 'phaser';
-
 export class MusicScene extends Phaser.Scene {
 	private soundtrack?: Phaser.Sound.BaseSound;
 	private label?: Phaser.GameObjects.Text;

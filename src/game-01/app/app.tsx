@@ -1,13 +1,19 @@
-import CssBaseline from '@material-ui/core/CssBaseline';
-import Paper from '@material-ui/core/Paper';
 import { createMuiTheme, createStyles, MuiThemeProvider, Theme, withStyles, WithStyles } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { hot } from 'react-hot-loader';
 
-import GameView from 'game-01/components/game-view/game-view';
 import { __ } from 'lib/localize';
+
+import Loadable from 'react-loadable';
+
+const Loader = () => <div>...</div>;
+
+const GameView = Loadable({ loading: Loader, loader: () => import('game-01/components/game-view/game-view') });
+
+const CssBaseline = Loadable({ loading: Loader, loader: () => import('@material-ui/core/CssBaseline') });
+const Paper = Loadable({ loading: Loader, loader: () => import('@material-ui/core/Paper') });
+const Typography = Loadable({ loading: Loader, loader: () => import('@material-ui/core/Typography') });
 
 const theme = createMuiTheme({
 	typography: {

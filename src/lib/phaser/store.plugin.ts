@@ -1,4 +1,3 @@
-import * as Phaser from 'phaser';
 import { Store } from 'redux';
 
 export class StorePlugin extends Phaser.Plugins.BasePlugin {

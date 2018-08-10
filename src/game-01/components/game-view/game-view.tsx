@@ -1,34 +1,42 @@
 import AppBar from '@material-ui/core/AppBar';
-import Button from '@material-ui/core/Button';
-import Drawer from '@material-ui/core/Drawer';
 import Grid from '@material-ui/core/Grid';
 import Hidden from '@material-ui/core/Hidden';
 import LinearProgress from '@material-ui/core/LinearProgress';
-import Paper from '@material-ui/core/Paper';
 import { createStyles, Theme, withStyles, WithStyles } from '@material-ui/core/styles';
-import Toolbar from '@material-ui/core/Toolbar';
-import ConfigIcon from '@material-ui/icons/Build';
-import FullScreenIcon from '@material-ui/icons/Fullscreen';
-import FullScreenExitIcon from '@material-ui/icons/FullscreenExit';
-import MenuIcon from '@material-ui/icons/Menu';
-import PausedIcon from '@material-ui/icons/PauseCircleFilled';
-import PlayIcon from '@material-ui/icons/PlayCircleFilled';
-import BackIcon from '@material-ui/icons/Undo';
-import MuteOnIcon from '@material-ui/icons/VolumeOff';
-import MuteOffIcon from '@material-ui/icons/VolumeUp';
+
 import { Container } from 'inversify';
 import * as React from 'react';
 import { hot } from 'react-hot-loader';
 import { Store } from 'redux';
 
-import ConfigurationViewComponent from 'game-01/components/configuration-view/configuration-view';
 import FullScreenComponent from 'game-01/components/fullscreen/fullscreen';
-import PhaserViewComponent from 'game-01/components/phaser-view/phaser-view';
 import { createSetMuteAction, createSetPauseAction } from 'game-01/src/ui/actions/index';
 import { defaultUIState, IUIState } from 'game-01/src/ui/reducers';
 import { IUIStoreProvider } from 'game-01/src/ui/store.provider';
 import { connectToInjector } from 'lib/di';
 import { __ } from 'lib/localize';
+
+import Loadable from 'react-loadable';
+
+const Loader = () => <div>...</div>;
+
+const Button = Loadable({ loading: Loader, loader: () => import('@material-ui/core/Button') });
+const Drawer = Loadable({ loading: Loader, loader: () => import('@material-ui/core/Drawer') });
+const Paper = Loadable({ loading: Loader, loader: () => import('@material-ui/core/Paper') });
+const Toolbar = Loadable({ loading: Loader, loader: () => import('@material-ui/core/Toolbar') });
+
+const ConfigIcon = Loadable({ loading: Loader, loader: () => import('@material-ui/icons/Build') });
+const FullScreenIcon = Loadable({ loading: Loader, loader: () => import('@material-ui/icons/Fullscreen') });
+const FullScreenExitIcon = Loadable({ loading: Loader, loader: () => import('@material-ui/icons/FullscreenExit') });
+const MenuIcon = Loadable({ loading: Loader, loader: () => import('@material-ui/icons/Menu') });
+const PausedIcon = Loadable({ loading: Loader, loader: () => import('@material-ui/icons/PauseCircleFilled') });
+const PlayIcon = Loadable({ loading: Loader, loader: () => import('@material-ui/icons/PlayCircleFilled') });
+const BackIcon = Loadable({ loading: Loader, loader: () => import('@material-ui/icons/Undo') });
+const MuteOnIcon = Loadable({ loading: Loader, loader: () => import('@material-ui/icons/VolumeOff') });
+const MuteOffIcon = Loadable({ loading: Loader, loader: () => import('@material-ui/icons/VolumeUp') });
+
+const ConfigurationViewComponent = Loadable({ loading: Loader, loader: () => import('game-01/components/configuration-view/configuration-view') });
+const PhaserViewComponent = Loadable({ loading: Loader, loader: () => import('game-01/components/phaser-view/phaser-view') });
 
 import './game-view.scss';
 

@@ -1,4 +1,3 @@
-import * as Phaser from 'phaser';
 import { Store } from 'redux';
 
 import { IUIState } from 'game-01/src/ui/reducers/index';

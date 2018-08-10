@@ -1,5 +1,4 @@
 import { Container } from 'inversify';
-import Phaser from 'phaser';
 import * as React from 'react';
 import { hot } from 'react-hot-loader';
 import { Store } from 'redux';

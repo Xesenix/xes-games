@@ -2,9 +2,6 @@ import { interfaces } from 'inversify';
 import { Store } from 'redux';
 
 import { IUIStoreProvider } from 'game-01/src/ui/store.provider';
-import { StorePlugin } from 'lib/phaser/store.plugin';
-import { UIManagerPlugin } from 'lib/phaser/ui-manager.plugin';
-import { MusicScene } from 'lib/scene/music.scene';
 
 export type IPhaserGameProvider = (forceNew?: boolean) => Promise<Phaser.Game>;
 
@@ -20,7 +17,12 @@ export function PhaserGameProvider(context: interfaces.Context) {
 		const storeProvider = context.container.get<IUIStoreProvider>('ui:store');
 		console.debug('PhaserGameProvider:provide', parent, storeProvider);
 
-		return storeProvider().then((store: Store) => {
+		// preload phaser module that is needed by subsequential modules
+		return import('phaser').then(() => Promise.all([
+			import('lib/phaser/store.plugin'),
+			import('lib/phaser/ui-manager.plugin'),
+			import('lib/scene/music.scene'),
+		]).then(([{ StorePlugin }, { UIManagerPlugin }, { MusicScene }]) => storeProvider().then((store: Store) => {
 			if (!forceNew && game !== null) {
 				console.debug('PhaserGameProvider:swap parent', game);
 				parent.appendChild(game.canvas);
@@ -113,6 +115,6 @@ export function PhaserGameProvider(context: interfaces.Context) {
 				console.debug('PhaserGameProvider:error', parent, error);
 				return Promise.reject(error);
 			}
-		});
+		})));
 	};
 }
