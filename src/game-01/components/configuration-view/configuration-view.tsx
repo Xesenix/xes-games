@@ -65,7 +65,15 @@ export interface IConfigurationState { }
 
 class ConfigurationViewComponent extends React.Component<IConfigurationProps & WithStyles<typeof styles>, IConfigurationState> {
 	public render(): any {
-		const { classes } = this.props;
+		const { classes, store = { getState: () => defaultUIState } } = this.props;
+		const {
+			mute,
+			muteMusic,
+			muteSound,
+			volume,
+			musicVolume,
+			soundVolume,
+		} = store.getState();
 
 		return (<form className={ classes.root }>
 			<Grid container spacing={ 0 } alignItems="stretch">
@@ -75,9 +83,9 @@ class ConfigurationViewComponent extends React.Component<IConfigurationProps & W
 						label={ __('master mute') }
 						control={
 							<Checkbox
-								checkedIcon={ <MuteOffIcon /> }
-								icon={ <MuteOnIcon /> }
-								checked={ this.getValue<boolean>('mute', false) }
+								checkedIcon={ <MuteOffIcon/> }
+								icon={ <MuteOnIcon/> }
+								checked={ mute }
 								onChange={ (event, checked: boolean) => this.dispatch(createSetMuteAction(checked)) }
 							/>
 						}
@@ -89,9 +97,9 @@ class ConfigurationViewComponent extends React.Component<IConfigurationProps & W
 						label={ __('music mute') }
 						control={
 							<Checkbox
-								checkedIcon={ <MuteOffIcon /> }
-								icon={ <MuteOnIcon /> }
-								checked={ this.getValue<boolean>('muteMusic', false) }
+								checkedIcon={ <MuteOffIcon/> }
+								icon={ <MuteOnIcon/> }
+								checked={ muteMusic }
 								onChange={ (event, checked: boolean) => this.dispatch(createSetMuteMusicAction(checked)) }
 							/>
 						}
@@ -103,9 +111,9 @@ class ConfigurationViewComponent extends React.Component<IConfigurationProps & W
 						label={ __('fx mute') }
 						control={
 							<Checkbox
-								checkedIcon={ <MuteOffIcon /> }
-								icon={ <MuteOnIcon /> }
-								checked={ this.getValue<boolean>('muteSound', false) }
+								checkedIcon={ <MuteOffIcon/> }
+								icon={ <MuteOnIcon/> }
+								checked={ muteSound }
 								onChange={ (event, checked: boolean) => this.dispatch(createSetMuteSoundAction(checked)) }
 							/>
 						}
@@ -117,11 +125,7 @@ class ConfigurationViewComponent extends React.Component<IConfigurationProps & W
 							className={ classes.margin }
 							label={ __('master volume') }
 							control={
-								<span className={ classes.icon }>{
-									this.getValue<boolean>('mute', false)
-									? <MuteOffIcon/>
-									: <MuteOnIcon/>
-								}</span>
+								<span className={ classes.icon }>{ mute ? <MuteOffIcon/> : <MuteOnIcon/> }</span>
 							}
 						/>
 					</Grid>
@@ -130,7 +134,7 @@ class ConfigurationViewComponent extends React.Component<IConfigurationProps & W
 							min={ 0 }
 							max={ 1 }
 							step={ 1 / 32 }
-							value={ this.getValue<number>('volume', 1) }
+							value={ volume }
 							onChange={ (event, value) => this.dispatch(createSetVolumeAction(value)) }
 						/>
 					</Grid>
@@ -141,11 +145,7 @@ class ConfigurationViewComponent extends React.Component<IConfigurationProps & W
 							className={ classes.margin }
 							label={ __('music volume') }
 							control={
-							<span className={ classes.icon }>{
-								this.getValue<boolean>('mute', false) || this.getValue<boolean>('muteMusic', false)
-								? <MusicOffIcon/>
-								: <MusicOnIcon/>
-							}</span>
+								<span className={ classes.icon }>{ mute || muteMusic ? <MusicOffIcon/> : <MusicOnIcon/> }</span>
 							}
 						/>
 					</Grid>
@@ -154,7 +154,7 @@ class ConfigurationViewComponent extends React.Component<IConfigurationProps & W
 							min={ 0 }
 							max={ 1 }
 							step={ 1 / 32 }
-							value={ this.getValue<number>('musicVolume', 1) }
+							value={ musicVolume }
 							onChange={ (event, value) => this.dispatch(createSetMusicVolumeAction(value)) }
 						/>
 					</Grid>
@@ -165,11 +165,7 @@ class ConfigurationViewComponent extends React.Component<IConfigurationProps & W
 							className={ classes.margin }
 							label={ __('sound volume') }
 							control={
-								<span className={ classes.icon }>{
-									this.getValue<boolean>('mute', false) || this.getValue<boolean>('muteSound', false)
-									? <SoundOffIcon/>
-									: <SoundOnIcon/>
-								}</span>
+								<span className={ classes.icon }>{ mute || muteSound ? <SoundOffIcon/> : <SoundOnIcon/> }</span>
 							}
 						/>
 					</Grid>
@@ -178,17 +174,13 @@ class ConfigurationViewComponent extends React.Component<IConfigurationProps & W
 							min={ 0 }
 							max={ 1 }
 							step={ 1 / 32 }
-							value={ this.getValue<number>('soundVolume', 1) }
+							value={ soundVolume }
 							onChange={ (event, value) => this.dispatch(createSetSoundVolumeAction(value)) }
 						/>
 					</Grid>
 				</Grid>
 			</Grid>
 		</form>);
-	}
-
-	private getValue<T>(key: string, defaultValue: T): T {
-		return this.props.store ? this.props.store.getState()[key] : defaultValue;
 	}
 
 	private dispatch(action: Action): void {
