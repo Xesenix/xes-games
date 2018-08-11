@@ -106,7 +106,11 @@
 				"src/game-01/styles",
 				"src/styles"
 			],
-			"vendor": []
+			"vendor": [],
+			"languages": [
+				"en",
+				"pl"
+			]
 		}
 	},
 	"author": "Xesenix",

@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import { Container } from 'inversify';
+import { __ } from 'lib/localize';
 
 // tslint:disable:max-classes-per-file
 
@@ -59,7 +60,7 @@ export function connectToInjector<T>(Consumer, select: { [key: string]: { name: 
 				return <Consumer {...this.props} {...this.state}/>;
 			}
 
-			return <>Loading...</>;
+			return <>{ `${__('loading')}...` }</>;
 		}
 	}
 

@@ -1,6 +1,16 @@
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.1.1\n"
+"Last-Translator: \n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: en\n"
 
 #: src/game-01/components/game-view/game-view.tsx:109
 msgid "Back"
@@ -8,52 +18,52 @@ msgstr ""
 
 #: src/game-01/components/game-view/game-view.tsx:116
 msgid "Configuration"
-msgstr ""
+msgstr "Configuration"
 
 #: src/game-01/components/game-view/game-view.tsx:122
 msgid "Fullscreen"
-msgstr ""
+msgstr "Fullscreen"
 
 #: src/game-01/components/configuration-view/configuration-view.tsx:108
 msgid "fx mute"
-msgstr ""
+msgstr "fx mute"
 
 #: src/game-01/app/app.tsx:71
 msgid "loading"
-msgstr ""
+msgstr "loading"
 
 #: src/game-01/components/configuration-view/configuration-view.tsx:80
 msgid "master mute"
-msgstr ""
+msgstr "master mute"
 
 #: src/game-01/components/configuration-view/configuration-view.tsx:123
 msgid "master volume"
-msgstr ""
+msgstr "master volume"
 
 #: src/game-01/components/configuration-view/configuration-view.tsx:94
 msgid "music mute"
-msgstr ""
+msgstr "music mute"
 
 #: src/game-01/components/configuration-view/configuration-view.tsx:143
 msgid "music volume"
-msgstr ""
+msgstr "music volume"
 
 #: src/game-01/components/game-view/game-view.tsx:130
 msgid "Mute"
-msgstr ""
+msgstr "Mute"
 
 #: src/game-01/components/game-view/game-view.tsx:126
 msgid "Pause"
-msgstr ""
+msgstr "Pause"
 
 #: src/game-01/app/app.tsx:77
 msgid "PHASER 3 Game Test"
-msgstr ""
+msgstr "PHASER 3 Game Test"
 
 #: src/game-01/components/configuration-view/configuration-view.tsx:163
 msgid "sound volume"
-msgstr ""
+msgstr "sound volume"
 
 #: src/game-01/app/app.tsx:70
 msgid "Start"
-msgstr ""
+msgstr "Start"

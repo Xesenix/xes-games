@@ -1,59 +1,69 @@
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.1.1\n"
+"Last-Translator: \n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : 2);\n"
+"Language: pl_PL\n"
 
 #: src/game-01/components/game-view/game-view.tsx:109
 msgid "Back"
-msgstr ""
+msgstr "Wróć"
 
 #: src/game-01/components/game-view/game-view.tsx:116
 msgid "Configuration"
-msgstr ""
+msgstr "Konfiguracja"
 
 #: src/game-01/components/game-view/game-view.tsx:122
 msgid "Fullscreen"
-msgstr ""
+msgstr "Pełny ekran"
 
 #: src/game-01/components/configuration-view/configuration-view.tsx:108
 msgid "fx mute"
-msgstr ""
+msgstr "wycisz efekty"
 
 #: src/game-01/app/app.tsx:71
 msgid "loading"
-msgstr ""
+msgstr "ładowanie"
 
 #: src/game-01/components/configuration-view/configuration-view.tsx:80
 msgid "master mute"
-msgstr ""
+msgstr "wycisz dźwięki"
 
 #: src/game-01/components/configuration-view/configuration-view.tsx:123
 msgid "master volume"
-msgstr ""
+msgstr "głośność dźwięków"
 
 #: src/game-01/components/configuration-view/configuration-view.tsx:94
 msgid "music mute"
-msgstr ""
+msgstr "wycisz muzykę"
 
 #: src/game-01/components/configuration-view/configuration-view.tsx:143
 msgid "music volume"
-msgstr ""
+msgstr "głośność muzyki"
 
 #: src/game-01/components/game-view/game-view.tsx:130
 msgid "Mute"
-msgstr ""
+msgstr "Wycisz"
 
 #: src/game-01/components/game-view/game-view.tsx:126
 msgid "Pause"
-msgstr ""
+msgstr "Pauza"
 
 #: src/game-01/app/app.tsx:77
 msgid "PHASER 3 Game Test"
-msgstr ""
+msgstr "PHASER 3 test gry"
 
 #: src/game-01/components/configuration-view/configuration-view.tsx:163
 msgid "sound volume"
-msgstr ""
+msgstr "głośność efektów"
 
 #: src/game-01/app/app.tsx:70
 msgid "Start"
-msgstr ""
+msgstr "Start"
