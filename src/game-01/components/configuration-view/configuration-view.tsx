@@ -1,9 +1,21 @@
 import { createStyles, Theme, withStyles, WithStyles } from '@material-ui/core/styles';
-
-import Slider from '@material-ui/lab/Slider';
 import * as React from 'react';
 import { hot } from 'react-hot-loader';
 import { Action, Store } from 'redux';
+
+// elements
+import Checkbox from '@material-ui/core/Checkbox';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Grid from '@material-ui/core/Grid';
+import Slider from '@material-ui/lab/Slider';
+
+// icons
+import SoundOffIcon from '@material-ui/icons/FlashOff';
+import SoundOnIcon from '@material-ui/icons/FlashOn';
+import MusicOnIcon from '@material-ui/icons/MusicNote';
+import MusicOffIcon from '@material-ui/icons/MusicOff';
+import MuteOffIcon from '@material-ui/icons/VolumeOff';
+import MuteOnIcon from '@material-ui/icons/VolumeUp';
 
 import {
 	createSetMusicVolumeAction,
@@ -17,21 +29,6 @@ import { defaultUIState, IUIState } from 'game-01/src/ui/reducers';
 import { IUIStoreProvider } from 'game-01/src/ui/store.provider';
 import { connectToInjector } from 'lib/di';
 import { __ } from 'lib/localize';
-
-import Loadable from 'react-loadable';
-
-const Loader = () => <div>...</div>;
-
-const Checkbox = Loadable({ loading: Loader, loader: () => import('@material-ui/core/Checkbox') });
-const FormControlLabel = Loadable({ loading: Loader, loader: () => import('@material-ui/core/FormControlLabel') });
-const Grid = Loadable({ loading: Loader, loader: () => import('@material-ui/core/Grid') });
-
-const SoundOffIcon = Loadable({ loading: Loader, loader: () => import('@material-ui/icons/FlashOff') });
-const SoundOnIcon = Loadable({ loading: Loader, loader: () => import('@material-ui/icons/FlashOn') });
-const MusicOnIcon = Loadable({ loading: Loader, loader: () => import('@material-ui/icons/MusicNote') });
-const MusicOffIcon = Loadable({ loading: Loader, loader: () => import('@material-ui/icons/MusicOff') });
-const MuteOffIcon = Loadable({ loading: Loader, loader: () => import('@material-ui/icons/VolumeOff') });
-const MuteOnIcon = Loadable({ loading: Loader, loader: () => import('@material-ui/icons/VolumeUp') });
 
 const styles = (theme: Theme) => createStyles({
 	root: {

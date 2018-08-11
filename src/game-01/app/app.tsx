@@ -1,7 +1,13 @@
 import { createMuiTheme, createStyles, MuiThemeProvider, Theme, withStyles, WithStyles } from '@material-ui/core/styles';
 import * as React from 'react';
-import * as ReactDOM from 'react-dom';
 import { hot } from 'react-hot-loader';
+
+// elements
+import CssBaseline from '@material-ui/core/CssBaseline';
+import Button from '@material-ui/core/Button';
+import LinearProgress from '@material-ui/core/LinearProgress';
+import Paper from '@material-ui/core/Paper';
+import Typography from '@material-ui/core/Typography';
 
 import { __ } from 'lib/localize';
 
@@ -10,10 +16,6 @@ import Loadable from 'react-loadable';
 const Loader = () => <div>...</div>;
 
 const GameView = Loadable({ loading: Loader, loader: () => import('game-01/components/game-view/game-view') });
-
-const CssBaseline = Loadable({ loading: Loader, loader: () => import('@material-ui/core/CssBaseline') });
-const Paper = Loadable({ loading: Loader, loader: () => import('@material-ui/core/Paper') });
-const Typography = Loadable({ loading: Loader, loader: () => import('@material-ui/core/Typography') });
 
 const theme = createMuiTheme({
 	typography: {
@@ -38,20 +40,49 @@ interface IAppProps {
 }
 
 interface IAppState {
-
+	ready: boolean;
+	phaserReady: boolean;
+	loading: boolean;
 }
 
 class App extends React.Component<IAppProps & WithStyles<typeof styles>, IAppState> {
+	constructor(props) {
+		super(props);
+		this.state = {
+			ready: false,
+			phaserReady: false,
+			loading: false,
+		};
+	}
+
+	public componentDidMount(): void {
+		// optional preloading
+		import('phaser').then(() => this.setState({ phaserReady: true }));
+	}
+
 	public render() {
 		const { classes } = this.props;
+		const { loading, ready, phaserReady } = this.state;
+
+		const gameView = ready
+			? <GameView/>
+			: phaserReady
+				? <Button color="primary" variant="contained" onClick={ this.start }>{ __('Start') }</Button>
+				: <Typography component="p">{ `${__('loading')}: PHASER` }</Typography>;
 
 		return (<MuiThemeProvider theme={ theme }>
 				<CssBaseline/>
 				<Paper className={ classes.root } elevation={ 1 }>
+					{ loading ? <LinearProgress/> : null }
 					<Typography variant="headline" component="h1">{ __('PHASER 3 Game Test') }</Typography>
-					<GameView/>
+					{ gameView }
 				</Paper>
 			</MuiThemeProvider>);
+	}
+
+	private start = () => {
+		this.setState({ loading: true });
+		GameView.preload().then(() => this.setState({ ready: true, loading: false }));
 	}
 }
 

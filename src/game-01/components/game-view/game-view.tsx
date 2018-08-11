@@ -1,8 +1,24 @@
+import { createStyles, Theme, withStyles, WithStyles } from '@material-ui/core/styles';
+
+// elements
 import AppBar from '@material-ui/core/AppBar';
+import Button from '@material-ui/core/Button';
+import Drawer from '@material-ui/core/Drawer';
 import Grid from '@material-ui/core/Grid';
 import Hidden from '@material-ui/core/Hidden';
 import LinearProgress from '@material-ui/core/LinearProgress';
-import { createStyles, Theme, withStyles, WithStyles } from '@material-ui/core/styles';
+import Paper from '@material-ui/core/Paper';
+import Toolbar from '@material-ui/core/Toolbar';
+// icons
+import ConfigIcon from '@material-ui/icons/Build';
+import FullScreenIcon from '@material-ui/icons/Fullscreen';
+import FullScreenExitIcon from '@material-ui/icons/FullscreenExit';
+import MenuIcon from '@material-ui/icons/Menu';
+import PausedIcon from '@material-ui/icons/PauseCircleFilled';
+import PlayIcon from '@material-ui/icons/PlayCircleFilled';
+import BackIcon from '@material-ui/icons/Undo';
+import MuteOnIcon from '@material-ui/icons/VolumeOff';
+import MuteOffIcon from '@material-ui/icons/VolumeUp';
 
 import { Container } from 'inversify';
 import * as React from 'react';
@@ -18,22 +34,7 @@ import { __ } from 'lib/localize';
 
 import Loadable from 'react-loadable';
 
-const Loader = () => <div>...</div>;
-
-const Button = Loadable({ loading: Loader, loader: () => import('@material-ui/core/Button') });
-const Drawer = Loadable({ loading: Loader, loader: () => import('@material-ui/core/Drawer') });
-const Paper = Loadable({ loading: Loader, loader: () => import('@material-ui/core/Paper') });
-const Toolbar = Loadable({ loading: Loader, loader: () => import('@material-ui/core/Toolbar') });
-
-const ConfigIcon = Loadable({ loading: Loader, loader: () => import('@material-ui/icons/Build') });
-const FullScreenIcon = Loadable({ loading: Loader, loader: () => import('@material-ui/icons/Fullscreen') });
-const FullScreenExitIcon = Loadable({ loading: Loader, loader: () => import('@material-ui/icons/FullscreenExit') });
-const MenuIcon = Loadable({ loading: Loader, loader: () => import('@material-ui/icons/Menu') });
-const PausedIcon = Loadable({ loading: Loader, loader: () => import('@material-ui/icons/PauseCircleFilled') });
-const PlayIcon = Loadable({ loading: Loader, loader: () => import('@material-ui/icons/PlayCircleFilled') });
-const BackIcon = Loadable({ loading: Loader, loader: () => import('@material-ui/icons/Undo') });
-const MuteOnIcon = Loadable({ loading: Loader, loader: () => import('@material-ui/icons/VolumeOff') });
-const MuteOffIcon = Loadable({ loading: Loader, loader: () => import('@material-ui/icons/VolumeUp') });
+const Loader = () => <LinearProgress/>;
 
 const ConfigurationViewComponent = Loadable({ loading: Loader, loader: () => import('game-01/components/configuration-view/configuration-view') });
 const PhaserViewComponent = Loadable({ loading: Loader, loader: () => import('game-01/components/phaser-view/phaser-view') });
@@ -62,6 +63,7 @@ export interface IGameViewState {
 	fullscreen: boolean;
 	tab: 'configuration' | 'game';
 	drawer: boolean;
+	loading: boolean;
 }
 
 class GameViewComponent extends React.PureComponent<IGameViewProps & WithStyles<typeof styles>, IGameViewState & IUIState> {
@@ -73,12 +75,17 @@ class GameViewComponent extends React.PureComponent<IGameViewProps & WithStyles<
 			fullscreen: false,
 			tab: 'game',
 			drawer: false,
+			loading: false,
 			...defaultUIState,
 		};
 	}
 
 	public componentDidMount(): void {
 		this.bindToStore();
+
+		// optional preloading
+		this.setState({ loading: true });
+		import('phaser').then(() => this.setState({ loading: false }));
 	}
 
 	public componentDidUpdate(): void {
@@ -92,7 +99,7 @@ class GameViewComponent extends React.PureComponent<IGameViewProps & WithStyles<
 	}
 
 	public render(): any {
-		const { tab = 'game', fullscreen, paused, mute } = this.state;
+		const { tab = 'game', fullscreen, paused, mute, loading } = this.state;
 		const { classes } = this.props;
 
 		const menu = (<>
@@ -140,7 +147,7 @@ class GameViewComponent extends React.PureComponent<IGameViewProps & WithStyles<
 										</Button>
 									</Hidden>
 								</Toolbar>
-								<LinearProgress/>
+								{ loading ? <LinearProgress/> : null }
 							</AppBar>
 							<Drawer
 								anchor="left"
