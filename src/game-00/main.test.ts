@@ -9,5 +9,10 @@ const excludeRegexp: RegExp = /\..*\/(main|index)\./;
  * We need to load all test files to be included in karma. And all others to generate test coverage.
  * @see https://github.com/webpack-contrib/karma-webpack#alternative-usage
  */
-const context = require.context('../', true, /\.(t|j)sx?$/);
-context.keys().filter((p: string) => !excludeRegexp.test(p)).forEach(context);
+const contextMain = require.context('./', true, /\.(t|j)sx?$/);
+contextMain.keys().filter((p: string) => !excludeRegexp.test(p)).forEach(contextMain);
+
+// add libraries that need to work with main application
+// TODO: find a way to only test dependencies
+const contextLib = require.context('../lib/game', true, /\.(t|j)sx?$/);
+contextLib.keys().filter((p: string) => !excludeRegexp.test(p)).forEach(contextLib);
