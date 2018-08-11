@@ -9,6 +9,8 @@ import { UIModule } from 'game-01/src/ui/ui.module';
 import { DIContext } from 'lib/di';
 import { FlatDictionary } from 'lib/dictionary/flat-dictionary';
 import { IDictionary } from 'lib/dictionary/interfaces';
+import { I18nModule } from 'lib/i18n/i18n.module';
+import { IApplication } from 'lib/interfaces';
 import { IRenderer, ReactRenderer } from 'lib/renderer/react-renderer';
 
 import { PhaserGameModule } from '../src/phaser/game.module';
@@ -24,7 +26,9 @@ declare const process: any;
  * @export
  * @extends {Container}
  */
-export class AppModule extends Container {
+export class AppModule extends Container implements IApplication {
+	public eventManager = new EventEmitter();
+
 	constructor() {
 		super();
 
@@ -46,7 +50,10 @@ export class AppModule extends Container {
 		}
 
 		// event manager
-		this.bind<EventEmitter>('event-manager').toConstantValue(new EventEmitter());
+		this.bind<EventEmitter>('event-manager').toConstantValue(this.eventManager);
+
+		// translations
+		this.load(I18nModule(this));
 
 		// phaser
 		this.load(PhaserGameModule());
@@ -101,6 +108,8 @@ export class AppModule extends Container {
 
 	public boot(): Promise<AppModule> {
 		this.banner();
+
+		this.get<EventEmitter>('event-manager').emit('app:boot');
 
 		// const game = this.get<AncientMaze<IGameObjectState, IAncientMazeState<IGameObjectState>>>('game');
 		// game.boot();

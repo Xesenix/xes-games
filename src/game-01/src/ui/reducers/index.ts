@@ -1,9 +1,12 @@
 import { Reducer } from 'redux';
 
 import {
+	ISetLanguageAction,
 	ISetMuteAction,
 	ISetPauseAction,
 	ISetVolumeAction,
+	LanguageType,
+	SET_LANGUAGE,
 	SET_MUSIC_VOLUME,
 	SET_MUTE,
 	SET_MUTE_MUSIC,
@@ -22,6 +25,7 @@ export interface IUIState {
 	soundVolume: number;
 	musicVolume: number;
 	volume: number;
+	language: LanguageType;
 }
 
 export const defaultUIState: IUIState = {
@@ -30,8 +34,9 @@ export const defaultUIState: IUIState = {
 	muteSound: false,
 	paused: false,
 	soundVolume: 1.0,
-	volume: 0.5,
+	volume: 0.1,
 	musicVolume: 1.0,
+	language: 'en',
 };
 
 export const ui: Reducer<IUIState, UIAction> = (state: IUIState = defaultUIState, action: UIAction): IUIState => {
@@ -83,6 +88,13 @@ export const ui: Reducer<IUIState, UIAction> = (state: IUIState = defaultUIState
 			return {
 				...state,
 				soundVolume: value,
+			};
+		}
+		case SET_LANGUAGE: {
+			const { value } = action as ISetLanguageAction;
+			return {
+				...state,
+				language: value,
 			};
 		}
 	}

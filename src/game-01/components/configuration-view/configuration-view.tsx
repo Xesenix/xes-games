@@ -5,9 +5,13 @@ import { Action, Store } from 'redux';
 
 // elements
 import Checkbox from '@material-ui/core/Checkbox';
+import FormControl from '@material-ui/core/FormControl';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Grid from '@material-ui/core/Grid';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
 import Slider from '@material-ui/lab/Slider';
+import Select from '@material-ui/core/Select';
 
 // icons
 import SoundOffIcon from '@material-ui/icons/FlashOff';
@@ -18,6 +22,7 @@ import MuteOffIcon from '@material-ui/icons/VolumeOff';
 import MuteOnIcon from '@material-ui/icons/VolumeUp';
 
 import {
+	createSetLanguageAction,
 	createSetMusicVolumeAction,
 	createSetMuteAction,
 	createSetMuteMusicAction,
@@ -53,6 +58,10 @@ const styles = (theme: Theme) => createStyles({
 		'display': 'inline-flex',
 		'align-items': 'center',
 	},
+	formControl: {
+		margin: theme.spacing.unit,
+		minWidth: 120,
+	},
 });
 
 export interface IConfigurationProps {
@@ -70,6 +79,7 @@ class ConfigurationViewComponent extends React.Component<IConfigurationProps & W
 			volume,
 			musicVolume,
 			soundVolume,
+			language,
 		} = store.getState();
 
 		return (<form className={ classes.root }>
@@ -174,6 +184,20 @@ class ConfigurationViewComponent extends React.Component<IConfigurationProps & W
 							value={ soundVolume }
 							onChange={ (event, value) => this.dispatch(createSetSoundVolumeAction(value)) }
 						/>
+					</Grid>
+				</Grid>
+				<Grid item xs={ 12 } container>
+					<Grid item xs={ 12 } md={ 3 }>
+						<FormControl className={ classes.formControl }>
+							<InputLabel>{ __('language') }</InputLabel>
+							<Select
+								value={ language }
+								onChange={ (event) => this.dispatch(createSetLanguageAction(event.target.value)) }
+							>
+								<option value={ 'en' }>{ __('english') }</option>
+								<option value={ 'pl' }>{ __('polish') }</option>
+							</Select>
+						</FormControl>
 					</Grid>
 				</Grid>
 			</Grid>

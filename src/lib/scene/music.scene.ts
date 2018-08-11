@@ -1,3 +1,5 @@
+import { __ } from 'lib/localize';
+
 export class MusicScene extends Phaser.Scene {
 	private soundtrack?: Phaser.Sound.BaseSound;
 	private label?: Phaser.GameObjects.Text;
@@ -20,7 +22,7 @@ export class MusicScene extends Phaser.Scene {
 		this.soundtrack.play();
 		this.soundtrack.source.loop = true;
 
-		this.label = this.add.text(400, 300, '', { font: '64px Consolas', fill: '#ffffff' });
+		this.label = this.add.text(400, 300, '', { font: '48px Consolas', fill: '#ffffff' });
 		this.label.setOrigin(0.5, 0.5);
 	}
 
@@ -32,7 +34,7 @@ export class MusicScene extends Phaser.Scene {
 
 	public update(time: number, delta: number): void {
 		if (this.label) {
-			this.label.setText(`total time: ${(time / 1000).toFixed(0)}s\ndelta: ${delta.toFixed(2)}ms`);
+			this.label.setText(`${ __('total time') }: ${(time / 1000).toFixed(0)}s\n${ __('delta time') }: ${delta.toFixed(2)}ms`);
 		}
 	}
 }

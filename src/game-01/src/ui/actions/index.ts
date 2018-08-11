@@ -52,4 +52,14 @@ export const createSetMusicVolumeAction = (value: number): ISetVolumeAction => (
 	value,
 });
 
-export type UIAction = ISetMuteAction | ISetPauseAction | ISetVolumeAction;
+export type LanguageType = 'en' | 'pl';
+export const SET_LANGUAGE = 'UI_SET_LANGUAGE';
+export interface ISetLanguageAction extends Action {
+	value: LanguageType;
+}
+export const createSetLanguageAction = (value: LanguageType): ISetLanguageAction => ({
+	type: SET_LANGUAGE,
+	value,
+});
+
+export type UIAction = ISetMuteAction | ISetPauseAction | ISetVolumeAction | ISetLanguageAction;
