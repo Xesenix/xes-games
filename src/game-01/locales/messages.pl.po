@@ -1,16 +1,17 @@
 msgid ""
 msgstr ""
-"Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
+"Last-Translator: \n"
 "Language-Team: \n"
+"Language: pl_PL\n"
 "MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 2.1.1\n"
-"Last-Translator: \n"
-"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : 2);\n"
-"Language: pl_PL\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 "
+"|| n%100>14) ? 1 : 2);\n"
 
 #: src/game-01/components/game-view/game-view.tsx:109
 msgid "Back"
@@ -20,31 +21,43 @@ msgstr "Wróć"
 msgid "Configuration"
 msgstr "Konfiguracja"
 
+#: src/lib/scene/music.scene.ts:37
+msgid "delta time"
+msgstr "różnica czasu"
+
+#: src/game-01/components/configuration-view/configuration-view.tsx:197
+msgid "english"
+msgstr "angielski"
+
 #: src/game-01/components/game-view/game-view.tsx:122
 msgid "Fullscreen"
 msgstr "Pełny ekran"
 
-#: src/game-01/components/configuration-view/configuration-view.tsx:108
+#: src/game-01/components/configuration-view/configuration-view.tsx:118
 msgid "fx mute"
 msgstr "wycisz efekty"
 
-#: src/game-01/app/app.tsx:71
+#: src/game-01/components/configuration-view/configuration-view.tsx:192
+msgid "language"
+msgstr "język"
+
+#: src/game-01/app/app.tsx:71 src/lib/di/context.tsx:63
 msgid "loading"
 msgstr "ładowanie"
 
-#: src/game-01/components/configuration-view/configuration-view.tsx:80
+#: src/game-01/components/configuration-view/configuration-view.tsx:90
 msgid "master mute"
 msgstr "wycisz dźwięki"
 
-#: src/game-01/components/configuration-view/configuration-view.tsx:123
+#: src/game-01/components/configuration-view/configuration-view.tsx:133
 msgid "master volume"
 msgstr "głośność dźwięków"
 
-#: src/game-01/components/configuration-view/configuration-view.tsx:94
+#: src/game-01/components/configuration-view/configuration-view.tsx:104
 msgid "music mute"
 msgstr "wycisz muzykę"
 
-#: src/game-01/components/configuration-view/configuration-view.tsx:143
+#: src/game-01/components/configuration-view/configuration-view.tsx:153
 msgid "music volume"
 msgstr "głośność muzyki"
 
@@ -60,10 +73,36 @@ msgstr "Pauza"
 msgid "PHASER 3 Game Test"
 msgstr "PHASER 3 test gry"
 
-#: src/game-01/components/configuration-view/configuration-view.tsx:163
+#: src/game-01/components/configuration-view/configuration-view.tsx:198
+msgid "polish"
+msgstr "polski"
+
+#: src/game-01/components/configuration-view/configuration-view.tsx:173
 msgid "sound volume"
 msgstr "głośność efektów"
 
 #: src/game-01/app/app.tsx:70
 msgid "Start"
 msgstr "Start"
+
+#: src/lib/scene/music.scene.ts:37
+msgid "total time"
+msgstr "czas całkowity"
+
+#~ msgid "Command"
+#~ msgstr "Polecenie"
+
+#~ msgid "Command buffer"
+#~ msgstr "Bufor poleceń"
+
+#~ msgid "Executed moves"
+#~ msgstr "Wykonane polecenia"
+
+#~ msgid "Finished"
+#~ msgstr "Zakończone"
+
+#~ msgid "Keys"
+#~ msgstr "Klucze"
+
+#~ msgid "Steps"
+#~ msgstr "Kroki"

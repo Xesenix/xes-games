@@ -110,6 +110,9 @@
 			"languages": [
 				"en",
 				"pl"
+			],
+			"localesExtractDirs": [
+				"src/lib"
 			]
 		}
 	},

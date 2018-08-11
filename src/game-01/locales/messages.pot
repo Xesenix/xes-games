@@ -10,31 +10,44 @@ msgstr ""
 msgid "Configuration"
 msgstr ""
 
+#: src/lib/scene/music.scene.ts:37
+msgid "delta time"
+msgstr ""
+
+#: src/game-01/components/configuration-view/configuration-view.tsx:197
+msgid "english"
+msgstr ""
+
 #: src/game-01/components/game-view/game-view.tsx:122
 msgid "Fullscreen"
 msgstr ""
 
-#: src/game-01/components/configuration-view/configuration-view.tsx:108
+#: src/game-01/components/configuration-view/configuration-view.tsx:118
 msgid "fx mute"
 msgstr ""
 
+#: src/game-01/components/configuration-view/configuration-view.tsx:192
+msgid "language"
+msgstr ""
+
 #: src/game-01/app/app.tsx:71
+#: src/lib/di/context.tsx:63
 msgid "loading"
 msgstr ""
 
-#: src/game-01/components/configuration-view/configuration-view.tsx:80
+#: src/game-01/components/configuration-view/configuration-view.tsx:90
 msgid "master mute"
 msgstr ""
 
-#: src/game-01/components/configuration-view/configuration-view.tsx:123
+#: src/game-01/components/configuration-view/configuration-view.tsx:133
 msgid "master volume"
 msgstr ""
 
-#: src/game-01/components/configuration-view/configuration-view.tsx:94
+#: src/game-01/components/configuration-view/configuration-view.tsx:104
 msgid "music mute"
 msgstr ""
 
-#: src/game-01/components/configuration-view/configuration-view.tsx:143
+#: src/game-01/components/configuration-view/configuration-view.tsx:153
 msgid "music volume"
 msgstr ""
 
@@ -50,10 +63,18 @@ msgstr ""
 msgid "PHASER 3 Game Test"
 msgstr ""
 
-#: src/game-01/components/configuration-view/configuration-view.tsx:163
+#: src/game-01/components/configuration-view/configuration-view.tsx:198
+msgid "polish"
+msgstr ""
+
+#: src/game-01/components/configuration-view/configuration-view.tsx:173
 msgid "sound volume"
 msgstr ""
 
 #: src/game-01/app/app.tsx:70
 msgid "Start"
+msgstr ""
+
+#: src/lib/scene/music.scene.ts:37
+msgid "total time"
 msgstr ""

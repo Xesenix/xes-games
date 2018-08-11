@@ -2,12 +2,24 @@ msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 
+#: src/game-01/components/game-view/game-view.tsx:109
+msgid "Back"
+msgstr ""
+
 #: src/game-00/components/game-state-console/game-state-console.tsx:26
 msgid "Command"
 msgstr ""
 
 #: src/game-00/components/game-state-console/game-state-console.tsx:29
 msgid "Command buffer"
+msgstr ""
+
+#: src/game-01/components/game-view/game-view.tsx:116
+msgid "Configuration"
+msgstr ""
+
+#: src/lib/scene/music.scene.ts:37
+msgid "delta time"
 msgstr ""
 
 #: src/game-00/components/game-state-console/game-state-console.tsx:34
@@ -18,10 +30,63 @@ msgstr ""
 msgid "Finished"
 msgstr ""
 
+#: src/game-01/components/game-view/game-view.tsx:122
+msgid "Fullscreen"
+msgstr ""
+
+#: src/game-01/components/configuration-view/configuration-view.tsx:108
+msgid "fx mute"
+msgstr ""
+
 #: src/game-00/components/game-state-console/game-state-console.tsx:27
 msgid "Keys"
 msgstr ""
 
+#: src/game-01/app/app.tsx:71
+#: src/lib/di/context.tsx:63
+msgid "loading"
+msgstr ""
+
+#: src/game-01/components/configuration-view/configuration-view.tsx:80
+msgid "master mute"
+msgstr ""
+
+#: src/game-01/components/configuration-view/configuration-view.tsx:123
+msgid "master volume"
+msgstr ""
+
+#: src/game-01/components/configuration-view/configuration-view.tsx:94
+msgid "music mute"
+msgstr ""
+
+#: src/game-01/components/configuration-view/configuration-view.tsx:143
+msgid "music volume"
+msgstr ""
+
+#: src/game-01/components/game-view/game-view.tsx:130
+msgid "Mute"
+msgstr ""
+
+#: src/game-01/components/game-view/game-view.tsx:126
+msgid "Pause"
+msgstr ""
+
+#: src/game-01/app/app.tsx:77
+msgid "PHASER 3 Game Test"
+msgstr ""
+
+#: src/game-01/components/configuration-view/configuration-view.tsx:163
+msgid "sound volume"
+msgstr ""
+
+#: src/game-01/app/app.tsx:70
+msgid "Start"
+msgstr ""
+
 #: src/game-00/components/game-state-console/game-state-console.tsx:28
 msgid "Steps"
+msgstr ""
+
+#: src/lib/scene/music.scene.ts:37
+msgid "total time"
 msgstr ""
