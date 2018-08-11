@@ -2,6 +2,7 @@ import { inject } from 'lib/di';
 import * as React from 'react';
 import { render } from 'react-dom';
 
+// TODO: decouple interface from implementation
 export interface IRenderer {
 	setOutlet(component: any, outlet?: string): IRenderer;
 	render(): IRenderer;
