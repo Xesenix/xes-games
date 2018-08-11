@@ -31,6 +31,8 @@ export class MusicScene extends Phaser.Scene {
 	}
 
 	public update(time: number, delta: number): void {
-		this.label.setText(`total time: ${(time / 1000).toFixed(0)}s\ndelta: ${delta.toFixed(2)}ms`);
+		if (this.label) {
+			this.label.setText(`total time: ${(time / 1000).toFixed(0)}s\ndelta: ${delta.toFixed(2)}ms`);
+		}
 	}
 }

@@ -18,11 +18,12 @@ export function PhaserGameProvider(context: interfaces.Context) {
 		console.debug('PhaserGameProvider:provide', parent, storeProvider);
 
 		// preload phaser module that is needed by subsequential modules
+		// TODO: convert to observable so it can return progress on loading
 		return import('phaser').then(() => Promise.all([
 			import('lib/phaser/store.plugin'),
 			import('lib/phaser/ui-manager.plugin'),
 			import('lib/scene/music.scene'),
-		]).then(([{ StorePlugin }, { UIManagerPlugin }, { MusicScene }]) => storeProvider().then((store: Store) => {
+		]).then(([{ createStorePlugin }, { createUIManagerPlugin }, { MusicScene }]) => storeProvider().then((store: Store) => {
 			if (!forceNew && game !== null) {
 				console.debug('PhaserGameProvider:swap parent', game);
 				parent.appendChild(game.canvas);
@@ -85,18 +86,18 @@ export function PhaserGameProvider(context: interfaces.Context) {
 					global: [
 						{
 							key: 'ui:store',
-							plugin: (pluginManager: Phaser.Plugins.PluginManager) => new StorePlugin(pluginManager, store),
+							plugin: createStorePlugin(store),
 							start: true,
 						},
 						{
 							key: 'ui:manager',
-							plugin: (pluginManager: Phaser.Plugins.PluginManager) => new UIManagerPlugin(pluginManager, store),
+							plugin: createUIManagerPlugin(store),
 							start: true,
 						},
 					],
 				},
 				scene: [
-					() => new MusicScene(),
+					MusicScene,
 				],
 			};
 

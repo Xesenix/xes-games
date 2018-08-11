@@ -1,13 +1,13 @@
 import { Store } from 'redux';
 
-export class StorePlugin extends Phaser.Plugins.BasePlugin {
+export const createStorePlugin = (store: Store) =>
+class StorePlugin extends Phaser.Plugins.BasePlugin {
+	public store: Store = store;
 	constructor(
 		public pluginManager: Phaser.Plugins.PluginManager,
-		public store: Store,
 	) {
 		super(pluginManager);
 		console.log('StorePlugin:constructor');
-		this.store = store;
 	}
 	public start() {
 		console.log('StorePlugin:start');
