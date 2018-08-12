@@ -11,6 +11,7 @@ import Grid from '@material-ui/core/Grid';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
+import Typography from '@material-ui/core/Typography';
 import Slider from '@material-ui/lab/Slider';
 
 // icons
@@ -88,7 +89,8 @@ export class ConfigurationViewComponent extends React.Component<IConfigurationPr
 		} = store.getState();
 
 		return (<form className={ classes.root }>
-			<Grid container spacing={ 0 } alignItems="stretch">
+			<Typography variant="headline" component="h1">{ __('Sound configuration') }</Typography>
+			<Grid container spacing={ 0 } alignItems="stretch" component="section">
 				<Grid item xs={ 6 } sm={ 4 }>
 					<FormControlLabel
 						className={ classes.margin }
@@ -191,20 +193,19 @@ export class ConfigurationViewComponent extends React.Component<IConfigurationPr
 						/>
 					</Grid>
 				</Grid>
-				<Grid item xs={ 12 } container>
-					<Grid item xs={ 12 } md={ 3 }>
-						<FormControl className={ classes.formControl }>
-							<InputLabel>{ __('language') }</InputLabel>
-							<Select
-								value={ language }
-								onChange={ (event) => this.dispatch(createSetLanguageAction(event.target.value as LanguageType)) }
-							>
-								<option value={ 'en' }>{ __('english') }</option>
-								<option value={ 'pl' }>{ __('polish') }</option>
-							</Select>
-						</FormControl>
-					</Grid>
-				</Grid>
+			</Grid>
+			<Typography variant="headline" component="h1">{ __('Language configuration') }</Typography>
+			<Grid item xs={ 12 } container component="section">
+				<FormControl className={ classes.formControl }>
+					<InputLabel>{ __('language') }</InputLabel>
+					<Select
+						value={ language }
+						onChange={ (event) => this.dispatch(createSetLanguageAction(event.target.value as LanguageType)) }
+					>
+						<MenuItem value={ 'en' }>{ __('english') }</MenuItem>
+						<MenuItem value={ 'pl' }>{ __('polish') }</MenuItem>
+					</Select>
+				</FormControl>
 			</Grid>
 		</form>);
 	}
