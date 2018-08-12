@@ -47,4 +47,4 @@ class UIManagerPlugin extends Phaser.Plugins.BasePlugin {
 			this.game.loop.wake();
 		}
 	}
-}
+};

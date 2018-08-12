@@ -3,8 +3,8 @@ import * as React from 'react';
 import { hot } from 'react-hot-loader';
 
 // elements
-import CssBaseline from '@material-ui/core/CssBaseline';
 import Button from '@material-ui/core/Button';
+import CssBaseline from '@material-ui/core/CssBaseline';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
@@ -17,7 +17,7 @@ const Loader = () => <div>...</div>;
 
 const GameView = Loadable({ loading: Loader, loader: () => import('game-01/components/game-view/game-view') });
 
-const theme = createMuiTheme({
+const appTheme = createMuiTheme({
 	typography: {
 		htmlFontSize: 16,
 	},
@@ -70,7 +70,7 @@ class App extends React.Component<IAppProps & WithStyles<typeof styles>, IAppSta
 				? <Button color="primary" variant="contained" onClick={ this.start }>{ __('Start') }</Button>
 				: <Typography component="p">{ `${__('loading')}: PHASER` }</Typography>;
 
-		return (<MuiThemeProvider theme={ theme }>
+		return (<MuiThemeProvider theme={ appTheme }>
 				<CssBaseline/>
 				<Paper className={ classes.root } elevation={ 1 }>
 					{ loading ? <LinearProgress/> : null }
@@ -82,7 +82,8 @@ class App extends React.Component<IAppProps & WithStyles<typeof styles>, IAppSta
 
 	private start = () => {
 		this.setState({ loading: true });
-		GameView.preload().then(() => this.setState({ ready: true, loading: false }));
+		// TODO: wrong type definition for preload
+		(GameView.preload() as any).then(() => this.setState({ ready: true, loading: false }));
 	}
 }
 

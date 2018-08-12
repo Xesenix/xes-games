@@ -16,4 +16,4 @@ class StorePlugin extends Phaser.Plugins.BasePlugin {
 	public stop() {
 		console.log('StorePlugin:stop');
 	}
-}
+};

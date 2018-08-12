@@ -8,7 +8,7 @@ import { Store } from 'redux';
 import OutletComponent from 'game-00/components/outlet/outlet'; // TODO: move outside game-00
 import { PhaserGameModule } from 'game-01/src/phaser/game.module';
 import { defaultUIState, IUIState, UIModule, uiReducer } from 'game-01/src/ui';
-import { DataStoreModule, IStoreProvider } from 'lib/data-store';
+import { DataStoreModule } from 'lib/data-store';
 import { DIContext } from 'lib/di';
 import { FlatDictionary } from 'lib/dictionary/flat-dictionary';
 import { IDictionary } from 'lib/dictionary/interfaces';

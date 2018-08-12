@@ -1,4 +1,3 @@
-import { EventEmitter } from 'events';
 import { interfaces } from 'inversify';
 import { Gettext } from 'node-gettext';
 import { Store } from 'redux';
