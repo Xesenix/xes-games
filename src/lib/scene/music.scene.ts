@@ -1,4 +1,4 @@
-import { __ } from 'lib/localize';
+import { __ } from 'lib/i18n';
 
 export class MusicScene extends Phaser.Scene {
 	private soundtrack?: Phaser.Sound.BaseSound;

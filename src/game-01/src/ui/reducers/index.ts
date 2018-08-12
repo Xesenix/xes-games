@@ -1,12 +1,9 @@
-import { Reducer } from 'redux';
+import { IValueAction } from 'lib/interfaces';
 
 import {
-	ISetLanguageAction,
 	ISetMuteAction,
 	ISetPauseAction,
 	ISetVolumeAction,
-	LanguageType,
-	SET_LANGUAGE,
 	SET_MUSIC_VOLUME,
 	SET_MUTE,
 	SET_MUTE_MUSIC,
@@ -14,8 +11,7 @@ import {
 	SET_PAUSE,
 	SET_SOUND_VOLUME,
 	SET_VOLUME,
-	UIAction,
-} from '../actions/index';
+} from '../actions';
 
 export interface IUIState {
 	mute: boolean;
@@ -25,7 +21,6 @@ export interface IUIState {
 	soundVolume: number;
 	musicVolume: number;
 	volume: number;
-	language: LanguageType;
 }
 
 export const defaultUIState: IUIState = {
@@ -36,67 +31,59 @@ export const defaultUIState: IUIState = {
 	soundVolume: 1.0,
 	volume: 0.1,
 	musicVolume: 1.0,
-	language: 'en',
 };
 
-export const ui: Reducer<IUIState, UIAction> = (state: IUIState = defaultUIState, action: UIAction): IUIState => {
+export function uiReducer<S extends IUIState | undefined, A extends IValueAction>(state: S = defaultUIState as S, action: A): S {
 	switch (action.type) {
 		case SET_MUTE: {
 			const { value } = action as ISetMuteAction;
 			return {
-				...state,
+				...state as any,
 				mute: value,
 			};
 		}
 		case SET_MUTE_MUSIC: {
 			const { value } = action as ISetMuteAction;
 			return {
-				...state,
+				...state as any,
 				muteMusic: value,
 			};
 		}
 		case SET_MUTE_SOUND: {
 			const { value } = action as ISetMuteAction;
 			return {
-				...state,
+				...state as any,
 				muteSound: value,
 			};
 		}
 		case SET_PAUSE: {
 			const { value } = action as ISetPauseAction;
 			return {
-				...state,
+				...state as any,
 				paused: value,
 			};
 		}
 		case SET_VOLUME: {
 			const { value } = action as ISetVolumeAction;
 			return {
-				...state,
+				...state as any,
 				volume: value,
 			};
 		}
 		case SET_MUSIC_VOLUME: {
 			const { value } = action as ISetVolumeAction;
 			return {
-				...state,
+				...state as any,
 				musicVolume: value,
 			};
 		}
 		case SET_SOUND_VOLUME: {
 			const { value } = action as ISetVolumeAction;
 			return {
-				...state,
+				...state as any,
 				soundVolume: value,
-			};
-		}
-		case SET_LANGUAGE: {
-			const { value } = action as ISetLanguageAction;
-			return {
-				...state,
-				language: value,
 			};
 		}
 	}
 	return state;
-};
+}

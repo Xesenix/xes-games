@@ -9,7 +9,7 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 
-import { __ } from 'lib/localize';
+import { __ } from 'lib/i18n';
 
 import Loadable from 'react-loadable';
 

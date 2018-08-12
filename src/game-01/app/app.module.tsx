@@ -3,22 +3,33 @@ import * as ReactDOM from 'react-dom';
 
 import { EventEmitter } from 'events';
 import { Container } from 'inversify';
+import { Store } from 'redux';
 
 import OutletComponent from 'game-00/components/outlet/outlet'; // TODO: move outside game-00
-import { UIModule } from 'game-01/src/ui/ui.module';
+import { PhaserGameModule } from 'game-01/src/phaser/game.module';
+import { defaultUIState, IUIState, UIModule, uiReducer } from 'game-01/src/ui';
+import { DataStoreModule, IStoreProvider } from 'lib/data-store';
 import { DIContext } from 'lib/di';
 import { FlatDictionary } from 'lib/dictionary/flat-dictionary';
 import { IDictionary } from 'lib/dictionary/interfaces';
-import { I18nModule } from 'lib/i18n/i18n.module';
-import { IApplication } from 'lib/interfaces';
+import {
+	defaultI18nState,
+	I18nModule,
+	i18nReducer,
+	II18nProvider,
+	II18nState,
+} from 'lib/i18n';
+import { IApplication, IValueAction } from 'lib/interfaces';
 import { IRenderer, ReactRenderer } from 'lib/renderer/react-renderer';
 
-import { PhaserGameModule } from '../src/phaser/game.module';
 import App from './app';
 
 declare const process: any;
 
 // const KEY_ITEM_TYPE = Symbol.for('KEY_ITEM_TYPE');
+
+type IAppState = IUIState & II18nState | undefined;
+type AppAction = IValueAction;
 
 /**
  * Main module for application. Defines all dependencies and provides default setup for configuration variables.
@@ -27,6 +38,7 @@ declare const process: any;
  * @extends {Container}
  */
 export class AppModule extends Container implements IApplication {
+	public dataStore?: Store<IAppState, AppAction>;
 	public eventManager = new EventEmitter();
 
 	constructor() {
@@ -52,8 +64,19 @@ export class AppModule extends Container implements IApplication {
 		// event manager
 		this.bind<EventEmitter>('event-manager').toConstantValue(this.eventManager);
 
+		// data store
+		this.load(DataStoreModule<IAppState, AppAction>({
+			...defaultUIState,
+			...defaultI18nState,
+		}, (state: IAppState, action: AppAction) => {
+			console.log('reduce', state, action);
+			state = uiReducer<IAppState, AppAction>(state, action);
+			state = i18nReducer<IAppState, AppAction>(state, action);
+			return state;
+		}));
+
 		// translations
-		this.load(I18nModule(this));
+		this.load(I18nModule());
 
 		// phaser
 		this.load(PhaserGameModule());
@@ -95,7 +118,7 @@ export class AppModule extends Container implements IApplication {
 		});*/
 	}
 
-	public banner() {
+	public banner(): void {
 		// tslint:disable:max-line-length
 		console.log('%c  ★★★ Black Dragon Framework ★★★  ',
 			'display: block; line-height: 3rem; border-bottom: 5px double #a02060; font-family: fantasy; font-size: 2rem; color: #f02060; background-color: #000;',
@@ -107,18 +130,25 @@ export class AppModule extends Container implements IApplication {
 	}
 
 	public boot(): Promise<AppModule> {
-		this.banner();
+		// start all required modules
+		return this.get<II18nProvider>('i18n:provider')()
+		.then(() => {
+			this.banner();
+			this.get<EventEmitter>('event-manager').emit('app:boot');
 
-		this.get<EventEmitter>('event-manager').emit('app:boot');
+			// const game = this.get<AncientMaze<IGameObjectState, IAncientMazeState<IGameObjectState>>>('game');
+			// game.boot();
 
-		// const game = this.get<AncientMaze<IGameObjectState, IAncientMazeState<IGameObjectState>>>('game');
-		// game.boot();
+			const container = this.get<HTMLElement>('ui:root');
 
-		const container = this.get<HTMLElement>('ui:root');
+			ReactDOM.render(<DIContext.Provider value={ this }><App/></DIContext.Provider>, container);
+			// ReactDOM.render(<App/>, container);
 
-		ReactDOM.render(<DIContext.Provider value={this}><App/></DIContext.Provider>, container);
-		// ReactDOM.render(<App/>, container);
+			return this;
+		}, (error) => {
+			console.error(error);
 
-		return Promise.resolve(this);
+			return this;
+		});
 	}
 }

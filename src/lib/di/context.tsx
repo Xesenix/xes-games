@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { Container } from 'inversify';
-import { __ } from 'lib/localize';
+import { __ } from 'lib/i18n';
 
 // tslint:disable:max-classes-per-file
 
@@ -18,7 +18,7 @@ export const DIContext = React.createContext<Container | null>(null);
 export function connectToDI<T>(Consumer) {
 	class DIConsumer extends React.Component<T, {}> {
 		public render() {
-			return <DIContext.Consumer>{ (container: Container | null) => <Consumer {...this.props} di={container}/> }</DIContext.Consumer>;
+			return <DIContext.Consumer>{ (container: Container | null) => <Consumer { ...this.props } di={ container }/> }</DIContext.Consumer>;
 		}
 	}
 

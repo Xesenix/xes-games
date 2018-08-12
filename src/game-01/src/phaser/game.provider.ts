@@ -14,7 +14,7 @@ export function PhaserGameProvider(context: interfaces.Context) {
 
 	return (forceNew: boolean = false): Promise<Phaser.Game> => {
 		const parent = context.container.get<HTMLElement>('phaser:container');
-		const storeProvider = context.container.get<IUIStoreProvider>('ui:store');
+		const storeProvider = context.container.get<IUIStoreProvider>('data-store-provider');
 		console.debug('PhaserGameProvider:provide', parent, storeProvider);
 
 		// preload phaser module that is needed by subsequential modules

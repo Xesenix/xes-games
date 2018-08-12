@@ -1,31 +1,14 @@
 import { ContainerModule, interfaces } from 'inversify';
-import { applyMiddleware, compose, Reducer } from 'redux';
-import { createLogger } from 'redux-logger';
+import { Action, DeepPartial, Reducer } from 'redux';
 
-import { DataStore } from './data-store';
+import { IStoreProvider, StoreProvider } from './store-provider';
 
-export const DataStoreModule = <T>(
-	initialValue: T,
-	reducer: Reducer<T>,
-	debug: boolean = false,
+export const DataStoreModule = <T, A extends Action>(
+	initialValue: DeepPartial<T>,
+	reducer: Reducer<T, A>,
 ) => new ContainerModule((bind: interfaces.Bind) => {
-	bind<T>('data-store:initial-state').toConstantValue(initialValue);
-	bind<Reducer<T>>('data-store:action-reducer').toConstantValue(reducer);
-	if (debug) {
-		const logger = createLogger({
-			duration: true,
-			timestamp: true,
-		});
-
-		const composeEnhancers = typeof window === 'object'
-			&& typeof window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ !== 'undefined'
-			? (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({
-				// Specify extension’s options like name, actionsBlacklist, actionsCreators, serialize...
-			})
-			: compose;
-
-		bind<Reducer<T>>('data-store:store-enhancer')
-			.toConstantValue(composeEnhancers(applyMiddleware(logger)));
-	}
-	bind<DataStore<T>>('data-store').to(DataStore).inSingletonScope();
+	console.debug('DataStoreModule:init');
+	bind<DeepPartial<T> | undefined>('data-store:initial-data-state').toConstantValue(initialValue);
+	bind<Reducer<T, A>>('data-store:action-reducer').toConstantValue(reducer);
+	bind<IStoreProvider<T, A>>('data-store-provider').toProvider(StoreProvider);
 });

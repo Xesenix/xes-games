@@ -4,9 +4,10 @@ import { hot } from 'react-hot-loader';
 import { Store } from 'redux';
 
 import { IPhaserGameProvider } from 'game-01/src/phaser/game.provider';
-import { IUIState } from 'game-01/src/ui/reducers/index';
-import { IUIStoreProvider } from 'game-01/src/ui/store.provider';
+import { IUIState } from 'game-01/src/ui';
+import { IStoreProvider } from 'lib/data-store';
 import { connectToInjector } from 'lib/di';
+import { IValueAction } from 'lib/interfaces';
 
 import './phaser-view.scss';
 
@@ -81,8 +82,8 @@ class PhaserViewComponent extends React.PureComponent<IPhaserViewProps, IPhaserV
 }
 
 export default hot(module)(connectToInjector<IPhaserViewProps>(PhaserViewComponent, {
-	'ui:store': {
+	'data-store-provider': {
 		name: 'store',
-		value: (provider: IUIStoreProvider) => provider(),
+		value: (provider: IStoreProvider<IUIState, IValueAction>) => provider(),
 	},
 }));

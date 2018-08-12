@@ -3,7 +3,7 @@ import { hot } from 'react-hot-loader';
 
 import { CommandType, IAncientMazeState } from 'lib/game/ancient-maze/ancient-maze';
 import { IGameObjectState } from 'lib/game/board/interface';
-import { __ } from 'lib/localize';
+import { __ } from 'lib/i18n';
 
 import './game-state-console.scss';
 

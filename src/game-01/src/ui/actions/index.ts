@@ -1,8 +1,8 @@
-import { Action } from 'redux';
+import { IValueAction } from 'lib/interfaces';
 
 // tslint:disable:max-classes-per-file
 export const SET_MUTE = 'UI_SET_MUTE';
-export interface ISetMuteAction extends Action {
+export interface ISetMuteAction extends IValueAction {
 	value: boolean;
 }
 export const createSetMuteAction = (value: boolean): ISetMuteAction => ({
@@ -23,7 +23,7 @@ export const createSetMuteSoundAction = (value: boolean): ISetMuteAction => ({
 });
 
 export const SET_PAUSE = 'UI_SET_PAUSE';
-export interface ISetPauseAction extends Action {
+export interface ISetPauseAction extends IValueAction {
 	value: boolean;
 }
 export const createSetPauseAction = (value: boolean): ISetPauseAction => ({
@@ -32,7 +32,7 @@ export const createSetPauseAction = (value: boolean): ISetPauseAction => ({
 });
 
 export const SET_VOLUME = 'UI_SET_VOLUME';
-export interface ISetVolumeAction extends Action {
+export interface ISetVolumeAction extends IValueAction {
 	value: number;
 }
 export const createSetVolumeAction = (value: number): ISetVolumeAction => ({
@@ -51,15 +51,3 @@ export const createSetMusicVolumeAction = (value: number): ISetVolumeAction => (
 	type: SET_MUSIC_VOLUME,
 	value,
 });
-
-export type LanguageType = 'en' | 'pl';
-export const SET_LANGUAGE = 'UI_SET_LANGUAGE';
-export interface ISetLanguageAction extends Action {
-	value: LanguageType;
-}
-export const createSetLanguageAction = (value: LanguageType): ISetLanguageAction => ({
-	type: SET_LANGUAGE,
-	value,
-});
-
-export type UIAction = ISetMuteAction | ISetPauseAction | ISetVolumeAction | ISetLanguageAction;

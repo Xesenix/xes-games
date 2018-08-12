@@ -26,11 +26,11 @@ import { hot } from 'react-hot-loader';
 import { Store } from 'redux';
 
 import FullScreenComponent from 'game-01/components/fullscreen/fullscreen';
-import { createSetMuteAction, createSetPauseAction } from 'game-01/src/ui/actions/index';
-import { defaultUIState, IUIState } from 'game-01/src/ui/reducers';
-import { IUIStoreProvider } from 'game-01/src/ui/store.provider';
+import { createSetMuteAction, createSetPauseAction, defaultUIState, IUIState } from 'game-01/src/ui';
+import { IStoreProvider } from 'lib/data-store';
 import { connectToInjector } from 'lib/di';
-import { __ } from 'lib/localize';
+import { __ } from 'lib/i18n';
+import { IValueAction } from 'lib/interfaces';
 
 import Loadable from 'react-loadable';
 
@@ -217,8 +217,8 @@ class GameViewComponent extends React.PureComponent<IGameViewProps & WithStyles<
 }
 
 export default hot(module)(connectToInjector<IGameViewProps>(withStyles(styles)(GameViewComponent), {
-	'ui:store': {
+	'data-store-provider': {
 		name: 'store',
-		value: (provider: IUIStoreProvider) => provider(),
+		value: (provider: IStoreProvider<IUIState, IValueAction>) => provider(),
 	},
 }));

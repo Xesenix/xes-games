@@ -10,8 +10,8 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Grid from '@material-ui/core/Grid';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
-import Slider from '@material-ui/lab/Slider';
 import Select from '@material-ui/core/Select';
+import Slider from '@material-ui/lab/Slider';
 
 // icons
 import SoundOffIcon from '@material-ui/icons/FlashOff';
@@ -22,18 +22,23 @@ import MuteOffIcon from '@material-ui/icons/VolumeOff';
 import MuteOnIcon from '@material-ui/icons/VolumeUp';
 
 import {
-	createSetLanguageAction,
 	createSetMusicVolumeAction,
 	createSetMuteAction,
 	createSetMuteMusicAction,
 	createSetMuteSoundAction,
 	createSetSoundVolumeAction,
 	createSetVolumeAction,
-} from 'game-01/src/ui/actions';
+} from 'game-01/src/ui';
 import { defaultUIState, IUIState } from 'game-01/src/ui/reducers';
-import { IUIStoreProvider } from 'game-01/src/ui/store.provider';
+import { IStoreProvider } from 'lib/data-store';
 import { connectToInjector } from 'lib/di';
-import { __ } from 'lib/localize';
+import {
+	__,
+	createSetLanguageAction,
+	II18nState,
+	LanguageType,
+} from 'lib/i18n';
+import { IValueAction } from 'lib/interfaces';
 
 const styles = (theme: Theme) => createStyles({
 	root: {
@@ -65,13 +70,13 @@ const styles = (theme: Theme) => createStyles({
 });
 
 export interface IConfigurationProps {
-	store?: Store<IUIState>;
+	store?: Store<IUIState & II18nState>;
 }
 export interface IConfigurationState { }
 
-class ConfigurationViewComponent extends React.Component<IConfigurationProps & WithStyles<typeof styles>, IConfigurationState> {
+export class ConfigurationViewComponent extends React.Component<IConfigurationProps & WithStyles<typeof styles>, IConfigurationState> {
 	public render(): any {
-		const { classes, store = { getState: () => defaultUIState } } = this.props;
+		const { classes, store = { getState: () => ({ ...defaultUIState, language: 'en' }) } } = this.props;
 		const {
 			mute,
 			muteMusic,
@@ -192,7 +197,7 @@ class ConfigurationViewComponent extends React.Component<IConfigurationProps & W
 							<InputLabel>{ __('language') }</InputLabel>
 							<Select
 								value={ language }
-								onChange={ (event) => this.dispatch(createSetLanguageAction(event.target.value)) }
+								onChange={ (event) => this.dispatch(createSetLanguageAction(event.target.value as LanguageType)) }
 							>
 								<option value={ 'en' }>{ __('english') }</option>
 								<option value={ 'pl' }>{ __('polish') }</option>
@@ -214,8 +219,8 @@ class ConfigurationViewComponent extends React.Component<IConfigurationProps & W
 }
 
 export default hot(module)(connectToInjector<IConfigurationProps>(withStyles(styles)(ConfigurationViewComponent), {
-	'ui:store': {
+	'data-store-provider': {
 		name: 'store',
-		value: (provider: IUIStoreProvider) => provider(),
+		value: (provider: IStoreProvider<IUIState & II18nState, IValueAction>) => provider(),
 	},
 }));
