@@ -25,8 +25,13 @@ import * as React from 'react';
 import { hot } from 'react-hot-loader';
 import { Store } from 'redux';
 
-import FullScreenComponent from 'game-01/components/fullscreen/fullscreen';
-import { createSetMuteAction, createSetPauseAction, defaultUIState, IUIState } from 'game-01/src/ui';
+import {
+	createSetFullscreenAction,
+	createSetMuteAction,
+	createSetPauseAction,
+	defaultUIState,
+	IUIState,
+} from 'game-01/src/ui';
 import { IStoreProvider } from 'lib/data-store';
 import { connectToInjector } from 'lib/di';
 import { __ } from 'lib/i18n';
@@ -60,7 +65,6 @@ export interface IGameViewProps {
 }
 
 export interface IGameViewState {
-	fullscreen: boolean;
 	tab: 'configuration' | 'game';
 	drawer: boolean;
 	loading: boolean;
@@ -72,7 +76,6 @@ class GameViewComponent extends React.PureComponent<IGameViewProps & WithStyles<
 	constructor(props) {
 		super(props);
 		this.state = {
-			fullscreen: false,
 			tab: 'game',
 			drawer: false,
 			loading: false,
@@ -135,28 +138,26 @@ class GameViewComponent extends React.PureComponent<IGameViewProps & WithStyles<
 			<Grid container spacing={ 0 } alignItems="center">
 				<Grid item xs={ 12 }>
 					<Paper className={ classes.root } elevation={ 2 }>
-						<FullScreenComponent fullscreen={ fullscreen }>
-							<AppBar position="fixed">
-								<Toolbar>
-									<Hidden xsDown>
-										{ menu }
-									</Hidden>
-									<Hidden smUp>
-										<Button color="primary" variant="fab" className={ classes.button } onClick={ this.toggleDrawer }>
-											<MenuIcon />
-										</Button>
-									</Hidden>
-								</Toolbar>
-								{ loading ? <LinearProgress/> : null }
-							</AppBar>
-							<Drawer
-								anchor="left"
-								open={ this.state.drawer }
-								onClose={ this.toggleDrawer }
-							>{ menu }</Drawer>
-							{ tab === 'configuration' ? <ConfigurationViewComponent/> : null }
-							{ tab === 'game' ? <PhaserViewComponent keepInstanceOnRemove={ true }/> : null }
-						</FullScreenComponent>
+						<AppBar position="fixed">
+							<Toolbar>
+								<Hidden xsDown>
+									{ menu }
+								</Hidden>
+								<Hidden smUp>
+									<Button color="primary" variant="fab" className={ classes.button } onClick={ this.toggleDrawer }>
+										<MenuIcon />
+									</Button>
+								</Hidden>
+							</Toolbar>
+							{ loading ? <LinearProgress/> : null }
+						</AppBar>
+						<Drawer
+							anchor="left"
+							open={ this.state.drawer }
+							onClose={ this.toggleDrawer }
+						>{ menu }</Drawer>
+						{ tab === 'configuration' ? <ConfigurationViewComponent/> : null }
+						{ tab === 'game' ? <PhaserViewComponent keepInstanceOnRemove={ true }/> : null }
 					</Paper>
 				</Grid>
 			</Grid>);
@@ -194,9 +195,11 @@ class GameViewComponent extends React.PureComponent<IGameViewProps & WithStyles<
 	}
 
 	private toggleFullScreen = (): void => {
-		this.setState({
-			fullscreen: !this.state.fullscreen,
-		});
+		const { store } = this.props;
+		const { fullscreen } = this.state;
+		if (store) {
+			store.dispatch(createSetFullscreenAction(!fullscreen));
+		}
 	}
 
 	private togglePause = (): void => {

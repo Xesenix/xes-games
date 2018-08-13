@@ -11,7 +11,7 @@ export interface IFullScreenProps {
 export interface IFullScreenState { }
 
 class FullScreenComponent extends React.PureComponent<IFullScreenProps, IFullScreenState> {
-	private fullScreenContainer?: HTMLDivElement;
+	private fullScreenContainer?: HTMLElement;
 
 	constructor(props) {
 		super(props);
@@ -28,7 +28,7 @@ class FullScreenComponent extends React.PureComponent<IFullScreenProps, IFullScr
 	}
 
 	public render(): any {
-		return (<div className="full-screen-container" ref={(el: HTMLDivElement) => this.fullScreenContainer = el}>{ this.props.children }</div>);
+		return (<div className="full-screen-container" ref={() => this.fullScreenContainer = window.document.body}>{ this.props.children }</div>);
 	}
 }
 

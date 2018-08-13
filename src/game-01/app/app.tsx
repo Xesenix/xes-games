@@ -11,6 +11,7 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 
+import FullScreenComponent from 'game-01/components/fullscreen/fullscreen';
 import { defaultUIState, IUIState } from 'game-01/src/ui';
 import { IStoreProvider } from 'lib/data-store';
 import { connectToInjector } from 'lib/di';
@@ -81,7 +82,7 @@ const styles = (theme: Theme) => createStyles({
 
 interface IAppProps {
 	di?: Container;
-	store: Store<IUIState, IValueAction>;
+	store?: Store<IUIState, IValueAction>;
 }
 
 interface IAppState {
@@ -121,7 +122,7 @@ class App extends React.Component<IAppProps & WithStyles<typeof styles>, IAppSta
 
 	public render() {
 		const { classes } = this.props;
-		const { loading, ready, phaserReady, theme = 'light' } = this.state;
+		const { loading, ready, phaserReady, theme = 'light', fullscreen = false } = this.state;
 
 		const gameView = ready
 			? <GameView/>
@@ -129,14 +130,16 @@ class App extends React.Component<IAppProps & WithStyles<typeof styles>, IAppSta
 				? <Button color="primary" variant="contained" onClick={ this.start }>{ __('Start') }</Button>
 				: <Typography component="p">{ `${__('loading')}: PHASER` }</Typography>;
 
-		return (<MuiThemeProvider theme={ appThemes[theme] }>
-				<CssBaseline/>
-				<Paper className={ classes.root } elevation={ 1 }>
-					{ loading ? <LinearProgress/> : null }
-					<Typography variant="headline" component="h1">{ __('PHASER 3 Game Test') }</Typography>
-					{ gameView }
-				</Paper>
-			</MuiThemeProvider>);
+		return (<FullScreenComponent fullscreen={ fullscreen }>
+				<MuiThemeProvider theme={ appThemes[theme] }>
+					<CssBaseline/>
+					<Paper className={ classes.root } elevation={ 1 }>
+						{ loading ? <LinearProgress/> : null }
+						<Typography variant="headline" component="h1">{ __('PHASER 3 Game Test') }</Typography>
+						{ gameView }
+					</Paper>
+				</MuiThemeProvider>
+			</FullScreenComponent>);
 	}
 
 	private start = () => {

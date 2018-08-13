@@ -60,3 +60,12 @@ export const createSetThemeAction = (value: 'dark' | 'light'): ISetThemeAction =
 	type: SET_THEME,
 	value,
 });
+
+export const SET_FULLSCREEN = 'UI_SET_FULLSCREEN';
+export interface ISetFullscreenAction extends IValueAction {
+	value: boolean;
+}
+export const createSetFullscreenAction = (value: boolean): ISetFullscreenAction => ({
+	type: SET_FULLSCREEN,
+	value,
+});
