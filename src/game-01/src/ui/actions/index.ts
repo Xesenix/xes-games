@@ -51,3 +51,12 @@ export const createSetMusicVolumeAction = (value: number): ISetVolumeAction => (
 	type: SET_MUSIC_VOLUME,
 	value,
 });
+
+export const SET_THEME = 'UI_SET_THEME';
+export interface ISetThemeAction extends IValueAction {
+	value: 'dark' | 'light';
+}
+export const createSetThemeAction = (value: 'dark' | 'light'): ISetThemeAction => ({
+	type: SET_THEME,
+	value,
+});

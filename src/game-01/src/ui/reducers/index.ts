@@ -3,6 +3,7 @@ import { IValueAction } from 'lib/interfaces';
 import {
 	ISetMuteAction,
 	ISetPauseAction,
+	ISetThemeAction,
 	ISetVolumeAction,
 	SET_MUSIC_VOLUME,
 	SET_MUTE,
@@ -10,6 +11,7 @@ import {
 	SET_MUTE_SOUND,
 	SET_PAUSE,
 	SET_SOUND_VOLUME,
+	SET_THEME,
 	SET_VOLUME,
 } from '../actions';
 
@@ -21,6 +23,7 @@ export interface IUIState {
 	soundVolume: number;
 	musicVolume: number;
 	volume: number;
+	theme: 'dark' | 'light';
 }
 
 export const defaultUIState: IUIState = {
@@ -31,6 +34,7 @@ export const defaultUIState: IUIState = {
 	soundVolume: 1.0,
 	volume: 0.1,
 	musicVolume: 1.0,
+	theme: 'light',
 };
 
 export function uiReducer<S extends IUIState | undefined, A extends IValueAction>(state: S = defaultUIState as S, action: A): S {
@@ -82,6 +86,13 @@ export function uiReducer<S extends IUIState | undefined, A extends IValueAction
 			return {
 				...state as any,
 				soundVolume: value,
+			};
+		}
+		case SET_THEME: {
+			const { value } = action as ISetThemeAction;
+			return {
+				...state as any,
+				theme: value,
 			};
 		}
 	}

@@ -28,6 +28,7 @@ import {
 	createSetMuteMusicAction,
 	createSetMuteSoundAction,
 	createSetSoundVolumeAction,
+	createSetThemeAction,
 	createSetVolumeAction,
 } from 'game-01/src/ui';
 import { defaultUIState, IUIState } from 'game-01/src/ui/reducers';
@@ -59,6 +60,7 @@ const styles = (theme: Theme) => createStyles({
 		'height': '48px',
 		'justify-content': 'center',
 		'align-items': 'center',
+		'color': theme.palette.text.primary,
 	},
 	scroll: {
 		'display': 'inline-flex',
@@ -86,6 +88,7 @@ export class ConfigurationViewComponent extends React.Component<IConfigurationPr
 			musicVolume,
 			soundVolume,
 			language,
+			theme,
 		} = store.getState();
 
 		return (<form className={ classes.root }>
@@ -194,7 +197,7 @@ export class ConfigurationViewComponent extends React.Component<IConfigurationPr
 					</Grid>
 				</Grid>
 			</Grid>
-			<Typography variant="headline" component="h1">{ __('Language configuration') }</Typography>
+			<Typography variant="headline" component="h1">{ __('User interface configuration') }</Typography>
 			<Grid item xs={ 12 } container component="section">
 				<FormControl className={ classes.formControl }>
 					<InputLabel>{ __('language') }</InputLabel>
@@ -204,6 +207,16 @@ export class ConfigurationViewComponent extends React.Component<IConfigurationPr
 					>
 						<MenuItem value={ 'en' }>{ __('english') }</MenuItem>
 						<MenuItem value={ 'pl' }>{ __('polish') }</MenuItem>
+					</Select>
+				</FormControl>
+				<FormControl className={ classes.formControl }>
+					<InputLabel>{ __('theme') }</InputLabel>
+					<Select
+						value={ theme }
+						onChange={ (event) => this.dispatch(createSetThemeAction(event.target.value as 'light' | 'dark')) }
+					>
+						<MenuItem value={ 'light' }>{ __('light') }</MenuItem>
+						<MenuItem value={ 'dark' }>{ __('dark') }</MenuItem>
 					</Select>
 				</FormControl>
 			</Grid>
