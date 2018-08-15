@@ -130,16 +130,14 @@ class App extends React.Component<IAppProps & WithStyles<typeof styles>, IAppSta
 				? <Button color="primary" variant="contained" onClick={ this.start }>{ __('Start') }</Button>
 				: <Typography component="p">{ `${__('loading')}: PHASER` }</Typography>;
 
-		return (<FullScreenComponent fullscreen={ fullscreen }>
-				<MuiThemeProvider theme={ appThemes[theme] }>
-					<CssBaseline/>
-					<Paper className={ classes.root } elevation={ 1 }>
-						{ loading ? <LinearProgress/> : null }
-						<Typography variant="headline" component="h1">{ __('PHASER 3 Game Test') }</Typography>
-						{ gameView }
-					</Paper>
-				</MuiThemeProvider>
-			</FullScreenComponent>);
+		return (<MuiThemeProvider theme={ appThemes[theme] }>
+				<CssBaseline/>
+				<Paper className={ classes.root } elevation={ 1 }>
+					{ loading ? <LinearProgress/> : null }
+					<Typography variant="headline" component="h1">{ __('PHASER 3 Game Test') }</Typography>
+					{ gameView }
+				</Paper>
+			</MuiThemeProvider>);
 	}
 
 	private start = () => {

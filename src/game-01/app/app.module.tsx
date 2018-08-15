@@ -12,6 +12,7 @@ import { DataStoreModule } from 'lib/data-store';
 import { DIContext } from 'lib/di';
 import { FlatDictionary } from 'lib/dictionary/flat-dictionary';
 import { IDictionary } from 'lib/dictionary/interfaces';
+import { FullScreenModule } from 'lib/fullscreen';
 import {
 	defaultI18nState,
 	I18nModule,
@@ -63,6 +64,9 @@ export class AppModule extends Container implements IApplication {
 
 		// event manager
 		this.bind<EventEmitter>('event-manager').toConstantValue(this.eventManager);
+
+		// fullscreen bindings
+		this.bind<FullScreenModule>('fullscreen').toConstantValue(new FullScreenModule(this));
 
 		// data store
 		this.load(DataStoreModule<IAppState, AppAction>({
@@ -132,23 +136,24 @@ export class AppModule extends Container implements IApplication {
 	public boot(): Promise<AppModule> {
 		// start all required modules
 		return this.get<II18nProvider>('i18n:provider')()
-		.then(() => {
-			this.banner();
-			this.get<EventEmitter>('event-manager').emit('app:boot');
+			.then(this.get<FullScreenModule>('fullscreen').boot)
+			.then(() => {
+				this.banner();
+				this.get<EventEmitter>('event-manager').emit('app:boot');
 
-			// const game = this.get<AncientMaze<IGameObjectState, IAncientMazeState<IGameObjectState>>>('game');
-			// game.boot();
+				// const game = this.get<AncientMaze<IGameObjectState, IAncientMazeState<IGameObjectState>>>('game');
+				// game.boot();
 
-			const container = this.get<HTMLElement>('ui:root');
+				const container = this.get<HTMLElement>('ui:root');
 
-			ReactDOM.render(<DIContext.Provider value={ this }><App/></DIContext.Provider>, container);
-			// ReactDOM.render(<App/>, container);
+				ReactDOM.render(<DIContext.Provider value={ this }><App/></DIContext.Provider>, container);
+				// ReactDOM.render(<App/>, container);
 
-			return this;
-		}, (error) => {
-			console.error(error);
+				return this;
+			}, (error) => {
+				console.error(error);
 
-			return this;
-		});
+				return this;
+			});
 	}
 }

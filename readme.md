@@ -10,3 +10,4 @@
 - [ ] use web audio without phaser interface
 - [x] create light dark theme
 - [ ] persist data store in local storage
+- [x] update store on exiting fullscreen without using of fullscreen button

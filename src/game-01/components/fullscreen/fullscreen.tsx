@@ -10,6 +10,7 @@ export interface IFullScreenProps {
 }
 export interface IFullScreenState { }
 
+// TODO: probably not needed as there are some conflicts with material-ui and we are always using body as root
 class FullScreenComponent extends React.PureComponent<IFullScreenProps, IFullScreenState> {
 	private fullScreenContainer?: HTMLElement;
 
