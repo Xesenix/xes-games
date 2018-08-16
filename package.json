@@ -170,7 +170,7 @@
 		"rxjs": "^6.2.2",
 		"ts-node": "^7.0.0",
 		"webpack-dev-server": "^3.1.4",
-		"xes-webpack-core": "^0.6.2"
+		"xes-webpack-core": "^0.7.4"
 	},
 	"engines": {
 		"node": ">= 8.0.0"

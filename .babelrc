@@ -14,10 +14,10 @@
 			"spec": false
 		}],
 		"@babel/preset-react",
-		"@babel/preset-typescript",
-		"@babel/preset-stage-3"
+		"@babel/preset-typescript"
 	],
 	"plugins": [
+		"@babel/plugin-syntax-dynamic-import",
 		["@babel/plugin-proposal-decorators", {
 			"legacy": true
 		}],
@@ -37,8 +37,7 @@
 					"spec": false
 				}],
 				"@babel/preset-react",
-				"@babel/preset-typescript",
-				"@babel/preset-stage-3"
+				"@babel/preset-typescript"
 			]
 		}
 	}
