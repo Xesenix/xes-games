@@ -11,16 +11,16 @@ export class MusicScene extends Phaser.Scene {
 	}
 
 	public preload(): void {
-		this.load.audio('soundtrack', [
+		/*this.load.audio('soundtrack', [
 			'assets/soundtrack.wav',
-		]);
+		]);*/
 	}
 
 	public create(): void {
-		this.soundtrack = this.sound.add('soundtrack');
+		// this.soundtrack = this.sound.add('soundtrack');
 
-		this.soundtrack.play();
-		this.soundtrack.source.loop = true;
+		// this.soundtrack.play();
+		// this.soundtrack.source.loop = true;
 
 		this.label = this.add.text(400, 300, '', { font: '48px Consolas', fill: '#ffffff' });
 		this.label.setOrigin(0.5, 0.5);

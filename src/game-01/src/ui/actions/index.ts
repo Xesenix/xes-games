@@ -11,14 +11,14 @@ export const createSetMuteAction = (value: boolean): ISetMuteAction => ({
 });
 
 export const SET_MUTE_MUSIC = 'UI_SET_MUTE_MUSIC';
-export const createSetMuteMusicAction = (value: boolean): ISetMuteAction => ({
+export const createSetMusicMutedAction = (value: boolean): ISetMuteAction => ({
 	type: SET_MUTE_MUSIC,
 	value,
 });
 
-export const SET_MUTE_SOUND = 'UI_SET_MUTE_SOUND';
-export const createSetMuteSoundAction = (value: boolean): ISetMuteAction => ({
-	type: SET_MUTE_SOUND,
+export const SET_EFFECTS_MUTED = 'UI_SET_EFFECTS_MUTED';
+export const createSetEffectsMutedAction = (value: boolean): ISetMuteAction => ({
+	type: SET_EFFECTS_MUTED,
 	value,
 });
 
@@ -40,9 +40,9 @@ export const createSetVolumeAction = (value: number): ISetVolumeAction => ({
 	value,
 });
 
-export const SET_SOUND_VOLUME = 'UI_SET_SOUND_VOLUME';
-export const createSetSoundVolumeAction = (value: number): ISetVolumeAction => ({
-	type: SET_SOUND_VOLUME,
+export const SET_EFFECTS_VOLUME = 'UI_SET_EFFECTS_VOLUME';
+export const createSetEffectsVolumeAction = (value: number): ISetVolumeAction => ({
+	type: SET_EFFECTS_VOLUME,
 	value,
 });
 

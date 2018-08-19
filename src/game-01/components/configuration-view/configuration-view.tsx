@@ -25,9 +25,9 @@ import MuteOnIcon from '@material-ui/icons/VolumeUp';
 import {
 	createSetMusicVolumeAction,
 	createSetMuteAction,
-	createSetMuteMusicAction,
-	createSetMuteSoundAction,
-	createSetSoundVolumeAction,
+	createSetMusicMutedAction,
+	createSetEffectsMutedAction,
+	createSetEffectsVolumeAction,
 	createSetThemeAction,
 	createSetVolumeAction,
 } from 'game-01/src/ui';
@@ -82,11 +82,11 @@ export class ConfigurationViewComponent extends React.Component<IConfigurationPr
 		const { classes, store = { getState: () => ({ ...defaultUIState, language: 'en' }) } } = this.props;
 		const {
 			mute,
-			muteMusic,
-			muteSound,
+			musicMuted,
+			effectsMuted,
 			volume,
 			musicVolume,
-			soundVolume,
+			effectsVolume,
 			language,
 			theme,
 		} = store.getState();
@@ -116,8 +116,8 @@ export class ConfigurationViewComponent extends React.Component<IConfigurationPr
 							<Checkbox
 								checkedIcon={ <MuteOffIcon/> }
 								icon={ <MuteOnIcon/> }
-								checked={ muteMusic }
-								onChange={ (event, checked: boolean) => this.dispatch(createSetMuteMusicAction(checked)) }
+								checked={ musicMuted }
+								onChange={ (event, checked: boolean) => this.dispatch(createSetMusicMutedAction(checked)) }
 							/>
 						}
 					/>
@@ -130,8 +130,8 @@ export class ConfigurationViewComponent extends React.Component<IConfigurationPr
 							<Checkbox
 								checkedIcon={ <MuteOffIcon/> }
 								icon={ <MuteOnIcon/> }
-								checked={ muteSound }
-								onChange={ (event, checked: boolean) => this.dispatch(createSetMuteSoundAction(checked)) }
+								checked={ effectsMuted }
+								onChange={ (event, checked: boolean) => this.dispatch(createSetEffectsMutedAction(checked)) }
 							/>
 						}
 					/>
@@ -162,7 +162,7 @@ export class ConfigurationViewComponent extends React.Component<IConfigurationPr
 							className={ classes.margin }
 							label={ __('music volume') }
 							control={
-								<span className={ classes.icon }>{ mute || muteMusic ? <MusicOffIcon/> : <MusicOnIcon/> }</span>
+								<span className={ classes.icon }>{ mute || musicMuted ? <MusicOffIcon/> : <MusicOnIcon/> }</span>
 							}
 						/>
 					</Grid>
@@ -182,7 +182,7 @@ export class ConfigurationViewComponent extends React.Component<IConfigurationPr
 							className={ classes.margin }
 							label={ __('sound volume') }
 							control={
-								<span className={ classes.icon }>{ mute || muteSound ? <SoundOffIcon/> : <SoundOnIcon/> }</span>
+								<span className={ classes.icon }>{ mute || effectsMuted ? <SoundOffIcon/> : <SoundOnIcon/> }</span>
 							}
 						/>
 					</Grid>
@@ -191,8 +191,8 @@ export class ConfigurationViewComponent extends React.Component<IConfigurationPr
 							min={ 0 }
 							max={ 1 }
 							step={ 1 / 32 }
-							value={ soundVolume }
-							onChange={ (event, value) => this.dispatch(createSetSoundVolumeAction(value)) }
+							value={ effectsVolume }
+							onChange={ (event, value) => this.dispatch(createSetEffectsVolumeAction(value)) }
 						/>
 					</Grid>
 				</Grid>

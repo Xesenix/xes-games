@@ -2,6 +2,7 @@ import { interfaces } from 'inversify';
 import { Store } from 'redux';
 
 import { IUIStoreProvider } from 'game-01/src/ui/store.provider';
+import { createSoundManagerPlugin } from 'lib/phaser/sound-manager.plugin';
 
 export type IPhaserGameProvider = (forceNew?: boolean) => Promise<Phaser.Game>;
 
@@ -61,6 +62,9 @@ export function PhaserGameProvider(context: interfaces.Context) {
 			};
 
 			const config: GameConfig = {
+				audio: {
+					noAudio: true,
+				},
 				width: 800,
 				height: 600,
 				type: Phaser.CANVAS, // AUTO, CANVAS, WEBGL, HEADLESS
@@ -92,6 +96,11 @@ export function PhaserGameProvider(context: interfaces.Context) {
 						{
 							key: 'ui:manager',
 							plugin: createUIManagerPlugin(store),
+							start: true,
+						},
+						{
+							key: 'sound-manager',
+							plugin: createSoundManagerPlugin(store),
 							start: true,
 						},
 					],

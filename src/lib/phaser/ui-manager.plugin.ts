@@ -2,10 +2,10 @@ import { Store } from 'redux';
 
 export interface IUIState {
 	mute: boolean;
-	muteMusic: boolean;
-	muteSound: boolean;
+	musicMuted: boolean;
+	effectsMuted: boolean;
 	paused: boolean;
-	soundVolume: number;
+	effectsVolume: number;
 	musicVolume: number;
 	volume: number;
 }

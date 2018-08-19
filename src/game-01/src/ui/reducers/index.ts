@@ -10,19 +10,19 @@ import {
 	SET_MUSIC_VOLUME,
 	SET_MUTE,
 	SET_MUTE_MUSIC,
-	SET_MUTE_SOUND,
+	SET_EFFECTS_MUTED,
 	SET_PAUSE,
-	SET_SOUND_VOLUME,
+	SET_EFFECTS_VOLUME,
 	SET_THEME,
 	SET_VOLUME,
 } from '../actions';
 
 export interface IUIState {
 	mute: boolean;
-	muteMusic: boolean;
-	muteSound: boolean;
+	musicMuted: boolean;
+	effectsMuted: boolean;
 	paused: boolean;
-	soundVolume: number;
+	effectsVolume: number;
 	musicVolume: number;
 	volume: number;
 	theme: 'dark' | 'light';
@@ -31,10 +31,10 @@ export interface IUIState {
 
 export const defaultUIState: IUIState = {
 	mute: false,
-	muteMusic: false,
-	muteSound: false,
+	musicMuted: false,
+	effectsMuted: false,
 	paused: false,
-	soundVolume: 1.0,
+	effectsVolume: 1.0,
 	volume: 0.1,
 	musicVolume: 1.0,
 	theme: 'light',
@@ -54,14 +54,14 @@ export function uiReducer<S extends IUIState | undefined, A extends IValueAction
 			const { value } = action as ISetMuteAction;
 			return {
 				...state as any,
-				muteMusic: value,
+				musicMuted: value,
 			};
 		}
-		case SET_MUTE_SOUND: {
+		case SET_EFFECTS_MUTED: {
 			const { value } = action as ISetMuteAction;
 			return {
 				...state as any,
-				muteSound: value,
+				effectsMuted: value,
 			};
 		}
 		case SET_PAUSE: {
@@ -85,11 +85,11 @@ export function uiReducer<S extends IUIState | undefined, A extends IValueAction
 				musicVolume: value,
 			};
 		}
-		case SET_SOUND_VOLUME: {
+		case SET_EFFECTS_VOLUME: {
 			const { value } = action as ISetVolumeAction;
 			return {
 				...state as any,
-				soundVolume: value,
+				effectsVolume: value,
 			};
 		}
 		case SET_THEME: {
