@@ -19,8 +19,12 @@ export interface ISoundManager {
 	stopSound(key: string): Promise<AudioBufferSourceNode>;
 }
 
-export const createSoundManagerPlugin = <T extends ISoundConfigurationState>(store: Store) =>
-class SoundManagerPlugin extends Phaser.Plugins.BasePlugin {
+export interface ISoundManagerPlugin<T extends ISoundConfigurationState> extends Phaser.Plugins.BasePlugin {
+	store: Store<T>;
+}
+
+export const soundManagerPluginFactory = <T extends ISoundConfigurationState>(store: Store) =>
+class SoundManagerPlugin extends Phaser.Plugins.BasePlugin implements ISoundManagerPlugin<T>, ISoundManager {
 	public store: Store<T> = store;
 	public loader?: Phaser.Loader.LoaderPlugin;
 	private unsubscribe: any;

@@ -22,6 +22,7 @@ import {
 } from 'lib/i18n';
 import { IApplication, IValueAction } from 'lib/interfaces';
 import { IRenderer, ReactRenderer } from 'lib/renderer/react-renderer';
+import { SoundModule } from 'lib/sound';
 
 import App from './app';
 
@@ -67,6 +68,9 @@ export class AppModule extends Container implements IApplication {
 
 		// fullscreen bindings
 		FullScreenModule.register(this);
+
+		// fullscreen bindings
+		SoundModule.register(this);
 
 		// data store
 		this.load(DataStoreModule<IAppState, AppAction>({
