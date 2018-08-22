@@ -66,7 +66,7 @@ export class AppModule extends Container implements IApplication {
 		this.bind<EventEmitter>('event-manager').toConstantValue(this.eventManager);
 
 		// fullscreen bindings
-		this.bind<FullScreenModule>('fullscreen').toConstantValue(new FullScreenModule(this));
+		FullScreenModule.register(this);
 
 		// data store
 		this.load(DataStoreModule<IAppState, AppAction>({
@@ -136,7 +136,7 @@ export class AppModule extends Container implements IApplication {
 	public boot(): Promise<AppModule> {
 		// start all required modules
 		return this.get<II18nProvider>('i18n:provider')()
-			.then(this.get<FullScreenModule>('fullscreen').boot)
+			.then(this.get<FullScreenModule>('fullscreen:module').boot)
 			.then(() => {
 				this.banner();
 				this.get<EventEmitter>('event-manager').emit('app:boot');

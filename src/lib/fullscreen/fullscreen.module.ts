@@ -7,6 +7,10 @@ import { IApplication } from 'lib/interfaces';
 import { isFullScreen, onFullScreenChange, setFullscreen } from './fullscreen';
 
 export class FullScreenModule {
+	public static register(app: IApplication) {
+		app.bind<FullScreenModule>('fullscreen:module').toConstantValue(new FullScreenModule(app));
+	}
+
 	constructor(
 		private app: IApplication,
 	) {
@@ -14,7 +18,7 @@ export class FullScreenModule {
 	}
 
 	public boot = () => {
-		return this.app.get<IStoreProvider<any, any>>('data-store-provider')().then((store: Store) => {
+		return this.app.get<IDataStoreProvider<any, any>>('data-store:provider')().then((store: Store) => {
 			onFullScreenChange(() => {
 				const { fullscreen } = store.getState();
 				const currentFullScreenState = isFullScreen();
