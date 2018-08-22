@@ -32,7 +32,7 @@ import {
 	defaultUIState,
 	IUIState,
 } from 'game-01/src/ui';
-import { IStoreProvider } from 'lib/data-store';
+import { IDataStoreProvider } from 'lib/data-store';
 import { connectToInjector } from 'lib/di';
 import { __ } from 'lib/i18n';
 import { IValueAction } from 'lib/interfaces';
@@ -220,8 +220,8 @@ class GameViewComponent extends React.PureComponent<IGameViewProps & WithStyles<
 }
 
 export default hot(module)(connectToInjector<IGameViewProps>(withStyles(styles)(GameViewComponent), {
-	'data-store-provider': {
+	'data-store:provider': {
 		name: 'store',
-		value: (provider: IStoreProvider<IUIState, IValueAction>) => provider(),
+		value: (provider: IDataStoreProvider<IUIState, IValueAction>) => provider(),
 	},
 }));

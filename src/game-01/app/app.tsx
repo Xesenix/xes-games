@@ -13,7 +13,7 @@ import Typography from '@material-ui/core/Typography';
 
 import FullScreenComponent from 'game-01/components/fullscreen/fullscreen';
 import { defaultUIState, IUIState } from 'game-01/src/ui';
-import { IStoreProvider } from 'lib/data-store';
+import { IDataStoreProvider } from 'lib/data-store';
 import { connectToInjector } from 'lib/di';
 import { __ } from 'lib/i18n';
 import { IValueAction } from 'lib/interfaces';
@@ -161,8 +161,8 @@ class App extends React.Component<IAppProps & WithStyles<typeof styles>, IAppSta
 }
 
 export default hot(module)(connectToInjector<IAppProps>(withStyles(styles)(App), {
-	'data-store-provider': {
+	'data-store:provider': {
 		name: 'store',
-		value: (provider: IStoreProvider<IUIState, IValueAction>) => provider(),
+		value: (provider: IDataStoreProvider<IUIState, IValueAction>) => provider(),
 	},
 }));

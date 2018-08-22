@@ -3,9 +3,9 @@ import { Action, applyMiddleware, compose, createStore, DeepPartial, Store } fro
 import { createLogger } from 'redux-logger';
 import thunk from 'redux-thunk';
 
-export type IStoreProvider<T, A extends Action> = () => Promise<Store<T, A>>;
+export type IDataStoreProvider<T, A extends Action> = () => Promise<Store<T, A>>;
 
-export function StoreProvider<T, A extends Action>(context: interfaces.Context) {
+export function DataStoreProvider<T, A extends Action>(context: interfaces.Context) {
 	const debug: boolean = !!process.env.DEBUG;
 	const console: Console = context.container.get<Console>('debug:console');
 	let store: Store<T, A>;

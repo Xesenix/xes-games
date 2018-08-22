@@ -39,7 +39,7 @@ export function I18nProvider(context: interfaces.Context) {
 
 	return () => new Promise((resolve, reject) => {
 		try {
-			const storeProvider = context.container.get<IUIStoreProvider>('data-store-provider');
+			const storeProvider = context.container.get<IUIStoreProvider>('data-store:provider');
 			return storeProvider().then((store: Store<{ language: LanguageType }>) => {
 				store.subscribe(syncLocaleWithStore(store));
 				return syncLocaleWithStore(store)().then(() => {

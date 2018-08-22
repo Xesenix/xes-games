@@ -32,7 +32,7 @@ import {
 	createSetVolumeAction,
 } from 'game-01/src/ui';
 import { defaultUIState, IUIState } from 'game-01/src/ui/reducers';
-import { IStoreProvider } from 'lib/data-store';
+import { IDataStoreProvider } from 'lib/data-store';
 import { connectToInjector } from 'lib/di';
 import {
 	__,
@@ -233,8 +233,8 @@ export class ConfigurationViewComponent extends React.Component<IConfigurationPr
 }
 
 export default hot(module)(connectToInjector<IConfigurationProps>(withStyles(styles)(ConfigurationViewComponent), {
-	'data-store-provider': {
+	'data-store:provider': {
 		name: 'store',
-		value: (provider: IStoreProvider<IUIState & II18nState, IValueAction>) => provider(),
+		value: (provider: IDataStoreProvider<IUIState & II18nState, IValueAction>) => provider(),
 	},
 }));
