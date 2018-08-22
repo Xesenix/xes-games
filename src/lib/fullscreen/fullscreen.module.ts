@@ -1,7 +1,7 @@
 import { Store } from 'redux';
 
 import { createSetFullscreenAction } from 'game-01/src/ui';
-import { IStoreProvider } from 'lib/data-store';
+import { IDataStoreProvider } from 'lib/data-store';
 import { IApplication } from 'lib/interfaces';
 
 import { isFullScreen, onFullScreenChange, setFullscreen } from './fullscreen';
