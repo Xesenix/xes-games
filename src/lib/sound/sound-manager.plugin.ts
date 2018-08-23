@@ -23,12 +23,12 @@ export interface ISoundManagerPlugin<T extends ISoundConfigurationState> extends
 	store: Store<T>;
 }
 
-export const soundManagerPluginFactory = <T extends ISoundConfigurationState>(store: Store) =>
+export const soundManagerPluginFactory = <T extends ISoundConfigurationState>(store: Store, context: AudioContext) =>
 class SoundManagerPlugin extends Phaser.Plugins.BasePlugin implements ISoundManagerPlugin<T>, ISoundManager {
 	public store: Store<T> = store;
 	public loader?: Phaser.Loader.LoaderPlugin;
 	private unsubscribe: any;
-	private context = new AudioContext();
+	private context = context;
 	private audioNodes = {};
 	private audioBufferPromise = {};
 	private ready?: () => void;
