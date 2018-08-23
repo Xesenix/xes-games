@@ -28,21 +28,24 @@ export class MusicScene extends Phaser.Scene {
 	public create(): void {
 		const sm: ISoundManager = this.sys.plugins.get('sound-manager') as any;
 
-		sm.playLoop('soundtrack1');
+		sm.audioLoader.loadAll().then((data) => {
+			sm.repository.add(data);
+			sm.playLoop('soundtrack1');
 
-		setInterval(() => {
-			sm.playFxSound('fx2');
-		}, 2500);
+			setInterval(() => {
+				sm.playFxSound('fx2');
+			}, 2500);
 
-		setTimeout(() => {
-			sm.stopSound('soundtrack1');
-			sm.playFxSound('fx1');
-		}, 10000);
+			setTimeout(() => {
+				sm.stopSound('soundtrack1');
+				sm.playFxSound('fx1');
+			}, 10000);
 
-		setTimeout(() => {
-			sm.playLoop('soundtrack2');
-			sm.playFxSound('fx2');
-		}, 15000);
+			setTimeout(() => {
+				sm.playLoop('soundtrack2');
+				sm.playFxSound('fx2');
+			}, 15000);
+		});
 
 		// this.soundtrack = this.sound.add('soundtrack');
 

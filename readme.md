@@ -7,7 +7,10 @@
 
 - [ ] use zone.js for async tests
 - [ ] use react routing with guards checking if required services are ready
-- [ ] use web audio without phaser interface
+- [x] use web audio without phaser interface
 - [x] create light dark theme
 - [ ] persist data store in local storage
 - [x] update store on exiting fullscreen without using of fullscreen button
+- [ ] create music cross fading helper
+- [ ] create music layers
+- [ ] use phaser asset loader to wait for audio data

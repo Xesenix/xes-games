@@ -1,4 +1,4 @@
-export type IAudioContextFactory = () => AudioContext;
+export type IAudioContextFactory = AudioContext;
 
 export interface IAudioFile {
 	key: string;
@@ -7,6 +7,6 @@ export interface IAudioFile {
 	data?: AudioBuffer;
 }
 
-export interface ISoundBufferCache {
-	get(key: string): IAudioFile;
+export interface IAudioBufferRepository {
+	get(key: string): AudioBuffer;
 }

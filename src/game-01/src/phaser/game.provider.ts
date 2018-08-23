@@ -3,6 +3,7 @@ import { Store } from 'redux';
 
 import { IUIStoreProvider } from 'game-01/src/ui/store.provider';
 import { createSoundManagerPlugin } from 'lib/phaser/sound-manager.plugin';
+import { ISoundManagerPlugin } from 'lib/sound';
 
 export type IPhaserGameProvider = (forceNew?: boolean) => Promise<Phaser.Game>;
 
@@ -31,6 +32,8 @@ export function PhaserGameProvider(context: interfaces.Context) {
 
 				return Promise.resolve(game);
 			}
+
+			const SoundManagerPluginClass = context.container.get<interfaces.Factory<ISoundManagerPlugin<any>>>('sound-manager-plugin:factory')();
 
 			const backgroundColor = 0x000000;
 
@@ -100,7 +103,7 @@ export function PhaserGameProvider(context: interfaces.Context) {
 						},
 						{
 							key: 'sound-manager',
-							plugin: createSoundManagerPlugin(store),
+							plugin: SoundManagerPluginClass,
 							start: true,
 						},
 					],
