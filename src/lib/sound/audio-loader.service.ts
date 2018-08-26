@@ -1,45 +1,28 @@
 import { inject } from 'lib/di';
 
-import { IAudioContextFactory, IAudioFile } from './interfaces';
+import { AudioBufferRepository } from './audio-buffer-repository';
+import { IAudioContextFactory, IAudioFile, IAudioFileLoader } from './interfaces';
 
-@inject(['audio-context:factory'])
-export class AudioLoaderService {
+@inject(['audio-repository', 'audio-context:factory'])
+export class AudioLoaderService implements IAudioFileLoader {
 	private loadQueue: { [key: string]: IAudioFile } = {};
 
 	constructor(
+		private repository: AudioBufferRepository,
 		private context: IAudioContextFactory,
 	) {
 		this.context = context;
 	}
 
-	public add(key: string, url: string, type: 'fx' | 'music'): void {
+	public add(key: string, url: string): void {
 		console.log('add', key, url);
 		if (!this.loadQueue[key]) {
-			this.loadQueue[key] = { key, url, type: 'fx' };
+			this.loadQueue[key] = { key, url };
 		}
 	}
 
-	public addFxSound(key: string, url: string): void {
-		this.add(key, url, 'fx');
-	}
-
-	public addMusic(key: string, url: string): void {
-		this.add(key, url, 'music');
-	}
-
-	public loadAll(): Promise<{ [key: string]: AudioBuffer }> {
-		return Promise.all(
-			Object.values(this.loadQueue).map(this.loadSound),
-		)
-		.then((buffers: IAudioFile[]) => {
-			const result: { [key: string]: AudioBuffer } = {};
-			buffers.forEach((file: IAudioFile) => {
-				if (!!file.data) {
-					result[file.key] = file.data;
-				}
-			});
-			return result;
-		});
+	public loadAll(): Promise<void> {
+		return Promise.all(Object.values(this.loadQueue).map(this.loadSound)).then(() => {});
 	}
 
 	private loadSound = (file: IAudioFile): Promise<IAudioFile> => new Promise((resolve) => {
@@ -48,6 +31,7 @@ export class AudioLoaderService {
 		request.responseType = 'arraybuffer';
 		request.onload = () => {
 			this.context.decodeAudioData(request.response, (data: AudioBuffer) => {
+				this.repository.add(file.key, data);
 				resolve({
 					...file,
 					data,

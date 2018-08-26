@@ -4,11 +4,9 @@ import { injectable } from 'lib/di';
 export class AudioBufferRepository {
 	private data: { [key: string]: AudioBuffer } = {};
 
-	public add(data: { [key: string]: AudioBuffer }): void {
-		this.data = {
-			...this.data,
-			...data,
-		};
+	public add(key: string, data: AudioBuffer): void {
+		console.log('AudioBufferRepository:add', key, data);
+		this.data[key] = data;
 	}
 
 	public get(key: string): AudioBuffer | null {

@@ -3,8 +3,11 @@ export type IAudioContextFactory = AudioContext;
 export interface IAudioFile {
 	key: string;
 	url: string;
-	type: 'fx' | 'music';
 	data?: AudioBuffer;
+}
+
+export interface IAudioFileLoader {
+	add(key: string,  url: string): void;
 }
 
 export interface IAudioBufferRepository {

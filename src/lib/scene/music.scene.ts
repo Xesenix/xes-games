@@ -13,8 +13,8 @@ export class MusicScene extends Phaser.Scene {
 
 	public preload(): void {
 		const sm: ISoundManager = this.sys.plugins.get('sound-manager') as any;
-
-		sm.loader = this.load;
+		console.log('MusicScene:preload');
+		sm.setLoader(this.load);
 		sm.preloadAudioAsset('soundtrack1', 'assets/soundtrack.ogg');
 		sm.preloadAudioAsset('soundtrack2', 'assets/soundtrack.wav');
 		sm.preloadAudioAsset('fx1', 'assets/fx_00.ogg');
@@ -28,24 +28,23 @@ export class MusicScene extends Phaser.Scene {
 	public create(): void {
 		const sm: ISoundManager = this.sys.plugins.get('sound-manager') as any;
 
-		sm.audioLoader.loadAll().then((data) => {
-			sm.repository.add(data);
-			sm.playLoop('soundtrack1');
+		// sm.audioLoader.loadAll().then((data) => {
+		sm.playLoop('soundtrack1');
 
-			setInterval(() => {
-				sm.playFxSound('fx2');
-			}, 2500);
+		setInterval(() => {
+			sm.playFxSound('fx2');
+		}, 2500);
 
-			setTimeout(() => {
-				sm.stopSound('soundtrack1');
-				sm.playFxSound('fx1');
-			}, 10000);
+		setTimeout(() => {
+			sm.stopSound('soundtrack1');
+			sm.playFxSound('fx1');
+		}, 10000);
 
-			setTimeout(() => {
-				sm.playLoop('soundtrack2');
-				sm.playFxSound('fx2');
-			}, 15000);
-		});
+		setTimeout(() => {
+			sm.playLoop('soundtrack2');
+			sm.playFxSound('fx2');
+		}, 15000);
+		// });
 
 		// this.soundtrack = this.sound.add('soundtrack');
 

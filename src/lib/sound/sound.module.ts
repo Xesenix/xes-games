@@ -4,8 +4,9 @@ import { Store } from 'redux';
 
 import { AudioBufferRepository } from './audio-buffer-repository';
 import { AudioGraph } from './audio-graph';
-import { AudioLoaderService } from './audio-loader.service';
-import { IAudioContextFactory } from './interfaces';
+// import { AudioLoaderService } from './audio-loader.service';
+import { IAudioContextFactory, IAudioFileLoader } from './interfaces';
+import { PhaserAudioLoaderService } from './phaser-audio-loader.service';
 import { ISoundConfigurationState, soundManagerPluginFactory } from './sound-manager.plugin';
 
 export class SoundModule<T extends ISoundConfigurationState> {
@@ -24,21 +25,19 @@ export class SoundModule<T extends ISoundConfigurationState> {
 			return context.container.get('audio-context');
 		});
 
-		this.app.bind<AudioLoaderService>('audio-loader').to(AudioLoaderService).inSingletonScope();
-
+		// this.app.bind<IAudioFileLoader>('audio-loader').to(AudioLoaderService).inSingletonScope();
+		this.app.bind<IAudioFileLoader>('audio-loader').to(PhaserAudioLoaderService).inSingletonScope();
 		this.app.bind<AudioBufferRepository>('audio-repository').to(AudioBufferRepository).inSingletonScope();
-
 		this.app.bind<AudioGraph>('audio-graph').to(AudioGraph).inSingletonScope();
 
 		// TODO: this factory returns class figure out how to correctly type this binding
 		this.app.bind('sound-manager-plugin:factory')
-			.toFactory((context: interfaces.Context) => {
-				const store = context.container.get<Store<T>>('data-store');
-				const audioContext: AudioContext = context.container.get<IAudioContextFactory>('audio-context:factory');
-				const audioGraph: AudioGraph = context.container.get<AudioGraph>('audio-graph');
-				const audioLoader: AudioLoaderService = context.container.get<AudioLoaderService>('audio-loader');
-				const audioRepository: AudioBufferRepository = context.container.get<AudioBufferRepository>('audio-repository');
-				return () => soundManagerPluginFactory<T>(store, audioContext, audioGraph, audioRepository, audioLoader);
-			});
+			.toFactory((context: interfaces.Context) => () => soundManagerPluginFactory<T>(
+				context.container.get<Store<T>>('data-store'),
+				context.container.get<IAudioContextFactory>('audio-context:factory'),
+				context.container.get<AudioGraph>('audio-graph'),
+				context.container.get<AudioBufferRepository>('audio-repository'),
+				context.container.get<IAudioFileLoader>('audio-loader'),
+			));
 	}
 }
