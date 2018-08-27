@@ -25,15 +25,14 @@ export function PhaserGameProvider(context: interfaces.Context) {
 			import('lib/phaser/store.plugin'),
 			import('lib/phaser/ui-manager.plugin'),
 			import('lib/scene/music.scene'),
-		]).then(([{ createStorePlugin }, { createUIManagerPlugin }, { MusicScene }]) => storeProvider().then((store: Store) => {
+			context.container.get<interfaces.Factory<ISoundManagerPlugin<any>>>('sound-manager-plugin:provider')(),
+		]).then(([{ createStorePlugin }, { createUIManagerPlugin }, { MusicScene }, SoundManagerPluginClass]) => storeProvider().then((store: Store) => {
 			if (!forceNew && game !== null) {
 				console.debug('PhaserGameProvider:swap parent', game);
 				parent.appendChild(game.canvas);
 
 				return Promise.resolve(game);
 			}
-
-			const SoundManagerPluginClass = context.container.get<interfaces.Factory<ISoundManagerPlugin<any>>>('sound-manager-plugin:factory')();
 
 			const backgroundColor = 0x000000;
 

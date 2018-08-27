@@ -11,6 +11,7 @@ export class AudioLoaderService implements IAudioFileLoader {
 		private repository: AudioBufferRepository,
 		private context: IAudioContextFactory,
 	) {
+		this.repository = repository;
 		this.context = context;
 	}
 

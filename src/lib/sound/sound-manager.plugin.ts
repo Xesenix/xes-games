@@ -38,11 +38,10 @@ export const soundManagerPluginFactory = <T extends ISoundConfigurationState>(
 	public store: Store<T> = store;
 	public loader?: Phaser.Loader.LoaderPlugin;
 	public repository: AudioBufferRepository = repository;
-	public audioLoader: PhaserAudioLoaderService = audioLoader as PhaserAudioLoaderService;
+	public audioLoader: IAudioFileLoader = audioLoader;
 	public audioGraph: AudioGraph = audioGraph;
 	private unsubscribe: any;
 	private context = context;
-	private ready?: () => void;
 
 	constructor(
 		public pluginManager: Phaser.Plugins.PluginManager,
@@ -51,16 +50,15 @@ export const soundManagerPluginFactory = <T extends ISoundConfigurationState>(
 		console.log('SoundManagerPlugin:constructor');
 	}
 
-	public setLoader(loader: Phaser.Loader.LoaderPlugin) {
-		this.loader = loader;
-		(this.audioLoader as PhaserAudioLoaderService).setLoader(this.loader);
+	public setLoader(loader: Phaser.Loader.LoaderPlugin): void {
+		if (this.audioLoader instanceof PhaserAudioLoaderService) {
+			(this.audioLoader as PhaserAudioLoaderService).setLoader(loader);
+		}
 	}
 
 	public start(): void {
 		console.log('SoundManagerPlugin:start', this);
 		this.unsubscribe = this.store.subscribe(this.syncWithState);
-
-		this.audioLoader.loadAll();
 		this.syncWithState();
 	}
 
@@ -68,6 +66,10 @@ export const soundManagerPluginFactory = <T extends ISoundConfigurationState>(
 		console.log('SoundManagerPlugin:stop');
 		this.unsubscribe();
 		this.context.close();
+	}
+
+	public loadAll(): Promise<void> {
+		return this.audioLoader.loadAll();
 	}
 
 	public preloadAudioAsset(key: string, url: string): void {

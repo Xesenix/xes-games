@@ -8,6 +8,7 @@ export interface IAudioFile {
 
 export interface IAudioFileLoader {
 	add(key: string,  url: string): void;
+	loadAll(): Promise<void>;
 }
 
 export interface IAudioBufferRepository {

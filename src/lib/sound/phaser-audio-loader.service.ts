@@ -18,7 +18,7 @@ export class PhaserAudioLoaderService implements IAudioFileLoader {
 
 	public setLoader(loader: Phaser.Loader.LoaderPlugin) {
 		this.loader = loader;
-		this.loader.cacheManager.audio.events.on('add', (cache: Phaser.Cache.BaseCache, key: string, data) => {
+		this.loader.cacheManager.audio.events.on('add', (cache: Phaser.Cache.BaseCache, key: string, data: AudioBuffer) => {
 			this.repository.add(key, data);
 		});
 	}
