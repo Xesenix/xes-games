@@ -1,9 +1,8 @@
-import { IAudioFileLoader } from './interfaces';
 import { Store } from 'redux';
 
 import { AudioBufferRepository } from './audio-buffer-repository';
 import { AudioGraph } from './audio-graph';
-import { PhaserAudioLoaderService } from './phaser-audio-loader.service';
+import { IAudioFileLoader } from './interfaces';
 
 // tslint:disable:max-classes-per-file
 export interface ISoundConfigurationState {
@@ -22,6 +21,7 @@ export interface ISoundManager {
 	playFxSound(key: string): Promise<AudioBufferSourceNode>;
 	playLoop(key: string): Promise<AudioBufferSourceNode>;
 	stopSound(key: string): void;
+	preload(): Promise<void>;
 }
 
 export interface ISoundManagerPlugin<T extends ISoundConfigurationState> extends Phaser.Plugins.BasePlugin {
@@ -51,8 +51,8 @@ export const soundManagerPluginFactory = <T extends ISoundConfigurationState>(
 	}
 
 	public setLoader(loader: Phaser.Loader.LoaderPlugin): void {
-		if (this.audioLoader instanceof PhaserAudioLoaderService) {
-			(this.audioLoader as PhaserAudioLoaderService).setLoader(loader);
+		if (!!(this.audioLoader as any).setLoader) {
+			(this.audioLoader as any).setLoader(loader);
 		}
 	}
 
@@ -68,7 +68,7 @@ export const soundManagerPluginFactory = <T extends ISoundConfigurationState>(
 		this.context.close();
 	}
 
-	public loadAll(): Promise<void> {
+	public preload(): Promise<void> {
 		return this.audioLoader.loadAll();
 	}
 

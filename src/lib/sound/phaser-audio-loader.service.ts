@@ -16,9 +16,10 @@ export class PhaserAudioLoaderService implements IAudioFileLoader {
 		this.context = context;
 	}
 
-	public setLoader(loader: Phaser.Loader.LoaderPlugin) {
+	public setLoader(loader: Phaser.Loader.LoaderPlugin): void {
 		this.loader = loader;
-		this.loader.cacheManager.audio.events.on('add', (cache: Phaser.Cache.BaseCache, key: string, data: AudioBuffer) => {
+		// TODO: find better way to connect to phaser loader audio cache
+		(this.loader as any).cacheManager.audio.events.on('add', (cache: Phaser.Cache.BaseCache, key: string, data: AudioBuffer) => {
 			this.repository.add(key, data);
 		});
 	}
@@ -29,13 +30,14 @@ export class PhaserAudioLoaderService implements IAudioFileLoader {
 			this.loadQueue[key] = { key, url };
 		}
 		if (this.loader) {
+			// TODO: phaser has mismatched interface for configuring audioContext so we need cast second argument to any
 			this.loader.addFile(new Phaser.Loader.FileTypes.AudioFile(this.loader, {
 				key,
 				context: this.context,
 				xhrSettings: {
 					responseType: 'arraybuffer',
 				},
-			}, {
+			} as any, {
 				type: 'audio',
 				url,
 			}));

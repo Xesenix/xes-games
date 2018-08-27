@@ -1,5 +1,5 @@
 import { __ } from 'lib/i18n';
-import { ISoundManager } from 'lib/phaser/sound-manager.plugin';
+import { ISoundManager } from 'lib/sound';
 
 export class MusicScene extends Phaser.Scene {
 	private soundtrack?: Phaser.Sound.BaseSound;
@@ -14,7 +14,10 @@ export class MusicScene extends Phaser.Scene {
 	public preload(): void {
 		const sm: ISoundManager = this.sys.plugins.get('sound-manager') as any;
 		console.log('MusicScene:preload');
-		sm.setLoader(this.load);
+		if (!!(sm as any).setLoader) {
+			(sm as any).setLoader(this.load);
+		}
+
 		sm.preloadAudioAsset('soundtrack1', 'assets/soundtrack.ogg');
 		sm.preloadAudioAsset('soundtrack2', 'assets/soundtrack.wav');
 		sm.preloadAudioAsset('fx1', 'assets/fx_00.ogg');
@@ -28,7 +31,7 @@ export class MusicScene extends Phaser.Scene {
 	public create(): void {
 		const sm: ISoundManager = this.sys.plugins.get('sound-manager') as any;
 
-		sm.loadAll().then(() => {
+		sm.preload().then(() => {
 			sm.playLoop('soundtrack1');
 
 			setInterval(() => {
