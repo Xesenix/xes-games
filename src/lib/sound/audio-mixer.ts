@@ -4,7 +4,7 @@ import { IAudioBufferRepository } from './interfaces';
 import { ISoundConfigurationState } from './sound-manager.plugin';
 
 @inject(['audio-context:factory', 'audio-repository'])
-export class AudioGraph {
+export class AudioMixer {
 	private musicLoop: AudioBufferSourceNode | null = null;
 
 	private masterGain?: GainNode;

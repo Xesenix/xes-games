@@ -1,6 +1,6 @@
 import { Store } from 'redux';
 
-import { AudioGraph } from './audio-graph';
+import { AudioMixer } from './audio-mixer';
 import { IAudioBufferRepository, IAudioFileLoader } from './interfaces';
 
 // tslint:disable:max-classes-per-file
@@ -30,7 +30,7 @@ export interface ISoundManagerPlugin<T extends ISoundConfigurationState> extends
 export const soundManagerPluginFactory = <T extends ISoundConfigurationState>(
 	store: Store,
 	context: AudioContext,
-	audioGraph: AudioGraph,
+	audioMixer: AudioMixer,
 	repository: IAudioBufferRepository,
 	audioLoader: IAudioFileLoader,
 ) => class SoundManagerPlugin extends Phaser.Plugins.BasePlugin implements ISoundManagerPlugin<T>, ISoundManager {
@@ -38,7 +38,7 @@ export const soundManagerPluginFactory = <T extends ISoundConfigurationState>(
 	public loader?: Phaser.Loader.LoaderPlugin;
 	public repository: IAudioBufferRepository = repository;
 	public audioLoader: IAudioFileLoader = audioLoader;
-	public audioGraph: AudioGraph = audioGraph;
+	public audioMixer: AudioMixer = audioMixer;
 	private unsubscribe: any;
 	private context = context;
 
@@ -77,21 +77,21 @@ export const soundManagerPluginFactory = <T extends ISoundConfigurationState>(
 
 	public playFxSound(key: string): Promise<AudioBufferSourceNode> {
 		console.log('SoundManagerPlugin:playFxSound', key);
-		return Promise.resolve(this.audioGraph.playFxSound(key));
+		return Promise.resolve(this.audioMixer.playFxSound(key));
 	}
 
 	public stopSound(key: string): void {
 		console.log('SoundManagerPlugin:stopSound', key);
-		this.audioGraph.stopLoop();
+		this.audioMixer.stopLoop();
 	}
 
 	public playLoop(key: string): Promise<AudioBufferSourceNode> {
 		console.log('SoundManagerPlugin:playLoop', key);
-		return Promise.resolve(this.audioGraph.playLoop(key));
+		return Promise.resolve(this.audioMixer.playLoop(key));
 	}
 
 	private syncWithState = () => {
 		const state: T = this.store.getState();
-		this.audioGraph.syncWithState(state);
+		this.audioMixer.syncWithState(state);
 	}
 };

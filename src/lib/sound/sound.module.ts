@@ -2,9 +2,9 @@ import { interfaces } from 'inversify';
 import { IApplication } from 'lib/interfaces';
 
 import { AudioBufferRepository } from './audio-buffer-repository';
-import { AudioGraph } from './audio-graph';
 import { audioLoaderProvider } from './audio-loader.provider';
 import { audioManagerPluginProvider } from './audio-manager-plugin.provider';
+import { AudioMixer } from './audio-mixer';
 import { IAudioContextFactory, IAudioFileLoaderProvider } from './interfaces';
 import { phaserAudioLoaderProvider } from './phaser-audio-loader.provider';
 import { ISoundConfigurationState } from './sound-manager.plugin';
@@ -32,7 +32,7 @@ export class SoundModule<T extends ISoundConfigurationState> {
 		}
 
 		this.app.bind<AudioBufferRepository>('audio-repository').to(AudioBufferRepository).inSingletonScope();
-		this.app.bind<AudioGraph>('audio-graph').to(AudioGraph).inSingletonScope();
+		this.app.bind<AudioMixer>('audio-mixer').to(AudioMixer).inSingletonScope();
 
 		// TODO: this factory returns class figure out how to correctly type this binding
 		this.app.bind('sound-manager-plugin:provider').toProvider(audioManagerPluginProvider);
