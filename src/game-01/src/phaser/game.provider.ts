@@ -2,8 +2,7 @@ import { interfaces } from 'inversify';
 import { Store } from 'redux';
 
 import { IUIStoreProvider } from 'game-01/src/ui/store.provider';
-import { createSoundManagerPlugin } from 'lib/phaser/sound-manager.plugin';
-import { ISoundManagerPlugin } from 'lib/sound';
+import { IAudioManagerPlugin } from 'lib/sound';
 
 export type IPhaserGameProvider = (forceNew?: boolean) => Promise<Phaser.Game>;
 
@@ -25,8 +24,8 @@ export function PhaserGameProvider(context: interfaces.Context) {
 			import('lib/phaser/store.plugin'),
 			import('lib/phaser/ui-manager.plugin'),
 			import('lib/scene/music.scene'),
-			context.container.get<interfaces.Factory<ISoundManagerPlugin<any>>>('sound-manager-plugin:provider')(),
-		]).then(([{ createStorePlugin }, { createUIManagerPlugin }, { MusicScene }, SoundManagerPluginClass]) => storeProvider().then((store: Store) => {
+			context.container.get<interfaces.Factory<IAudioManagerPlugin<any>>>('audio-manager-plugin:provider')(),
+		]).then(([{ createStorePlugin }, { createUIManagerPlugin }, { MusicScene }, AudioManagerPluginClass]) => storeProvider().then((store: Store) => {
 			if (!forceNew && game !== null) {
 				console.debug('PhaserGameProvider:swap parent', game);
 				parent.appendChild(game.canvas);
@@ -101,8 +100,8 @@ export function PhaserGameProvider(context: interfaces.Context) {
 							start: true,
 						},
 						{
-							key: 'sound-manager',
-							plugin: SoundManagerPluginClass,
+							key: 'audio-manager',
+							plugin: AudioManagerPluginClass,
 							start: true,
 						},
 					],

@@ -1,39 +1,20 @@
 import { Store } from 'redux';
 
-import { AudioMixer } from './audio-mixer';
-import { IAudioBufferRepository, IAudioFileLoader } from './interfaces';
+import { AudioMixer } from '../audio-mixer';
+import {
+	IAudioBufferRepository,
+	IAudioConfigurationState,
+	IAudioFileLoader,
+	IAudioManagerPlugin,
+} from '../interfaces';
 
-// tslint:disable:max-classes-per-file
-export interface ISoundConfigurationState {
-	mute: boolean;
-	musicMuted: boolean;
-	effectsMuted: boolean;
-	effectsVolume: number;
-	musicVolume: number;
-	volume: number;
-	paused: boolean;
-}
-
-export interface ISoundManager {
-	loader?: Phaser.Loader.LoaderPlugin;
-	preloadAudioAsset(key: string, src: string): void;
-	playFxSound(key: string): Promise<AudioBufferSourceNode>;
-	playLoop(key: string): Promise<AudioBufferSourceNode>;
-	stopSound(key: string): void;
-	preload(): Promise<void>;
-}
-
-export interface ISoundManagerPlugin<T extends ISoundConfigurationState> extends Phaser.Plugins.BasePlugin {
-	store: Store<T>;
-}
-
-export const soundManagerPluginFactory = <T extends ISoundConfigurationState>(
+export const phaserAudioManagerPluginFactory = <T extends IAudioConfigurationState>(
 	store: Store,
 	context: AudioContext,
 	audioMixer: AudioMixer,
 	repository: IAudioBufferRepository,
 	audioLoader: IAudioFileLoader,
-) => class SoundManagerPlugin extends Phaser.Plugins.BasePlugin implements ISoundManagerPlugin<T>, ISoundManager {
+) => class PhaserAudioManagerPlugin extends Phaser.Plugins.BasePlugin implements IAudioManagerPlugin<T> {
 	public store: Store<T> = store;
 	public loader?: Phaser.Loader.LoaderPlugin;
 	public repository: IAudioBufferRepository = repository;
@@ -46,7 +27,7 @@ export const soundManagerPluginFactory = <T extends ISoundConfigurationState>(
 		public pluginManager: Phaser.Plugins.PluginManager,
 	) {
 		super(pluginManager);
-		console.log('SoundManagerPlugin:constructor');
+		console.log('AudioManagerPlugin:constructor');
 	}
 
 	public setLoader(loader: Phaser.Loader.LoaderPlugin): void {
@@ -56,13 +37,13 @@ export const soundManagerPluginFactory = <T extends ISoundConfigurationState>(
 	}
 
 	public start(): void {
-		console.log('SoundManagerPlugin:start', this);
+		console.log('AudioManagerPlugin:start', this);
 		this.unsubscribe = this.store.subscribe(this.syncWithState);
 		this.syncWithState();
 	}
 
 	public stop() {
-		console.log('SoundManagerPlugin:stop');
+		console.log('AudioManagerPlugin:stop');
 		this.unsubscribe();
 		this.context.close();
 	}
@@ -76,17 +57,17 @@ export const soundManagerPluginFactory = <T extends ISoundConfigurationState>(
 	}
 
 	public playFxSound(key: string): Promise<AudioBufferSourceNode> {
-		console.log('SoundManagerPlugin:playFxSound', key);
+		console.log('AudioManagerPlugin:playFxSound', key);
 		return Promise.resolve(this.audioMixer.playFxSound(key));
 	}
 
 	public stopSound(key: string): void {
-		console.log('SoundManagerPlugin:stopSound', key);
+		console.log('AudioManagerPlugin:stopSound', key);
 		this.audioMixer.stopLoop();
 	}
 
 	public playLoop(key: string): Promise<AudioBufferSourceNode> {
-		console.log('SoundManagerPlugin:playLoop', key);
+		console.log('AudioManagerPlugin:playLoop', key);
 		return Promise.resolve(this.audioMixer.playLoop(key));
 	}
 

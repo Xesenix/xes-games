@@ -1,7 +1,6 @@
 import { inject } from 'lib/di';
 
-import { IAudioBufferRepository } from './interfaces';
-import { ISoundConfigurationState } from './sound-manager.plugin';
+import { IAudioBufferRepository, IAudioConfigurationState } from './interfaces';
 
 @inject(['audio-context:factory', 'audio-repository'])
 export class AudioMixer {
@@ -81,7 +80,7 @@ export class AudioMixer {
 		return source;
 	}
 
-	public syncWithState(state: ISoundConfigurationState): void {
+	public syncWithState(state: IAudioConfigurationState): void {
 		const mute = state.paused || state.mute;
 
 		if (!!this.context) {

@@ -1,7 +1,6 @@
 import { inject } from 'lib/di';
 
-import { AudioBufferRepository } from './audio-buffer-repository';
-import { IAudioContextFactory, IAudioFileLoader } from './interfaces';
+import { IAudioBufferRepository, IAudioContextFactory, IAudioFileLoader } from '../interfaces';
 
 @inject(['audio-repository', 'audio-context:factory'])
 export class PhaserAudioLoaderService implements IAudioFileLoader {
@@ -9,7 +8,7 @@ export class PhaserAudioLoaderService implements IAudioFileLoader {
 	private loadQueue: boolean[] = [];
 
 	constructor(
-		private repository: AudioBufferRepository,
+		private repository: IAudioBufferRepository,
 		private context: IAudioContextFactory,
 	) {
 		this.repository = repository;
