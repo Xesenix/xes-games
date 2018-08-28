@@ -4,7 +4,6 @@ import { IAudioFileLoader } from './interfaces';
 
 export const audioLoaderProvider = (context: interfaces.Context) => () => import('./audio-loader.service')
 .then(({ AudioLoaderService }) => {
-	console.log('audioLoaderProvider');
 	if (!context.container.isBound('audio-loader')) {
 		context.container.bind<IAudioFileLoader>('audio-loader').to(AudioLoaderService).inSingletonScope();
 	}

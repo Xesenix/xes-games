@@ -1,6 +1,6 @@
 import { inject } from 'lib/di';
 
-import { IAudioBufferRepository, IAudioContextFactory } from './interfaces';
+import { IAudioBufferRepository } from './interfaces';
 import { ISoundConfigurationState } from './sound-manager.plugin';
 
 @inject(['audio-context:factory', 'audio-repository'])
