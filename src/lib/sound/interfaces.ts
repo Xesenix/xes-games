@@ -1,4 +1,5 @@
 export type IAudioContextFactory = AudioContext;
+export type IAudioFileLoaderProvider = () => Promise<IAudioFileLoader>;
 
 export interface IAudioFile {
 	key: string;

@@ -1,8 +1,7 @@
 import { Store } from 'redux';
 
-import { AudioBufferRepository } from './audio-buffer-repository';
 import { AudioGraph } from './audio-graph';
-import { IAudioFileLoader } from './interfaces';
+import { IAudioBufferRepository, IAudioFileLoader } from './interfaces';
 
 // tslint:disable:max-classes-per-file
 export interface ISoundConfigurationState {
@@ -32,12 +31,12 @@ export const soundManagerPluginFactory = <T extends ISoundConfigurationState>(
 	store: Store,
 	context: AudioContext,
 	audioGraph: AudioGraph,
-	repository: AudioBufferRepository,
+	repository: IAudioBufferRepository,
 	audioLoader: IAudioFileLoader,
 ) => class SoundManagerPlugin extends Phaser.Plugins.BasePlugin implements ISoundManagerPlugin<T>, ISoundManager {
 	public store: Store<T> = store;
 	public loader?: Phaser.Loader.LoaderPlugin;
-	public repository: AudioBufferRepository = repository;
+	public repository: IAudioBufferRepository = repository;
 	public audioLoader: IAudioFileLoader = audioLoader;
 	public audioGraph: AudioGraph = audioGraph;
 	private unsubscribe: any;
