@@ -13,4 +13,4 @@
 - [x] update store on exiting fullscreen without using of fullscreen button
 - [ ] create music cross fading helper
 - [ ] create music layers
-- [ ] use phaser asset loader to wait for audio data
+- [x] use phaser asset loader to wait for audio data
