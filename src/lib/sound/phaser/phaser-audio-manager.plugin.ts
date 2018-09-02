@@ -21,13 +21,13 @@ export const phaserAudioManagerPluginFactory = <T extends IAudioConfigurationSta
 	public audioLoader: IAudioFileLoader = audioLoader;
 	public audioMixer: IStateAwareAudioMixer = audioMixer;
 	private unsubscribe: any;
-	private context = context;
+	public context = context;
 
 	constructor(
 		public pluginManager: Phaser.Plugins.PluginManager,
 	) {
 		super(pluginManager);
-		console.log('AudioManagerPlugin:constructor');
+		console.log('PhaserAudioManagerPlugin:constructor');
 	}
 
 	public setLoader(loader: Phaser.Loader.LoaderPlugin): void {
@@ -37,13 +37,13 @@ export const phaserAudioManagerPluginFactory = <T extends IAudioConfigurationSta
 	}
 
 	public start(): void {
-		console.log('AudioManagerPlugin:start', this);
+		console.log('PhaserAudioManagerPlugin:start', this);
 		this.unsubscribe = this.store.subscribe(this.syncWithState);
 		this.syncWithState();
 	}
 
 	public stop() {
-		console.log('AudioManagerPlugin:stop');
+		console.log('PhaserAudioManagerPlugin:stop');
 		this.unsubscribe();
 		this.context.close();
 	}
@@ -57,18 +57,18 @@ export const phaserAudioManagerPluginFactory = <T extends IAudioConfigurationSta
 	}
 
 	public playFxSound(key: string): Promise<AudioBufferSourceNode> {
-		console.log('AudioManagerPlugin:playFxSound', key);
+		console.log('PhaserAudioManagerPlugin:playFxSound', key);
 		return Promise.resolve(this.audioMixer.getTrack('effects').play(key));
 	}
 
 	public stopSound(key: string): void {
-		console.log('AudioManagerPlugin:stopSound', key);
+		console.log('PhaserAudioManagerPlugin:stopSound', key);
 		this.audioMixer.getTrack('music').stop();
 	}
 
 	public playLoop(key: string): Promise<AudioBufferSourceNode> {
-		console.log('AudioManagerPlugin:playLoop', key);
-		return Promise.resolve(this.audioMixer.getTrack('music').playLoop(key));
+		console.log('PhaserAudioManagerPlugin:playLoop', key);
+		return Promise.resolve(this.audioMixer.getTrack('effects').playLoop(key));
 	}
 
 	private syncWithState = () => {

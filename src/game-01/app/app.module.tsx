@@ -70,6 +70,7 @@ export class AppModule extends Container implements IApplication {
 		FullScreenModule.register(this);
 
 		// fullscreen bindings
+		// sound bindings
 		SoundModule.register(this);
 
 		// data store

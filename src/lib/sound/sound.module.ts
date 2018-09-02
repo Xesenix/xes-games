@@ -41,9 +41,10 @@ export class SoundModule<T extends IAudioConfigurationState> {
 		}
 
 		this.app.bind<AudioBufferRepository>('audio-repository').to(AudioBufferRepository).inSingletonScope();
-		this.app.bind<IAudioTrack>('audio-mixer:track:master').to(AudioMixerTrack);
-		this.app.bind<IAudioTrack>('audio-mixer:track:effects').to(AudioMixerTrack);
-		this.app.bind<IAudioTrack>('audio-mixer:track:music').to(AudioMixerTrack);
+		this.app.bind<IAudioTrack>('audio-mixer:track:master').to(AudioMixerTrack).inSingletonScope();
+		this.app.bind<IAudioTrack>('audio-mixer:track:effects').to(AudioMixerTrack).inSingletonScope();
+		this.app.bind<IAudioTrack>('audio-mixer:track:music').to(AudioMixerTrack).inSingletonScope();
+		this.app.bind<IAudioTrack>('audio-mixer:track:dialog').to(AudioMixerTrack).inSingletonScope();
 		this.app.bind<IAudioMixer>('audio-mixer').to(AudioMixer).inSingletonScope();
 
 		// TODO: this factory returns class figure out how to correctly type this binding

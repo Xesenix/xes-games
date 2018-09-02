@@ -84,6 +84,6 @@ class PhaserViewComponent extends React.PureComponent<IPhaserViewProps, IPhaserV
 export default hot(module)(connectToInjector<IPhaserViewProps>(PhaserViewComponent, {
 	'data-store:provider': {
 		name: 'store',
-		value: (provider: IStoreProvider<IUIState, IValueAction>) => provider(),
+		value: (provider: IDataStoreProvider<IUIState, IValueAction>) => provider(),
 	},
 }));
