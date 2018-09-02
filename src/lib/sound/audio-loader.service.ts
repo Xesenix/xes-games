@@ -16,7 +16,6 @@ export class AudioLoaderService implements IAudioFileLoader {
 	}
 
 	public add(key: string, url: string): void {
-		console.log('add', key, url);
 		if (!this.loadQueue[key]) {
 			this.loadQueue[key] = { key, url };
 		}

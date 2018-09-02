@@ -1,6 +1,6 @@
 import { Store } from 'redux';
 
-import { AudioMixer } from '../audio-mixer';
+import { IStateAwareAudioMixer } from '../interfaces';
 import {
 	IAudioBufferRepository,
 	IAudioConfigurationState,
@@ -11,7 +11,7 @@ import {
 export const phaserAudioManagerPluginFactory = <T extends IAudioConfigurationState>(
 	store: Store,
 	context: AudioContext,
-	audioMixer: AudioMixer,
+	audioMixer: IStateAwareAudioMixer,
 	repository: IAudioBufferRepository,
 	audioLoader: IAudioFileLoader,
 ) => class PhaserAudioManagerPlugin extends Phaser.Plugins.BasePlugin implements IAudioManagerPlugin<T> {
@@ -19,7 +19,7 @@ export const phaserAudioManagerPluginFactory = <T extends IAudioConfigurationSta
 	public loader?: Phaser.Loader.LoaderPlugin;
 	public repository: IAudioBufferRepository = repository;
 	public audioLoader: IAudioFileLoader = audioLoader;
-	public audioMixer: AudioMixer = audioMixer;
+	public audioMixer: IStateAwareAudioMixer = audioMixer;
 	private unsubscribe: any;
 	private context = context;
 
@@ -58,17 +58,17 @@ export const phaserAudioManagerPluginFactory = <T extends IAudioConfigurationSta
 
 	public playFxSound(key: string): Promise<AudioBufferSourceNode> {
 		console.log('AudioManagerPlugin:playFxSound', key);
-		return Promise.resolve(this.audioMixer.playFxSound(key));
+		return Promise.resolve(this.audioMixer.getTrack('effects').play(key));
 	}
 
 	public stopSound(key: string): void {
 		console.log('AudioManagerPlugin:stopSound', key);
-		this.audioMixer.stopLoop();
+		this.audioMixer.getTrack('music').stop();
 	}
 
 	public playLoop(key: string): Promise<AudioBufferSourceNode> {
 		console.log('AudioManagerPlugin:playLoop', key);
-		return Promise.resolve(this.audioMixer.playLoop(key));
+		return Promise.resolve(this.audioMixer.getTrack('music').playLoop(key));
 	}
 
 	private syncWithState = () => {
