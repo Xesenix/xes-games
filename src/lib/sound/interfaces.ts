@@ -52,6 +52,7 @@ export type IStateAwareAudioMixer = IAudioMixer & IStoreStateAware<IAudioConfigu
  * Defines actions available for single mixing track.
  */
 export interface IAudioTrack {
+	create(key: string): AudioBufferSourceNode;
 	playLoop(key: string, when?: number, offset?: number, duration?: number | undefined): AudioBufferSourceNode;
 	play(key: string, when?: number, offset?: number, duration?: number | undefined): AudioBufferSourceNode;
 	stop(when?: number): void;
