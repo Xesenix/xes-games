@@ -25,7 +25,14 @@ export function PhaserGameProvider(context: interfaces.Context) {
 			import('lib/phaser/ui-manager.plugin'),
 			import('lib/scene/music.scene'),
 			context.container.get<interfaces.Factory<IAudioManagerPlugin<any>>>('audio-manager-plugin:provider')(),
-		]).then(([{ createStorePlugin }, { createUIManagerPlugin }, { MusicScene }, AudioManagerPluginClass]) => storeProvider().then((store: Store) => {
+			context.container.get<interfaces.Factory<Phaser.Plugins.BasePlugin>>('soundtrack-manager-plugin:provider')(),
+		]).then(([
+			{ createStorePlugin },
+			{ createUIManagerPlugin },
+			{ MusicScene },
+			AudioManagerPluginClass,
+			SoundtrackManagerPluginClass,
+		]) => storeProvider().then((store: Store) => {
 			if (!forceNew && game !== null) {
 				console.debug('PhaserGameProvider:swap parent', game);
 				parent.appendChild(game.canvas);
@@ -102,6 +109,11 @@ export function PhaserGameProvider(context: interfaces.Context) {
 						{
 							key: 'audio-manager',
 							plugin: AudioManagerPluginClass,
+							start: true,
+						},
+						{
+							key: 'soundtrack-manager',
+							plugin: SoundtrackManagerPluginClass,
 							start: true,
 						},
 					],

@@ -20,8 +20,8 @@ export const phaserAudioManagerPluginFactory = <T extends IAudioConfigurationSta
 	public repository: IAudioBufferRepository = repository;
 	public audioLoader: IAudioFileLoader = audioLoader;
 	public audioMixer: IStateAwareAudioMixer = audioMixer;
-	private unsubscribe: any;
 	public context = context;
+	private unsubscribe: any;
 
 	constructor(
 		public pluginManager: Phaser.Plugins.PluginManager,
