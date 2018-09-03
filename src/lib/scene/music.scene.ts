@@ -56,6 +56,7 @@ export class MusicScene extends Phaser.Scene {
 
 			const loop: ISoundtrack = {
 				key: 'soundtrack',
+				name: 'idle',
 				intro: {
 					start: note * 4 * 1000,
 					end: note * 8 * 1000,
@@ -74,6 +75,7 @@ export class MusicScene extends Phaser.Scene {
 
 			const action: ISoundtrack = {
 				key: 'soundtrack',
+				name: 'action',
 				intro: {
 					start: note * 12 * 1000,
 					end: note * 16 * 1000,
@@ -92,6 +94,7 @@ export class MusicScene extends Phaser.Scene {
 
 			const ambient: ISoundtrack = {
 				key: 'soundtrack',
+				name: 'ambient',
 				intro: {
 					start: 0,
 					end: note * 4 * 1000,
@@ -106,7 +109,7 @@ export class MusicScene extends Phaser.Scene {
 				},
 			};
 
-			stm.soundtrackPlayer.scheduleNext(ambient, 1, 4);
+			stm.soundtrackPlayer.scheduleNext(ambient, 0, 5);
 			stm.soundtrackPlayer.scheduleNext(ambient, 55, 0);
 		});
 
@@ -115,7 +118,7 @@ export class MusicScene extends Phaser.Scene {
 		// this.soundtrack.play();
 		// this.soundtrack.source.loop = true;
 
-		this.label = this.add.text(400, 300, '', { font: '48px Consolas', fill: '#ffffff' });
+		this.label = this.add.text(400, 300, '', { font: '24px Consolas', fill: '#ffffff' });
 		this.label.setOrigin(0.5, 0.5);
 	}
 
@@ -128,7 +131,15 @@ export class MusicScene extends Phaser.Scene {
 	public update(time: number, delta: number): void {
 		if (this.label) {
 			const sm: IAudioManager = this.sys.plugins.get('audio-manager') as any;
-			this.label.setText(`${ __('total time') }: ${(time / 1000).toFixed(0)}s\n${ __('delta time') }: ${delta.toFixed(2)}ms\n${ __('audio time') }: ${sm.context.currentTime.toFixed(2)}s`);
+			const stm: ISoundtrackManager = this.sys.plugins.get('soundtrack-manager') as any;
+			const currentSoundtrack = stm.soundtrackPlayer.getCurrentSoundtrack()
+				.map(({ name, start, end }) => `${name}[${start.toFixed(2)}-${end && end.toFixed(2) || 'inf'}]`)
+				.join(', ');
+
+			this.label.setText(`${ __('total time') }: ${(time / 1000).toFixed(0)}s\n
+${ __('delta time') }: ${delta.toFixed(2)}ms\n
+${ __('audio time') }: ${sm.context.currentTime.toFixed(2)}s\n
+current sound: ${ currentSoundtrack }`);
 		}
 	}
 }
