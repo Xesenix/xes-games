@@ -14,15 +14,15 @@ export class SoundtrackPlayer {
 	public scheduleNext(soundtrack: ISoundtrack, when: number, duration: number): void {
 		console.log('SoundtrackPlayer:scheduleNext', when, soundtrack);
 		if (when === 0) {
-			when = 0.1; // fix for sync errors
+			when = 0.125; // fix for sync errors
 		}
 		const durationMs = Math.floor(duration * 1000);
-		const introStartMs = Math.floor(soundtrack.introStartMs);
-		const introEndMs = Math.floor(soundtrack.introEndMs);
-		const loopStartMs = Math.floor(soundtrack.loopStartMs);
-		const loopEndMs = Math.floor(soundtrack.loopEndMs);
-		const outroStartMs = Math.floor(soundtrack.outroStartMs);
-		const outroEndMs = Math.floor(soundtrack.outroEndMs);
+		const introStartMs = Math.floor(soundtrack.intro.start);
+		const introEndMs = Math.floor(soundtrack.intro.end);
+		const loopStartMs = Math.floor(soundtrack.loop.start);
+		const loopEndMs = Math.floor(soundtrack.loop.end);
+		const outroStartMs = Math.floor(soundtrack.outro.start);
+		const outroEndMs = Math.floor(soundtrack.outro.end);
 		const introDurationMs = Math.min(introEndMs - introStartMs, durationMs);
 		const singleLoopDurationMs = loopEndMs - loopStartMs;
 		const totalLoopDurationMs = durationMs > introDurationMs ? Math.round((durationMs - introDurationMs) / singleLoopDurationMs) * singleLoopDurationMs : 0;

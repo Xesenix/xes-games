@@ -11,32 +11,28 @@ export interface ISoundtrack {
 	 * Audio asset name used to find audio buffer in repository.
 	 */
 	key: string;
+
 	/**
-	 * Soundtrack intro start time.
+	 * Soundtrack intro.
 	 */
-	introStartMs: number;
+	intro: ISoundSprite;
+
 	/**
-	 * Soundtrack intro end time.
+	 * Soundtrack loop.
 	 */
-	introEndMs: number;
+	loop: ISoundSprite;
+
 	/**
-	 * Soundtrack loop start time.
+	 * Soundtrack outro.
 	 */
-	loopStartMs: number;
-	/**
-	 * Soundtrack loop end time.
-	 */
-	loopEndMs: number;
-	/**
-	 * Soundtrack outro start time.
-	 */
-	outroStartMs: number;
-	/**
-	 * Soundtrack outro end time.
-	 */
-	outroEndMs: number;
+	outro: ISoundSprite;
 }
 
 export interface ISoundtrackManager {
 	soundtrackPlayer: ISoundtrackPlayer;
+}
+
+export interface ISoundSprite {
+	start: number;
+	end: number;
 }

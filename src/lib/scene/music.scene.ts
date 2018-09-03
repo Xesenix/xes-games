@@ -56,36 +56,54 @@ export class MusicScene extends Phaser.Scene {
 
 			const loop: ISoundtrack = {
 				key: 'soundtrack',
-				introStartMs: note * 4 * 1000,
-				introEndMs: note * 8 * 1000,
-				loopStartMs: note * 8 * 1000,
-				loopEndMs: note * 12 * 1000,
-				outroStartMs: note * 19 * 1000,
-				outroEndMs: note * 21 * 1000,
+				intro: {
+					start: note * 4 * 1000,
+					end: note * 8 * 1000,
+				},
+				loop: {
+					start: note * 8 * 1000,
+					end: note * 12 * 1000,
+				},
+				outro: {
+					start: note * 19 * 1000,
+					end: note * 21 * 1000,
+				},
 			};
 
 			stm.soundtrackPlayer.scheduleNext(loop, 5, 30);
 
 			const action: ISoundtrack = {
 				key: 'soundtrack',
-				introStartMs: note * 12 * 1000,
-				introEndMs: note * 16 * 1000,
-				loopStartMs: note * 16 * 1000,
-				loopEndMs: note * 18 * 1000,
-				outroStartMs: note * 18 * 1000,
-				outroEndMs: note * 19 * 1000,
+				intro: {
+					start: note * 12 * 1000,
+					end: note * 16 * 1000,
+				},
+				loop: {
+					start: note * 16 * 1000,
+					end: note * 18 * 1000,
+				},
+				outro: {
+					start: note * 18 * 1000,
+					end: note * 19 * 1000,
+				},
 			};
 
 			stm.soundtrackPlayer.scheduleNext(action, 35, 20);
 
 			const ambient: ISoundtrack = {
 				key: 'soundtrack',
-				introStartMs: 0,
-				introEndMs: note * 4 * 1000,
-				loopStartMs: note * 0 * 1000,
-				loopEndMs: note * 4 * 1000,
-				outroStartMs: 0,
-				outroEndMs: 0,
+				intro: {
+					start: 0,
+					end: note * 4 * 1000,
+				},
+				loop: {
+					start: note * 0 * 1000,
+					end: note * 4 * 1000,
+				},
+				outro: {
+					start: 0,
+					end: 0,
+				},
 			};
 
 			stm.soundtrackPlayer.scheduleNext(ambient, 1, 4);
