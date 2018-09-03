@@ -43,6 +43,7 @@ export class SoundtrackPlayer {
 		if (introDurationMs > 0) {
 			const intro: AudioBufferSourceNode = this.music.create(soundtrack.key);
 			intro.start(when, introStartMs * 0.001, introDurationMs * 0.001);
+			intro.stop(when + introDurationMs * 0.001);
 		}
 
 		if (durationMs > 0) {
@@ -53,11 +54,13 @@ export class SoundtrackPlayer {
 				loop.loop = true;
 
 				loop.start(when + introDurationMs * 0.001, loopStartMs * 0.001, totalLoopDurationMs * 0.001);
+				loop.stop(when + (introDurationMs + totalLoopDurationMs) * 0.001);
 			}
 
 			if (outroDurationMs > 0) {
 				const outro: AudioBufferSourceNode = this.music.create(soundtrack.key);
 				outro.start(when + (introDurationMs + totalLoopDurationMs) * 0.001, outroStartMs * 0.001, outroDurationMs * 0.001);
+				outro.stop(when + (introDurationMs + totalLoopDurationMs + outroDurationMs) * 0.001);
 			}
 		} else {
 			const loop: AudioBufferSourceNode = this.music.create(soundtrack.key);
