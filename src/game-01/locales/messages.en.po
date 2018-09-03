@@ -12,81 +12,105 @@ msgstr ""
 "X-Generator: Poedit 2.1.1\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: src/game-01/components/game-view/game-view.tsx:109
+#: src/lib/scene/music.scene.ts:131
+msgid "audio time"
+msgstr "audio time"
+
+#: src/game-01/components/game-view/game-view.tsx:112
 msgid "Back"
 msgstr "Back"
 
-#: src/game-01/components/game-view/game-view.tsx:116
+#: src/game-01/components/game-view/game-view.tsx:119
 msgid "Configuration"
 msgstr "Configuration"
 
-#: src/lib/scene/music.scene.ts:37
+#: src/game-01/components/configuration-view/configuration-view.tsx:219
+msgid "dark"
+msgstr "dark"
+
+#: src/lib/scene/music.scene.ts:131
 msgid "delta time"
 msgstr "delta time"
 
-#: src/game-01/components/configuration-view/configuration-view.tsx:197
+#: src/game-01/components/configuration-view/configuration-view.tsx:208
 msgid "english"
 msgstr "english"
 
-#: src/game-01/components/game-view/game-view.tsx:122
+#: src/game-01/components/game-view/game-view.tsx:125
 msgid "Fullscreen"
 msgstr "Fullscreen"
 
-#: src/game-01/components/configuration-view/configuration-view.tsx:118
+#: src/game-01/components/configuration-view/configuration-view.tsx:128
 msgid "fx mute"
 msgstr "fx mute"
 
-#: src/game-01/components/configuration-view/configuration-view.tsx:192
+#: src/game-01/components/configuration-view/configuration-view.tsx:203
 msgid "language"
 msgstr "language"
 
-#: src/game-01/app/app.tsx:71 src/lib/di/context.tsx:63
+#: src/game-01/components/configuration-view/configuration-view.tsx:218
+msgid "light"
+msgstr "light"
+
+#: src/game-01/app/app.tsx:131 src/lib/di/context.tsx:63
 msgid "loading"
 msgstr "loading"
 
-#: src/game-01/components/configuration-view/configuration-view.tsx:90
+#: src/game-01/components/configuration-view/configuration-view.tsx:100
 msgid "master mute"
 msgstr "master mute"
 
-#: src/game-01/components/configuration-view/configuration-view.tsx:133
+#: src/game-01/components/configuration-view/configuration-view.tsx:143
 msgid "master volume"
 msgstr "master volume"
 
-#: src/game-01/components/configuration-view/configuration-view.tsx:104
+#: src/game-01/components/configuration-view/configuration-view.tsx:114
 msgid "music mute"
 msgstr "music mute"
 
-#: src/game-01/components/configuration-view/configuration-view.tsx:153
+#: src/game-01/components/configuration-view/configuration-view.tsx:163
 msgid "music volume"
 msgstr "music volume"
 
-#: src/game-01/components/game-view/game-view.tsx:130
+#: src/game-01/components/game-view/game-view.tsx:133
 msgid "Mute"
 msgstr "Mute"
 
-#: src/game-01/components/game-view/game-view.tsx:126
+#: src/game-01/components/game-view/game-view.tsx:129
 msgid "Pause"
 msgstr "Pause"
 
-#: src/game-01/app/app.tsx:77
+#: src/game-01/app/app.tsx:137
 msgid "PHASER 3 Game Test"
 msgstr "PHASER 3 Game Test"
 
-#: src/game-01/components/configuration-view/configuration-view.tsx:198
+#: src/game-01/components/configuration-view/configuration-view.tsx:209
 msgid "polish"
 msgstr "polish"
 
-#: src/game-01/components/configuration-view/configuration-view.tsx:173
+#: src/game-01/components/configuration-view/configuration-view.tsx:95
+msgid "Sound configuration"
+msgstr "Sound Configuration"
+
+#: src/game-01/components/configuration-view/configuration-view.tsx:183
 msgid "sound volume"
 msgstr "sound volume"
 
-#: src/game-01/app/app.tsx:70
+#: src/game-01/app/app.tsx:130
 msgid "Start"
 msgstr "Start"
 
-#: src/lib/scene/music.scene.ts:37
+#: src/game-01/components/configuration-view/configuration-view.tsx:213
+msgid "theme"
+msgstr "theme"
+
+#: src/lib/scene/music.scene.ts:131
 msgid "total time"
-msgstr ""
+msgstr "total time"
+
+#: src/game-01/components/configuration-view/configuration-view.tsx:200
+msgid "User interface configuration"
+msgstr "User interface configuration"
 
 #~ msgid "Command"
 #~ msgstr "Command"
