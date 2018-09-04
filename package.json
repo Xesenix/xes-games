@@ -158,7 +158,6 @@
 		"@types/lodash.clonedeep": "^4.5.3",
 		"@types/react-loadable": "^5.4.1",
 		"@types/redux-thunk": "^2.1.0",
-		"babel-polyfill": "^6.26.0",
 		"fscreen": "^1.0.2",
 		"istanbul": "github:Xesenix/istanbul",
 		"lodash.clonedeep": "^4.5.0",
