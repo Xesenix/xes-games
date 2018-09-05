@@ -3,7 +3,7 @@ export interface ISoundScapeState {
 }
 
 export interface ISoundtrackPlayer {
-	scheduleNext(soundtrack: ISoundtrack, when: number, duration: number): void;
+	scheduleNext(soundtrack: ISoundtrack, duration: number): void;
 	getCurrentSoundtrack(layer: number): IScheduledSoundtrack[];
 }
 
@@ -40,7 +40,8 @@ export interface ISoundSprite {
 }
 
 export interface IScheduledSoundtrack {
-	name: string;
+	soundtrack: string;
+	state: 'intro' | 'loop' | 'outro' | 'endless';
 	start: number;
 	end?: number;
 	node: AudioNode;

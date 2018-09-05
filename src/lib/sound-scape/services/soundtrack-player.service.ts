@@ -15,111 +15,140 @@ export class SoundtrackPlayer {
 		this.context = context;
 	}
 
-	public scheduleNext(soundtrack: ISoundtrack, when: number, duration: number, layer: number = 0): void {
-		console.log('SoundtrackPlayer:scheduleNext', when, soundtrack);
-		const currentAudioTime = this.context.currentTime;
-		when += currentAudioTime; // fix for sync errors
-		duration = Math.floor(duration * 1000 ) * 0.001;
-		const introStart = Math.floor(soundtrack.intro.start) * 0.001;
-		const introEnd = Math.floor(soundtrack.intro.end) * 0.001;
-		const loopStart = Math.floor(soundtrack.loop.start) * 0.001;
-		const loopEnd = Math.floor(soundtrack.loop.end) * 0.001;
-		const outroStart = Math.floor(soundtrack.outro.start) * 0.001;
-		const outroEnd = Math.floor(soundtrack.outro.end) * 0.001;
-		const introDuration = Math.min(introEnd - introStart, duration);
-		const singleLoopDuration = loopEnd - loopStart;
-		const totalLoopDuration = duration > introDuration ? Math.round((duration - introDuration) / singleLoopDuration) * singleLoopDuration : 0;
-		const outroDuration = outroEnd - outroStart;
-		console.log('START SOUNDTRACK', {
-			currentAudioTime,
-			introStart,
-			introEnd,
-			introDuration,
-			loopStart,
-			loopEnd,
-			singleLoopDuration,
-			totalLoopDuration,
-			outroStart,
-			outroEnd,
-			outroDuration,
-		});
+	/**
+	 * Return point at time when we can attach another transition.
+	 */
+	public getLastScheduled(layer: number = 0): IScheduledSoundtrack | null {
+		return this.layers[layer].reduce(
+			(result: IScheduledSoundtrack | null, current: IScheduledSoundtrack) =>
+				result !== null && result.end && current.end && result.end < current.end || current.end ? current : result,
+			null,
+		);
+	}
+
+	public scheduleIntroAt(soundtrack: ISoundtrack, when: number, layer: number = 0): IScheduledSoundtrack | null {
+		const introStart = soundtrack.intro.start;
+		const introEnd = soundtrack.intro.end;
+		const introDuration = introEnd - introStart;
 
 		if (introDuration > 0) {
-			const intro: AudioBufferSourceNode = this.music.create(soundtrack.key);
+			const node: AudioBufferSourceNode = this.music.create(soundtrack.key);
 			const descriptor = {
-				name: soundtrack.name + '-intro',
+				soundtrack: soundtrack.name,
+				state: 'intro',
 				start: when,
 				end: when + introDuration,
 				loop: false,
 				loopDuration: 0,
-				node: intro,
-			};
+				node,
+			} as IScheduledSoundtrack;
 
-			intro.start(when, introStart);
-			intro.stop(when + introDuration);
-			intro.onended = () => this.removeSoundtrackFromSchedule(layer, descriptor);
+			node.onended = () => this.removeSoundtrackFromSchedule(layer, descriptor);
+
+			node.start(descriptor.start, introStart);
+			node.stop(descriptor.end);
 
 			this.layers[layer].push(descriptor);
+
+			return descriptor;
 		}
 
-		if (duration > 0) {
-			if (totalLoopDuration > 0) {
-				const loop: AudioBufferSourceNode = this.music.create(soundtrack.key);
-				const descriptor = {
-					name: soundtrack.name + '-loop',
-					start: when + introDuration,
-					end: when + introDuration + totalLoopDuration,
-					loop: true,
-					loopDuration: singleLoopDuration,
-					node: loop,
-				};
+		return null;
+	}
 
-				loop.loopStart = loopStart;
-				loop.loopEnd = loopEnd;
-				loop.loop = true;
-				loop.onended = () => this.removeSoundtrackFromSchedule(layer, descriptor);
+	public scheduleLoopAt(soundtrack: ISoundtrack, when: number, duration: number, layer: number = 0): IScheduledSoundtrack | null {
+		const loopStart = soundtrack.loop.start;
+		const loopEnd = soundtrack.loop.end;
+		const singleLoopDuration = loopEnd - loopStart;
+		const totalLoopDuration = duration > 0 ? Math.round(duration / singleLoopDuration) * singleLoopDuration : 0;
 
-				loop.start(when + introDuration, loopStart);
-				loop.stop(when + introDuration + totalLoopDuration);
-
-				this.layers[layer].push(descriptor);
-			}
-
-			if (outroDuration > 0) {
-				const outro: AudioBufferSourceNode = this.music.create(soundtrack.key);
-				const descriptor = {
-					name: soundtrack.name + '-outro',
-					start: when + introDuration + totalLoopDuration,
-					end: when + introDuration + totalLoopDuration + outroDuration,
-					loop: false,
-					loopDuration: 0,
-					node: outro,
-				};
-
-				outro.start(when + introDuration + totalLoopDuration, outroStart);
-				outro.stop(when + introDuration + totalLoopDuration + outroDuration);
-				outro.onended = () => this.removeSoundtrackFromSchedule(layer, descriptor);
-
-				this.layers[layer].push(descriptor);
-			}
-		} else {
-
-			const loop: AudioBufferSourceNode = this.music.create(soundtrack.key);
+		if (totalLoopDuration > 0) {
+			const node: AudioBufferSourceNode = this.music.create(soundtrack.key);
 			const descriptor = {
-				name: soundtrack.name + '-endless',
-				start: when + introDuration,
+				soundtrack: soundtrack.name,
+				state: 'loop',
+				start: when,
+				end: when + totalLoopDuration,
 				loop: true,
 				loopDuration: singleLoopDuration,
-				node: loop,
-			};
-			loop.loopStart = loopStart;
-			loop.loopEnd = loopEnd;
-			loop.loop = true;
-			loop.onended = () => this.removeSoundtrackFromSchedule(layer, descriptor);
+				node,
+			} as IScheduledSoundtrack;
 
-			loop.start(when + introDuration, loopStart);
+			node.loopStart = loopStart;
+			node.loopEnd = loopEnd;
+			node.loop = true;
+			node.onended = () => this.removeSoundtrackFromSchedule(layer, descriptor);
+
+			node.start(descriptor.start, loopStart);
+			node.stop(descriptor.end);
 
 			this.layers[layer].push(descriptor);
+
+			return descriptor;
+		} else {
+			const node: AudioBufferSourceNode = this.music.create(soundtrack.key);
+			const descriptor = {
+				soundtrack: soundtrack.name,
+				state: 'endless',
+				start: when,
+				loop: true,
+				loopDuration: singleLoopDuration,
+				node,
+			} as IScheduledSoundtrack;
+
+			node.loopStart = loopStart;
+			node.loopEnd = loopEnd;
+			node.loop = true;
+			node.onended = () => this.removeSoundtrackFromSchedule(layer, descriptor);
+
+			node.start(descriptor.start, loopStart);
+
+			this.layers[layer].push(descriptor);
+
+			return descriptor;
+		}
+	}
+
+	public scheduleOutroAt(soundtrack: ISoundtrack, when: number, layer: number = 0): IScheduledSoundtrack | null {
+		const outroStart = soundtrack.outro.start;
+		const outroEnd = soundtrack.outro.end;
+		const outroDuration = outroEnd - outroStart;
+
+		if (outroDuration > 0) {
+			const node: AudioBufferSourceNode = this.music.create(soundtrack.key);
+			const descriptor = {
+				soundtrack: soundtrack.name,
+				state: 'outro',
+				start: when,
+				end: when + outroDuration,
+				loop: false,
+				loopDuration: 0,
+				node,
+			} as IScheduledSoundtrack;
+
+			node.onended = () => this.removeSoundtrackFromSchedule(layer, descriptor);
+
+			node.start(descriptor.start, outroStart);
+			node.stop(descriptor.end);
+
+			this.layers[layer].push(descriptor);
+
+			return descriptor;
+		}
+
+		return null;
+	}
+
+	public scheduleNext(soundtrack: ISoundtrack, duration: number, layer: number = 0): void {
+		const last = this.getLastScheduled(layer);
+		const when = last && last.end ? last.end : this.context.currentTime;
+
+		const introScheduled = this.scheduleIntroAt(soundtrack, when, layer);
+
+		const loopScheduled = this.scheduleLoopAt(soundtrack, introScheduled && introScheduled.end ? introScheduled.end : when, duration, layer);
+
+		if (duration > 0) {
+			const scheduledOutro = this.scheduleOutroAt(soundtrack, loopScheduled && loopScheduled.end ? loopScheduled.end : when, layer);
 		}
 	}
 
