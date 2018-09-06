@@ -3,8 +3,10 @@ export interface ISoundScapeState {
 }
 
 export interface ISoundtrackPlayer {
-	scheduleNext(soundtrack: ISoundtrack, duration: number): void;
-	getCurrentSoundtrack(layer: number): IScheduledSoundtrack[];
+	scheduleAfterLast(soundtrack: ISoundtrack, duration?: number, layer?: number): void;
+	scheduleNext(soundtrack: ISoundtrack, duration?: number): void;
+	getCurrentScheduledSoundtrack(layer: number): IScheduledSoundtrack[];
+	getLastScheduledSoundtrack(layer: number): IScheduledSoundtrack[];
 }
 
 export interface ISoundtrack {
@@ -37,14 +39,16 @@ export interface ISoundtrackManager {
 export interface ISoundSprite {
 	start: number;
 	end: number;
+	duration: number;
+	interruptionStep?: number;
 }
 
 export interface IScheduledSoundtrack {
-	soundtrack: string;
+	soundtrack: ISoundtrack;
 	state: 'intro' | 'loop' | 'outro' | 'endless';
 	start: number;
 	end?: number;
-	node: AudioNode;
+	node: AudioBufferSourceNode;
 	loop: boolean;
-	loopDuration?: number;
+	interruptionStep: number;
 }

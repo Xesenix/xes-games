@@ -34,6 +34,71 @@ export class MusicScene extends Phaser.Scene {
 	public create(): void {
 		const sm: IAudioManager = this.sys.plugins.get('audio-manager') as any;
 		const stm: ISoundtrackManager = this.sys.plugins.get('soundtrack-manager') as any;
+		const bpm = 140;
+		const note = 240 / bpm;
+
+		const loop: ISoundtrack = {
+			key: 'soundtrack',
+			name: 'idle',
+			intro: {
+				start: note * 4,
+				end: note * 8,
+				duration: note * 4,
+			},
+			loop: {
+				start: note * 8,
+				end: note * 12,
+				duration: note * 4,
+				interruptionStep: note * 2,
+			},
+			outro: {
+				start: note * 19,
+				end: note * 21,
+				duration: note * 2,
+			},
+		};
+
+		const action: ISoundtrack = {
+			key: 'soundtrack',
+			name: 'action',
+			intro: {
+				start: note * 12,
+				end: note * 16,
+				duration: note * 4,
+			},
+			loop: {
+				start: note * 16,
+				end: note * 18,
+				duration: note * 2,
+				interruptionStep: note * 2,
+			},
+			outro: {
+				start: note * 18,
+				end: note * 19,
+				duration: note * 1,
+			},
+		};
+
+		const ambient: ISoundtrack = {
+			key: 'soundtrack',
+			name: 'ambient',
+			intro: {
+				start: 0,
+				end: note * 4,
+				duration: note * 4,
+			},
+			loop: {
+				start: note * 0,
+				end: note * 4,
+				duration: note * 4,
+				interruptionStep: note,
+			},
+			outro: {
+				start: 0,
+				end: 0,
+				duration: 0,
+			},
+		};
 
 		sm.preload().then(() => {
 			/*sm.playLoop('soundtrack1');
@@ -51,67 +116,18 @@ export class MusicScene extends Phaser.Scene {
 				sm.playLoop('soundtrack2');
 				sm.playFxSound('fx2');
 			}, 15000);*/
-			const bpm = 140;
-			const note = 240 / bpm;
 
-			const loop: ISoundtrack = {
-				key: 'soundtrack',
-				name: 'idle',
-				intro: {
-					start: note * 4,
-					end: note * 8,
-				},
-				loop: {
-					start: note * 8,
-					end: note * 12,
-				},
-				outro: {
-					start: note * 19,
-					end: note * 21,
-				},
-			};
+			stm.soundtrackPlayer.scheduleAfterLast(loop, 30);
 
-			stm.soundtrackPlayer.scheduleNext(loop, 30);
+			stm.soundtrackPlayer.scheduleAfterLast(action, 20);
 
-			const action: ISoundtrack = {
-				key: 'soundtrack',
-				name: 'action',
-				intro: {
-					start: note * 12,
-					end: note * 16,
-				},
-				loop: {
-					start: note * 16,
-					end: note * 18,
-				},
-				outro: {
-					start: note * 18,
-					end: note * 19,
-				},
-			};
+			stm.soundtrackPlayer.scheduleAfterLast(ambient, 15);
+			stm.soundtrackPlayer.scheduleAfterLast(action, 20);
+			stm.soundtrackPlayer.scheduleAfterLast(ambient, 0);
+		});
 
-			stm.soundtrackPlayer.scheduleNext(action, 20);
-
-			const ambient: ISoundtrack = {
-				key: 'soundtrack',
-				name: 'ambient',
-				intro: {
-					start: 0,
-					end: note * 4,
-				},
-				loop: {
-					start: note * 0,
-					end: note * 4,
-				},
-				outro: {
-					start: 0,
-					end: 0,
-				},
-			};
-
-			stm.soundtrackPlayer.scheduleNext(ambient, 15);
-			stm.soundtrackPlayer.scheduleNext(action, 20);
-			stm.soundtrackPlayer.scheduleNext(ambient, 0);
+		this.input.on('pointerup', () => {
+			stm.soundtrackPlayer.scheduleNext(action, 5);
 		});
 
 		// this.soundtrack = this.sound.add('soundtrack');
@@ -133,8 +149,8 @@ export class MusicScene extends Phaser.Scene {
 		if (this.label) {
 			const sm: IAudioManager = this.sys.plugins.get('audio-manager') as any;
 			const stm: ISoundtrackManager = this.sys.plugins.get('soundtrack-manager') as any;
-			const currentSoundtrack = stm.soundtrackPlayer.getCurrentSoundtrack()
-				.map(({ soundtrack, state, start, end }) => `${soundtrack}-${state}[${start.toFixed(2)}-${end && end.toFixed(2) || 'inf'}]`)
+			const currentSoundtrack = stm.soundtrackPlayer.getCurrentScheduledSoundtrack()
+				.map(({ soundtrack: { name }, state, start, end }) => `${name}-${state}[${start.toFixed(2)}-${end && end.toFixed(2) || 'inf'}]`)
 				.join(', ');
 
 			this.label.setText(`${ __('total time') }: ${(time / 1000).toFixed(0)}s\n
