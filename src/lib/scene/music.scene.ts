@@ -128,6 +128,7 @@ export class MusicScene extends Phaser.Scene {
 
 		this.input.on('pointerup', () => {
 			stm.soundtrackPlayer.scheduleNext(action, 5);
+			stm.soundtrackPlayer.scheduleAfterLast(ambient, 0);
 		});
 
 		// this.soundtrack = this.sound.add('soundtrack');
