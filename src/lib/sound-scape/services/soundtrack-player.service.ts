@@ -28,6 +28,7 @@ export class SoundtrackPlayer {
 				start: when,
 				end: when + introDuration,
 				loop: false,
+				loopDuration: 0,
 				interruptionStep: 0,
 				node,
 			} as IScheduledSoundtrack;
@@ -48,9 +49,10 @@ export class SoundtrackPlayer {
 	public scheduleLoopAt(soundtrack: ISoundtrack, when: number = 0, duration: number = 0, layer: number = 0): IScheduledSoundtrack | null {
 		const loopStart = soundtrack.loop.start;
 		const loopEnd = soundtrack.loop.end;
-		const interruptionStep = soundtrack.loop.interruptionStep || (loopEnd - loopStart);
+		const loopDuration = loopEnd - loopStart;
+		const interruptionStep = soundtrack.loop.interruptionStep || loopDuration;
 		if (interruptionStep > 0) {
-			const totalLoopDuration = duration > 0 ? Math.round(duration / interruptionStep) * interruptionStep : 0;
+			const totalLoopDuration = duration > 0 ? Math.round(duration / loopDuration) * loopDuration : 0;
 
 			if (totalLoopDuration > 0) {
 				const node: AudioBufferSourceNode = this.music.create(soundtrack.key);
@@ -60,6 +62,7 @@ export class SoundtrackPlayer {
 					start: when,
 					end: when + totalLoopDuration,
 					loop: true,
+					loopDuration,
 					interruptionStep,
 					node,
 				} as IScheduledSoundtrack;
@@ -82,6 +85,7 @@ export class SoundtrackPlayer {
 					state: 'endless',
 					start: when,
 					loop: true,
+					loopDuration,
 					interruptionStep,
 					node,
 				} as IScheduledSoundtrack;
@@ -115,6 +119,7 @@ export class SoundtrackPlayer {
 				start: when,
 				end: when + outroDuration,
 				loop: false,
+				loopDuration: 0,
 				interruptionStep: 0,
 				node,
 			} as IScheduledSoundtrack;
@@ -142,13 +147,7 @@ export class SoundtrackPlayer {
 	public scheduleAfterLast(soundtrack: ISoundtrack, duration: number = 0, layer: number = 0): void {
 
 		const last = this.getLastScheduledSoundtrack(layer);
-		let when = last
-			? last.end
-				? last.end
-				: last.loop && last.interruptionStep
-					? Math.ceil((this.context.currentTime - last.start) / last.interruptionStep) * last.interruptionStep + last.start
-					: this.context.currentTime
-			: this.context.currentTime;
+		let when = this.getClosestInterruptionTime(last, this.context.currentTime);
 		const soundtrackChanged = !last || last.soundtrack.name !== soundtrack.name;
 
 		if (last && !last.end && last.loop) {
@@ -243,5 +242,27 @@ export class SoundtrackPlayer {
 
 	private removeSoundtrackFromScheduleQueue(layer, descriptor) {
 		this.layers[layer] = this.layers[layer].filter(({ node }) => node !== descriptor.node);
+	}
+
+	/**
+	 * Find closes point in audio context time that we can interrupt playing soundtrack.
+	 * TODO: add ability to specify set off offsets that can be used for interrupting instead of interruptionStep
+	 *
+	 * @param scheduled soundtrack descriptor
+	 * @returns audio context time at which we can interrupt
+	 */
+	private getClosestInterruptionTime(descriptor: IScheduledSoundtrack | null, when: number = 0): number {
+		if (!descriptor) {
+			return this.context.currentTime;
+		}
+		const { loopDuration } = descriptor;
+		const { start, end, loop, interruptionStep = loopDuration } = descriptor;
+		const result = end
+			? end
+			: loop && interruptionStep > 0
+				? Math.ceil((when - start) / interruptionStep) * interruptionStep + start
+				: when;
+
+		return result;
 	}
 }

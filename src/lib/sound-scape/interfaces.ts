@@ -50,5 +50,6 @@ export interface IScheduledSoundtrack {
 	end?: number;
 	node: AudioBufferSourceNode;
 	loop: boolean;
+	loopDuration: number;
 	interruptionStep: number;
 }

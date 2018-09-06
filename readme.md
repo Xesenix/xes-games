@@ -11,6 +11,6 @@
 - [x] create light dark theme
 - [ ] persist data store in local storage
 - [x] update store on exiting fullscreen without using of fullscreen button
-- [ ] create music cross fading helper
+- [x] create music cross fading helper
 - [ ] create music layers
 - [x] use phaser asset loader to wait for audio data

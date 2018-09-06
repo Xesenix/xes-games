@@ -182,7 +182,7 @@ describe('SoundtrackPlayer', () => {
 								expect((service.scheduleLoopAt(soundtrack, when, 4.2) as any).end).toBe(when + 4);
 							});
 							it(`should end at specified offset (${when}) and rounded up multiplication of loop interruptionStep`, () => {
-								expect((service.scheduleLoopAt(soundtrack, when, 2.6) as any).end).toBe(when + 2);
+								expect((service.scheduleLoopAt(soundtrack, when, 2.6) as any).end).toBe(when + 4);
 							});
 							it(`should not start if there is not enough time`, () => {
 								expect((service.scheduleLoopAt(soundtrack, when, 0.1) as any)).toBe(null);
@@ -380,10 +380,14 @@ describe('SoundtrackPlayer', () => {
 				service.scheduleAfterLast(soundtrackA, 10);
 				service.scheduleAfterLast(soundtrackB, 15);
 				context.currentTime = 0;
-				expect(service.getCurrentScheduledSoundtrack()[0].soundtrack).toBe(soundtrackA);
-				context.currentTime = 15;
-				expect(service.getCurrentScheduledSoundtrack()[0].soundtrack).toBe(soundtrackB);
-				context.currentTime = 35;
+				expect(service.getCurrentScheduledSoundtrack()[0].soundtrack.name).toBe(soundtrackA.name);
+				context.currentTime = 15; // just before next
+				expect(service.getCurrentScheduledSoundtrack()[0].soundtrack.name).toBe(soundtrackA.name);
+				context.currentTime = 16; // after 2 intro + 12 loop + 2 outro
+				expect(service.getCurrentScheduledSoundtrack()[0].soundtrack.name).toBe(soundtrackB.name);
+				context.currentTime = 35; // just before next
+				expect(service.getCurrentScheduledSoundtrack()[0].soundtrack.name).toBe(soundtrackB.name);
+				context.currentTime = 36; // after 2 intro + 16 loop + 2 outro
 				expect(service.getCurrentScheduledSoundtrack()).toEqual([]);
 			});
 		});
