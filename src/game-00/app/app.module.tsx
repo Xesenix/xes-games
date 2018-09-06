@@ -61,11 +61,11 @@ export class AppModule extends Container {
 		this.bind<IRenderer>('ui:renderer').to(ReactRenderer).inSingletonScope();
 
 		// environment
-		this.bind<IDictionary>('player-pref').toConstantValue(new FlatDictionary({
+		this.bind<any>('player-pref').toConstantValue({
 			debug: process.env.DEBUG,
-		}));
+		});
 
-		this.bind<IDictionary>('environment').toConstantValue(new FlatDictionary({}));
+		this.bind<any>('environment').toConstantValue({});
 
 		this.bind<IAncientMazeState<IGameObjectState>>('game-state').toConstantValue({
 			objects: [],
