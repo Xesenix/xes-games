@@ -72,12 +72,15 @@ const styles = (theme: Theme) => createStyles({
 		display: 'flex',
 		flexDirection: 'column',
 		alignItems: 'center',
-		padding: '20px 4px',
+		padding: '24px 4px 36px',
 	},
 	wrapper: {
 		margin: theme.spacing.unit,
 		position: 'relative',
 	},
+	headline: {
+		marginBottom: '8px',
+	}
 });
 
 interface IAppProps {
@@ -134,7 +137,7 @@ class App extends React.Component<IAppProps & WithStyles<typeof styles>, IAppSta
 				<CssBaseline/>
 				<Paper className={ classes.root } elevation={ 1 }>
 					{ loading ? <LinearProgress/> : null }
-					<Typography variant="headline" component="h1">{ __('PHASER 3 Game Test') }</Typography>
+					<Typography className={ classes.headline } variant="headline" component="h1">{ __('PHASER 3 Game Test') }</Typography>
 					{ gameView }
 				</Paper>
 			</MuiThemeProvider>);

@@ -6,11 +6,11 @@ import * as React from 'react';
 import { hot } from 'react-hot-loader';
 import { interval, Observable, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
+import { isNumber } from 'util';
 
 import { connectToInjector } from 'lib/di';
 
 import { IScheduledSoundtrack, ISoundtrackPlayer } from '../../interfaces';
-import { isNumber } from 'util';
 
 const styles = (theme: Theme) => createStyles({
 	root: {
@@ -18,26 +18,39 @@ const styles = (theme: Theme) => createStyles({
 		padding: '24px',
 		marginBottom: '0',
 	},
-	vis: {
+	timeline: {
 		// fix viz element overlapping outside elements
 		'position': 'relative',
 		'z-index': 0,
 		// sync theme
 		'& *': {
-			fontFamily: `${theme.typography.fontFamily} !important`,
-			color: `${theme.palette.text.primary} !important`,
-			borderColor: `${theme.palette.grey['100']} !important`,
+			fontFamily: theme.typography.fontFamily,
+			borderColor: theme.palette.grey['100'],
+		},
+		'& .vis-labelset .vis-label, & .vis-time-axis .vis-text': {
+			fontFamily: theme.typography.fontFamily,
+			color: theme.palette.text.primary,
+		},
+		'& .vis-grid.vis-vertical.vis-minor': {
+			borderColor: theme.palette.grey[theme.palette.type === 'dark' ? '800' : '300'],
+			backgroundColor: theme.palette.grey[theme.palette.type === 'dark' ? '900' : '100'],
 		},
 		'& .vis-item': {
-			backgroundColor: `${theme.palette.primary.light}`,
-			color: `${theme.palette.primary.contrastText}`,
-		},
-		'& .vis-old': {
-			backgroundColor: `${theme.palette.secondary.light}`,
-			color: `${theme.palette.secondary.contrastText}`,
-		},
-		'& .vis-small': {
-			fontSize: '0.75em',
+			'backgroundColor': theme.palette.primary.light,
+			'color': theme.palette.primary.contrastText,
+			'borderColor': theme.palette.grey[theme.palette.type === 'dark' ? '800' : '300'],
+			'&.vis-old': {
+				backgroundColor: theme.palette.secondary.light,
+				color: theme.palette.secondary.contrastText,
+			},
+			'&.vis-selected': {
+				backgroundColor: theme.palette.primary.dark,
+				color: theme.palette.primary.contrastText,
+				borderColor: theme.palette.grey[theme.palette.type === 'dark' ? '300' : '800'],
+			},
+			'& .vis-small': {
+				fontSize: '0.75em',
+			},
 		},
 	},
 });
@@ -158,7 +171,7 @@ class SoundScapeDebugViewComponent extends React.PureComponent<ISoundScapeDebugV
 		return <Paper className={ classes.root } elevation={ 2 }>
 				<Typography component="h3">DEBUG SOUND SCAPE</Typography>
 				<Typography component="p">Audio context time: { currentAudioTime }</Typography>
-				<div className={ classes.vis } ref={ this.bindContainer }></div>
+				<div className={ classes.timeline } ref={ this.bindTimelineContainer }></div>
 			</Paper>;
 	}
 
@@ -207,7 +220,7 @@ class SoundScapeDebugViewComponent extends React.PureComponent<ISoundScapeDebugV
 		}
 	}
 
-	private bindContainer = (viewContainer: HTMLDivElement): void => { this.setState({ viewContainer }); };
+	private bindTimelineContainer = (viewContainer: HTMLDivElement): void => { this.setState({ viewContainer }); };
 }
 
 export default hot(module)(connectToInjector<ISoundScapeDebugViewProps>(withStyles(styles)(SoundScapeDebugViewComponent), {
