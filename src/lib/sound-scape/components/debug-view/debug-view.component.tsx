@@ -98,11 +98,13 @@ class SoundScapeDebugViewComponent extends React.PureComponent<ISoundScapeDebugV
 				// import('vis/lib/network/Network'),
 				import('vis/lib/timeline/Timeline'),
 				import('vis/lib/DataSet'),
+				import('moment'),
 				import('vis/dist/vis.min.css'),
 			]).then(([
 				// { default: Network },
 				{ default: Timeline },
 				{ default: DataSet },
+				{ default: moment },
 			]) => {
 				const { timeline: timelineIsInitialized } = this.state;
 				console.log('SoundScapeDebugViewComponent:componentDidUpdate:then', Timeline, DataSet);
@@ -123,6 +125,7 @@ class SoundScapeDebugViewComponent extends React.PureComponent<ISoundScapeDebugV
 						showMajorLabels: false,
 						stack: true,
 						// showCustomTime: true,
+						moment,
 					};
 					const timeline = new Timeline(viewContainer, nodes, groups, options);
 					timeline.currentTime.stop();

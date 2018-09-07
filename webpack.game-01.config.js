@@ -27,7 +27,7 @@ module.exports = (config) => {
 			'WEBGL_RENDERER': JSON.stringify(true),
 		}));
 
-		// VISjs css
+		// VIS js css
 		console.log(chalk.bold.yellow('Adding loader for VIS JS assets...'));
 		config.module.rules.push({
 			test: /\.(svg|png|jpg|jpeg|gif)$/,
@@ -40,6 +40,15 @@ module.exports = (config) => {
 					},
 			},
 		});
+
+		// VIS js has broken moment use implementation
+		// it needs global object just to not include useless locales
+		config.plugins.push(new webpackBase.ContextReplacementPlugin(/moment[\/\\]locale$/, /(en|pl)$/));
+
+		/*config.externals = {
+			...config.externals,
+			moment: 'moment',
+		};*/
 
 		// config.devtool = 'cheap-module-source-map';
 
