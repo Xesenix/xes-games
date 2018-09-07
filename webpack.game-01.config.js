@@ -1,4 +1,5 @@
 const chalk = require('chalk');
+const path = require('path');
 const webpackBase = require('webpack');
 const { webpack } = require('xes-webpack-core');
 
@@ -12,17 +13,33 @@ module.exports = (config) => {
 	config.module.rules.push(...webpack.loaders.shaderRulesFactory());
 
 	if (process.env.ENV === 'test') {
+		console.log(chalk.bold.yellow('Adding Phaser 3 environment setup...'));
 		config.plugins.push(new webpackBase.DefinePlugin({
 			// required by Phaser 3
 			'CANVAS_RENDERER': JSON.stringify(true),
 			'WEBGL_RENDERER': JSON.stringify(false),
 		}));
 	} else {
+		console.log(chalk.bold.yellow('Adding Phaser 3 environment setup...'));
 		config.plugins.push(new webpackBase.DefinePlugin({
 			// required by Phaser 3
 			'CANVAS_RENDERER': JSON.stringify(true),
 			'WEBGL_RENDERER': JSON.stringify(true),
 		}));
+
+		// VISjs css
+		console.log(chalk.bold.yellow('Adding loader for VIS JS assets...'));
+		config.module.rules.push({
+			test: /\.(svg|png|jpg|jpeg|gif)$/,
+			include: path.resolve('node_modules/vis/dist'),
+			use: {
+					loader: 'file-loader',
+					options: {
+							name: '[name].[ext]',
+							outputPath: 'assets/vis',
+					},
+			},
+		});
 
 		// config.devtool = 'cheap-module-source-map';
 

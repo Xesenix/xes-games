@@ -43,6 +43,7 @@ const Loader = () => <LinearProgress/>;
 
 const ConfigurationViewComponent = Loadable({ loading: Loader, loader: () => import('game-01/components/configuration-view/configuration-view') });
 const PhaserViewComponent = Loadable({ loading: Loader, loader: () => import('game-01/components/phaser-view/phaser-view') });
+const SoundScapeDebugViewComponent = Loadable({ loading: Loader, loader: () => import('lib/sound-scape/components/debug-view/debug-view.component') });
 
 import './game-view.scss';
 
@@ -158,6 +159,7 @@ class GameViewComponent extends React.PureComponent<IGameViewProps & WithStyles<
 						>{ menu }</Drawer>
 						{ tab === 'configuration' ? <ConfigurationViewComponent/> : null }
 						{ tab === 'game' ? <PhaserViewComponent keepInstanceOnRemove={ true }/> : null }
+						<SoundScapeDebugViewComponent />
 					</Paper>
 				</Grid>
 			</Grid>);
