@@ -111,7 +111,7 @@ msgstr "czas całkowity"
 
 #: src/game-01/components/configuration-view/configuration-view.tsx:200
 msgid "User interface configuration"
-msgstr "Konfiguracja interfacu użytkownika"
+msgstr "Konfiguracja interfejsu użytkownika"
 
 #~ msgid "Command"
 #~ msgstr "Polecenie"
