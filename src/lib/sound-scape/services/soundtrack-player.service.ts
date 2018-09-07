@@ -3,16 +3,18 @@ import { IAudioTrack } from 'lib/sound';
 
 import { IScheduledSoundtrack, ISoundtrack, } from '../interfaces';
 
-@inject(['audio-mixer:track:music', 'audio-context:factory'])
+@inject(['audio-mixer:track:music', 'audio-context:factory', 'event-manager'])
 export class SoundtrackPlayer {
 	private layers: { [key: number]: IScheduledSoundtrack[] } = { 0: [] };
 
 	constructor(
 		private music: IAudioTrack,
 		private context: Pick<AudioContext, 'currentTime'>,
+		private eventsManager: EventEmitter,
 	) {
 		this.music = music;
 		this.context = context;
+		this.eventsManager = eventsManager;
 	}
 
 	public scheduleIntroAt(soundtrack: ISoundtrack, when: number = 0, layer: number = 0): IScheduledSoundtrack | null {
@@ -39,6 +41,8 @@ export class SoundtrackPlayer {
 			node.stop(descriptor.end);
 
 			this.layers[layer].push(descriptor);
+
+			this.eventsManager.emit('soundtrack:schedule-changed', this);
 
 			return descriptor;
 		}
@@ -77,6 +81,8 @@ export class SoundtrackPlayer {
 
 				this.layers[layer].push(descriptor);
 
+				this.eventsManager.emit('soundtrack:schedule-changed', this);
+
 				return descriptor;
 			} else if (duration === 0) {
 				const node: AudioBufferSourceNode = this.music.create(soundtrack.key);
@@ -98,6 +104,8 @@ export class SoundtrackPlayer {
 				node.start(descriptor.start, loopStart);
 
 				this.layers[layer].push(descriptor);
+
+				this.eventsManager.emit('soundtrack:schedule-changed', this);
 
 				return descriptor;
 			}
@@ -131,6 +139,8 @@ export class SoundtrackPlayer {
 
 			this.layers[layer].push(descriptor);
 
+			this.eventsManager.emit('soundtrack:schedule-changed', this);
+
 			return descriptor;
 		}
 
@@ -138,8 +148,7 @@ export class SoundtrackPlayer {
 	}
 
 	/**
-	 * Schedule soundtrack after all already in queue.
-	 *
+	 * @inheritdoc
 	 * @param soundtrack object describing intro loop outro of soundtrack to play
 	 * @param duration amount of time to play scheduled soundtrack
 	 * @param [layer=0] soundtrack layer
@@ -177,8 +186,7 @@ export class SoundtrackPlayer {
 	}
 
 	/**
-	 * Clean schedule queue and add transition to new soundtrack.
-	 *
+	 * @inheritdoc
 	 * @param soundtrack object describing intro loop outro of soundtrack to play
 	 * @param duration amount of time to play scheduled soundtrack
 	 * @param [layer=0] soundtrack layer
@@ -200,6 +208,10 @@ export class SoundtrackPlayer {
 		this.scheduleAfterLast(soundtrack, duration, layer);
 	}
 
+	public getSchedule(layer: number = 0): IScheduledSoundtrack[] {
+		return this.layers[layer];
+	}
+
 	/**
 	 * Remove soundtracks scheduled after time and prevents them from playing in audio context.
 	 *
@@ -218,11 +230,11 @@ export class SoundtrackPlayer {
 
 			return false;
 		});
+		this.eventsManager.emit('soundtrack:schedule-changed', this);
 	}
 
 	/**
-	 * Get soundtracks that will be played as last.
-	 *
+	 * @inheritdoc
 	 * @param [layer=0] soundtrack layer
 	 */
 	public getLastScheduledSoundtrack(layer: number = 0): IScheduledSoundtrack | null {
@@ -242,6 +254,7 @@ export class SoundtrackPlayer {
 
 	private removeSoundtrackFromScheduleQueue(layer, descriptor) {
 		this.layers[layer] = this.layers[layer].filter(({ node }) => node !== descriptor.node);
+		this.eventsManager.emit('soundtrack:schedule-changed', this);
 	}
 
 	/**

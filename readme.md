@@ -14,3 +14,5 @@
 - [x] create music cross fading helper
 - [ ] create music layers
 - [x] use phaser asset loader to wait for audio data
+- [ ] randomize soundtracks loops (soundtrack theme)
+- [x] played soundtracks debug visualization
