@@ -5,6 +5,7 @@ import { EventEmitter } from 'events';
 import * as React from 'react';
 import { hot } from 'react-hot-loader';
 import { interval, Observable, Subscription } from 'rxjs';
+import { animationFrame } from 'rxjs/internal/scheduler/animationFrame';
 import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
 import { isNumber } from 'util';
 
@@ -32,7 +33,7 @@ const styles = (theme: Theme) => createStyles({
 			fontFamily: theme.typography.fontFamily,
 			color: theme.palette.text.primary,
 		},
-		'& .vis-grid.vis-vertical.vis-minor': {
+		'& .vis-grid.vis-vertical.vis-minor, .vis-grid.vis-vertical.vis-major, & .vis-time-axis.vis-foreground': {
 			borderColor: theme.palette.grey[theme.palette.type === 'dark' ? '800' : '300'],
 			backgroundColor: theme.palette.grey[theme.palette.type === 'dark' ? '900' : '100'],
 		},
@@ -99,7 +100,7 @@ class SoundScapeDebugViewComponent extends React.PureComponent<ISoundScapeDebugV
 		}
 
 		if (audioContext) {
-			this.subscription.add(interval(250).pipe(
+			this.subscription.add(interval(250, animationFrame).pipe(
 					map(() => Math.floor(audioContext.currentTime * 4) * 0.25),
 					distinctUntilChanged(),
 					map((currentAudioTime) => ({
@@ -130,9 +131,7 @@ class SoundScapeDebugViewComponent extends React.PureComponent<ISoundScapeDebugV
 				const { timeline: timelineIsInitialized } = this.state;
 				console.log('SoundScapeDebugViewComponent:componentDidUpdate:then', Timeline, DataSet);
 				if (!timelineIsInitialized) {
-					const nodes = new DataSet([
-						{ id: 1, group: 0, content: 'Hello', start: 0, end: 100 },
-					]);
+					const nodes = new DataSet([]);
 					const groups = [
 						{ id: 'loop', content: 'loop' },
 						{ id: 'intro', content: 'intro' },
@@ -143,19 +142,43 @@ class SoundScapeDebugViewComponent extends React.PureComponent<ISoundScapeDebugV
 						minHeight: '240px',
 						maxHeight: '480px',
 						min: 0,
-						showMajorLabels: false,
+						showMajorLabels: true,
 						stack: true,
-						// showCustomTime: true,
+						showCurrentTime: false,
 						moment,
+						format: {
+							minorLabels: {
+								millisecond: 'SSS[ms]',
+								second: 's[sek]',
+								minute: 'm[min]',
+								hour: 'H[h]',
+								weekday: 'd[days]',
+								day: 'd[days]',
+								week: 'w[weeks]',
+								month: 'M[months]',
+								year: '',
+							},
+							majorLabels: {
+								millisecond: 's[sek]',
+								second: 'm[min]',
+								minute: 'H[h]',
+								hour: 'd[days]',
+								weekday: 'w[weeks]',
+								day: 'w[weeks]',
+								week: 'MM',
+								month: '',
+								year: '',
+							},
+						},
 					};
 					const timeline = new Timeline(viewContainer, nodes, groups, options);
 					timeline.currentTime.stop();
+					timeline.range.setRange(0, 60000); // fix
 					timeline.addCustomTime(0, 'now');
 					timeline.on('rangechange', () => {
 						const { currentAudioTime } = this.state;
-						timeline.setCustomTime(currentAudioTime, 'now');
+						timeline.setCustomTime(currentAudioTime * 1000, 'now');
 					});
-					this.setState({ timeline });
 					// this.updateTimeline();
 					if (this.props.di) {
 						if (this.props.di.isBound('sound-scape:debug-view:items')) {
@@ -164,6 +187,7 @@ class SoundScapeDebugViewComponent extends React.PureComponent<ISoundScapeDebugV
 							this.props.di.bind('sound-scape:debug-view:items').toConstantValue([]);
 						}
 					}
+					this.setState({ timeline });
 				}
 			}, (err) => {
 				console.log('SoundScapeDebugViewComponent:componentDidUpdate:error', err);
@@ -181,7 +205,7 @@ class SoundScapeDebugViewComponent extends React.PureComponent<ISoundScapeDebugV
 
 		// update current audio time
 		if (timeline) {
-			timeline.setCustomTime(currentAudioTime, 'now');
+			timeline.setCustomTime(currentAudioTime * 1000, 'now');
 		}
 
 		return <Paper className={ classes.root } elevation={ 2 }>
@@ -203,8 +227,8 @@ class SoundScapeDebugViewComponent extends React.PureComponent<ISoundScapeDebugV
 					id: `${start.toFixed(4)}-${end && isNumber(end) ? end.toFixed(4) : end}-${name}-${state}`,
 					group: state,
 					content: `${name}<div class="vis-small">[${start.toFixed(2)}s-${end && isNumber(end) ? end.toFixed(2) + 's' : end}]</div>`,
-					start,
-					end,
+					start: start * 1000,
+					end: end && isNumber(end) ? end * 1000 : end,
 					data: {
 						start,
 						end,
@@ -220,7 +244,7 @@ class SoundScapeDebugViewComponent extends React.PureComponent<ISoundScapeDebugV
 					return {
 						...item,
 						className: 'vis-old',
-						end,
+						end: end * 1000,
 						id: `${item.data.start.toFixed(4)}-${end.toFixed(4)}-${item.data.name}-${item.data.state}`,
 						data: {
 							...item.data,
@@ -230,7 +254,7 @@ class SoundScapeDebugViewComponent extends React.PureComponent<ISoundScapeDebugV
 				})
 				.concat(newItems);
 			console.log('SoundScapeDebugViewComponent:componentDidMount:soundtrack:schedule-changed', currentAudioTime, newItems, items);
-			timeline.setCustomTime(currentAudioTime, 'now');
+			timeline.setCustomTime(currentAudioTime * 1000, 'now');
 			timeline.setItems(items);
 			this.setState({});
 
