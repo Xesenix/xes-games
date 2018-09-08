@@ -11,6 +11,7 @@ import { isNumber } from 'util';
 import { connectToInjector } from 'lib/di';
 
 import { IScheduledSoundtrack, ISoundtrackPlayer } from '../../interfaces';
+import { Container } from 'inversify';
 
 const styles = (theme: Theme) => createStyles({
 	root: {
@@ -62,9 +63,10 @@ const styles = (theme: Theme) => createStyles({
 });
 
 export interface ISoundScapeDebugViewProps {
-	audioContext: AudioContext;
-	soundtrackPlayer: ISoundtrackPlayer;
-	eventsManager: EventEmitter;
+	audioContext?: AudioContext;
+	soundtrackPlayer?: ISoundtrackPlayer;
+	eventsManager?: EventEmitter;
+	di?: Container;
 }
 
 export interface ISoundScapeDebugViewState {
@@ -155,6 +157,13 @@ class SoundScapeDebugViewComponent extends React.PureComponent<ISoundScapeDebugV
 					});
 					this.setState({ timeline });
 					// this.updateTimeline();
+					if (this.props.di) {
+						if (this.props.di.isBound('sound-scape:debug-view:items')) {
+							timeline.setItems(this.props.di.get('sound-scape:debug-view:items'));
+						} else {
+							this.props.di.bind('sound-scape:debug-view:items').toConstantValue([]);
+						}
+					}
 				}
 			}, (err) => {
 				console.log('SoundScapeDebugViewComponent:componentDidUpdate:error', err);
@@ -224,6 +233,10 @@ class SoundScapeDebugViewComponent extends React.PureComponent<ISoundScapeDebugV
 			timeline.setCustomTime(currentAudioTime, 'now');
 			timeline.setItems(items);
 			this.setState({});
+
+			if (this.props.di) {
+				this.props.di.rebind('sound-scape:debug-view:items').toConstantValue(items);
+			}
 		}
 	}
 
