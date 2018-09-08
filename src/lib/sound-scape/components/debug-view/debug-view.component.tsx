@@ -52,6 +52,12 @@ const styles = (theme: Theme) => createStyles({
 				fontSize: '0.75em',
 			},
 		},
+		'& .vis-custom-time.now': {
+			'backgroundColor': theme.palette.secondary.light,
+			'z-index': 2,
+			'width': '8px',
+			'opacity': 0.5,
+		},
 	},
 });
 
@@ -142,9 +148,10 @@ class SoundScapeDebugViewComponent extends React.PureComponent<ISoundScapeDebugV
 					};
 					const timeline = new Timeline(viewContainer, nodes, groups, options);
 					timeline.currentTime.stop();
+					timeline.addCustomTime(0, 'now');
 					timeline.on('rangechange', () => {
 						const { currentAudioTime } = this.state;
-						timeline.setCurrentTime(currentAudioTime);
+						timeline.setCustomTime(currentAudioTime, 'now');
 					});
 					this.setState({ timeline });
 					// this.updateTimeline();
@@ -165,7 +172,7 @@ class SoundScapeDebugViewComponent extends React.PureComponent<ISoundScapeDebugV
 
 		// update current audio time
 		if (timeline) {
-			timeline.setCurrentTime(currentAudioTime);
+			timeline.setCustomTime(currentAudioTime, 'now');
 		}
 
 		return <Paper className={ classes.root } elevation={ 2 }>
@@ -214,7 +221,7 @@ class SoundScapeDebugViewComponent extends React.PureComponent<ISoundScapeDebugV
 				})
 				.concat(newItems);
 			console.log('SoundScapeDebugViewComponent:componentDidMount:soundtrack:schedule-changed', currentAudioTime, newItems, items);
-			timeline.setCurrentTime(currentAudioTime);
+			timeline.setCustomTime(currentAudioTime, 'now');
 			timeline.setItems(items);
 			this.setState({});
 		}

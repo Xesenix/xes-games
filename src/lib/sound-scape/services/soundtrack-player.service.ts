@@ -1,3 +1,5 @@
+import { EventEmitter } from 'events';
+
 import { inject } from 'lib/di';
 import { IAudioTrack } from 'lib/sound';
 
@@ -19,7 +21,6 @@ export class SoundtrackPlayer {
 
 	public scheduleIntroAt(soundtrack: ISoundtrack, when: number = 0, layer: number = 0): IScheduledSoundtrack | null {
 		const introStart = soundtrack.intro.start;
-		const introEnd = soundtrack.intro.end;
 		const introDuration = soundtrack.intro.duration;
 
 		if (introDuration > 0) {
@@ -35,7 +36,7 @@ export class SoundtrackPlayer {
 				node,
 			} as IScheduledSoundtrack;
 
-			node.onended = () => this.removeSoundtrackFromScheduleQueue(layer, descriptor);
+			node.onended = () => this.removeSoundtrackFromScheduleQueue(descriptor, layer);
 
 			node.start(descriptor.start, introStart);
 			node.stop(descriptor.end);
@@ -74,7 +75,7 @@ export class SoundtrackPlayer {
 				node.loopStart = loopStart;
 				node.loopEnd = loopEnd;
 				node.loop = true;
-				node.onended = () => this.removeSoundtrackFromScheduleQueue(layer, descriptor);
+				node.onended = () => this.removeSoundtrackFromScheduleQueue(descriptor, layer);
 
 				node.start(descriptor.start, loopStart);
 				node.stop(descriptor.end);
@@ -99,7 +100,7 @@ export class SoundtrackPlayer {
 				node.loopStart = loopStart;
 				node.loopEnd = loopEnd;
 				node.loop = true;
-				node.onended = () => this.removeSoundtrackFromScheduleQueue(layer, descriptor);
+				node.onended = () => this.removeSoundtrackFromScheduleQueue(descriptor, layer);
 
 				node.start(descriptor.start, loopStart);
 
@@ -132,7 +133,7 @@ export class SoundtrackPlayer {
 				node,
 			} as IScheduledSoundtrack;
 
-			node.onended = () => this.removeSoundtrackFromScheduleQueue(layer, descriptor);
+			node.onended = () => this.removeSoundtrackFromScheduleQueue(descriptor, layer);
 
 			node.start(descriptor.start, outroStart);
 			node.stop(descriptor.end);
@@ -171,7 +172,6 @@ export class SoundtrackPlayer {
 			}
 		}
 
-
 		if (soundtrackChanged) {
 			const introScheduled = this.scheduleIntroAt(soundtrack, when, layer);
 			when = introScheduled && introScheduled.end ? introScheduled.end : when;
@@ -181,7 +181,7 @@ export class SoundtrackPlayer {
 		when = loopScheduled && loopScheduled.end ? loopScheduled.end : when;
 
 		if (duration > 0) {
-			const scheduledOutro = this.scheduleOutroAt(soundtrack, when, layer);
+			this.scheduleOutroAt(soundtrack, when, layer);
 		}
 	}
 
@@ -252,7 +252,7 @@ export class SoundtrackPlayer {
 		);
 	}
 
-	private removeSoundtrackFromScheduleQueue(layer, descriptor) {
+	private removeSoundtrackFromScheduleQueue(descriptor: IScheduledSoundtrack, layer: number): void {
 		this.layers[layer] = this.layers[layer].filter(({ node }) => node !== descriptor.node);
 		this.eventsManager.emit('soundtrack:schedule-changed', this);
 	}
