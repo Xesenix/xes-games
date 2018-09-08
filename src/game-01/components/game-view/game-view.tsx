@@ -45,8 +45,6 @@ const ConfigurationViewComponent = Loadable({ loading: Loader, loader: () => imp
 const PhaserViewComponent = Loadable({ loading: Loader, loader: () => import('game-01/components/phaser-view/phaser-view') });
 const SoundScapeDebugViewComponent = Loadable({ loading: Loader, loader: () => import('lib/sound-scape/components/debug-view/debug-view.component') });
 
-import './game-view.scss';
-
 const styles = (theme: Theme) => createStyles({
 	root: {
 		minHeight: '600px',

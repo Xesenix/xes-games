@@ -1,3 +1,4 @@
+import { createStyles, Theme, withStyles, WithStyles } from '@material-ui/core';
 import { Container } from 'inversify';
 import * as React from 'react';
 import { hot } from 'react-hot-loader';
@@ -9,10 +10,18 @@ import { IDataStoreProvider } from 'lib/data-store';
 import { connectToInjector } from 'lib/di';
 import { IValueAction } from 'lib/interfaces';
 
-import './phaser-view.scss';
-
 let game: Phaser.Game | null;
 let gameContainer: HTMLDivElement | null;
+
+const styles = (theme: Theme) => createStyles({
+	root: {
+		'minHeight': '600px',
+		'padding': '0',
+		'display': 'flex',
+		'justifyContent': 'center',
+		'backgroundColor': theme.palette.type === 'dark' ? theme.palette.grey['900'] : theme.palette.grey['500'],
+	},
+});
 
 export interface IPhaserViewProps {
 	di?: Container;
@@ -25,7 +34,7 @@ export interface IPhaserViewState {
 	paused: boolean;
 }
 
-class PhaserViewComponent extends React.PureComponent<IPhaserViewProps, IPhaserViewState> {
+class PhaserViewComponent extends React.PureComponent<IPhaserViewProps & WithStyles<typeof styles>, IPhaserViewState> {
 	private unsubscribe?: any;
 
 	constructor(props) {
@@ -62,7 +71,9 @@ class PhaserViewComponent extends React.PureComponent<IPhaserViewProps, IPhaserV
 	}
 
 	public render(): any {
-		return <div className="phaser-view" ref={ this.bindContainer }></div>;
+		const { classes } = this.props;
+
+		return <div className={ classes.root } ref={ this.bindContainer }></div>;
 	}
 
 	private bindToStore(): void {
@@ -81,7 +92,7 @@ class PhaserViewComponent extends React.PureComponent<IPhaserViewProps, IPhaserV
 	private bindContainer = (el: HTMLDivElement): void => { gameContainer = el; };
 }
 
-export default hot(module)(connectToInjector<IPhaserViewProps>(PhaserViewComponent, {
+export default hot(module)(connectToInjector<IPhaserViewProps>(withStyles(styles)(PhaserViewComponent), {
 	'data-store:provider': {
 		name: 'store',
 		value: (provider: IDataStoreProvider<IUIState, IValueAction>) => provider(),

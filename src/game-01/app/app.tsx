@@ -125,7 +125,7 @@ class App extends React.Component<IAppProps & WithStyles<typeof styles>, IAppSta
 
 	public render() {
 		const { classes } = this.props;
-		const { loading, ready, phaserReady, theme = 'light', fullscreen = false } = this.state;
+		const { loading, ready, phaserReady, theme = 'light' } = this.state;
 
 		const gameView = ready
 			? <GameView/>
