@@ -2,6 +2,24 @@
 
 [Migration guide](https://babeljs.io/docs/en/next/v7-migration)
 
+## Serving from localhost
+
+For opening tunnel to localhost use [ngrok](https://dashboard.ngrok.com/get-started)
+
+After setting up run first build than run application:
+
+```
+npm run game-01:build:prod
+npm run game-01:start
+
+```
+
+And then open tunnel
+
+```
+ngrok http 8080
+```
+
 
 ## TODO:
 
