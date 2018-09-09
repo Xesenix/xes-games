@@ -3,6 +3,7 @@ import { IAudioTrack } from 'lib/sound/interfaces';
 import { IScheduledSoundtrack, ISoundSprite, ISoundtrack } from '../interfaces';
 
 import { SoundtrackPlayer } from './soundtrack-player.service';
+import { EventEmitter } from 'events';
 
 // tslint:disable:max-classes-per-file
 
@@ -20,6 +21,23 @@ class MockAudioTrack implements IAudioTrack {
 	public getNode = jasmine.createSpy('getNode');
 }
 
+class EventEmitterMock {
+	public emit = jasmine.createSpy('emit');
+	public addListener = jasmine.createSpy('addListener');
+	public prependListener = jasmine.createSpy('prependListener');
+	public prependOnceListener = jasmine.createSpy('prependOnceListener');
+	public removeListener = jasmine.createSpy('removeListener');
+	public removeAllListeners = jasmine.createSpy('removeAllListeners');
+	public setMaxListeners = jasmine.createSpy('setMaxListeners');
+	public getMaxListeners = jasmine.createSpy('getMaxListeners');
+	public listeners = jasmine.createSpy('listeners');
+	public rawListeners = jasmine.createSpy('rawListeners');
+	public eventNames = jasmine.createSpy('eventNames');
+	public listenerCount = jasmine.createSpy('listenerCount');
+	public on = jasmine.createSpy('on');
+	public once = jasmine.createSpy('once');
+}
+
 describe('SoundtrackPlayer', () => {
 	let service: SoundtrackPlayer;
 	let music: MockAudioTrack;
@@ -28,11 +46,13 @@ describe('SoundtrackPlayer', () => {
 	let loop: ISoundSprite;
 	let outro: ISoundSprite;
 	let soundtrack: ISoundtrack;
+	let em: EventEmitter;
 
 	beforeEach(() => {
+		em = new EventEmitterMock();
 		context = new MockAudioContext();
 		music = new MockAudioTrack();
-		service = new SoundtrackPlayer(music, context);
+		service = new SoundtrackPlayer(music, context, em);
 
 		intro = {
 			start: 10,
@@ -59,20 +79,28 @@ describe('SoundtrackPlayer', () => {
 			});
 
 			[0, 100].forEach((when) => describe(`start offset: ${when}`, () => {
-				it('should not schedule intro if its duration is 0', () => {
-					intro = {
-						start: 5,
-						end: 5,
-						duration: 0,
-					};
-					soundtrack = {
-						key: 'soundtrack',
-						name: 'idle',
-						intro,
-						loop,
-						outro,
-					};
-					expect((service.scheduleIntroAt(soundtrack, when) as any)).toBe(null);
+				describe('when intro duration is 0', () => {
+					beforeEach(() => {
+						intro = {
+							start: 5,
+							end: 5,
+							duration: 0,
+						};
+						soundtrack = {
+							key: 'soundtrack',
+							name: 'idle',
+							intro,
+							loop,
+							outro,
+						};
+					});
+					it('should not schedule intro', () => {
+						expect((service.scheduleIntroAt(soundtrack, when) as any)).toBe(null);
+					});
+					it('should not emit soundtrack:schedule-changed event', () => {
+						service.scheduleIntroAt(soundtrack, when);
+						expect(em.emit).not.toHaveBeenCalled();
+					});
 				});
 
 				describe('when intro duration is greater than 0', () => {
@@ -118,6 +146,11 @@ describe('SoundtrackPlayer', () => {
 					it('should add scheduled segment to layer 0', () => {
 						expect(service.layers[0]).toContain((service.scheduleIntroAt(soundtrack, when) as any));
 					});
+
+					it('should emit soundtrack:schedule-changed event', () => {
+						service.scheduleIntroAt(soundtrack, when);
+						expect(em.emit).toHaveBeenCalledWith('soundtrack:schedule-changed', service);
+					});
 				});
 			}));
 		}));
@@ -130,20 +163,28 @@ describe('SoundtrackPlayer', () => {
 			});
 
 			[0, 100].forEach((when) => describe(`start offset: ${when}`, () => {
-				it('should not schedule loop if its duration is 0', () => {
-					loop = {
-						start: 5,
-						end: 5,
-						duration: 0,
-					};
-					soundtrack = {
-						key: 'soundtrack',
-						name: 'idle',
-						intro,
-						loop,
-						outro,
-					};
-					expect((service.scheduleLoopAt(soundtrack, when) as any)).toBe(null);
+				describe('when loop duration is 0', () => {
+					beforeEach(() => {
+						loop = {
+							start: 5,
+							end: 5,
+							duration: 0,
+						};
+						soundtrack = {
+							key: 'soundtrack',
+							name: 'idle',
+							intro,
+							loop,
+							outro,
+						};
+					});
+					it('should not schedule loop', () => {
+						expect((service.scheduleLoopAt(soundtrack, when) as any)).toBe(null);
+					});
+					it('should not emit soundtrack:schedule-changed event', () => {
+						service.scheduleLoopAt(soundtrack, when);
+						expect(em.emit).not.toHaveBeenCalled();
+					});
 				});
 
 				describe('when loop duration is greater than 0', () => {
@@ -215,6 +256,11 @@ describe('SoundtrackPlayer', () => {
 					it('should add scheduled segment to layer 0', () => {
 						expect(service.layers[0]).toContain((service.scheduleLoopAt(soundtrack, when) as any));
 					});
+
+					it('should emit soundtrack:schedule-changed event', () => {
+						service.scheduleLoopAt(soundtrack, when);
+						expect(em.emit).toHaveBeenCalledWith('soundtrack:schedule-changed', service);
+					});
 				});
 			}));
 		}));
@@ -227,20 +273,28 @@ describe('SoundtrackPlayer', () => {
 			});
 
 			[0, 100].forEach((when) => describe(`start offset: ${when}`, () => {
-				it('should not schedule outro if its duration is 0', () => {
-					outro = {
-						start: 5,
-						end: 5,
-						duration: 0,
-					};
-					soundtrack = {
-						key: 'soundtrack',
-						name: 'idle',
-						intro,
-						loop,
-						outro,
-					};
-					expect((service.scheduleOutroAt(soundtrack, when) as any)).toBe(null);
+				describe('when outro duration is 0', () => {
+					beforeEach(() => {
+						outro = {
+							start: 5,
+							end: 5,
+							duration: 0,
+						};
+						soundtrack = {
+							key: 'soundtrack',
+							name: 'idle',
+							intro,
+							loop,
+							outro,
+						};
+					});
+					it('should not schedule outro', () => {
+						expect((service.scheduleOutroAt(soundtrack, when) as any)).toBe(null);
+					});
+					it('should not emit soundtrack:schedule-changed event', () => {
+						service.scheduleOutroAt(soundtrack, when);
+						expect(em.emit).not.toHaveBeenCalled();
+					});
 				});
 
 				describe('when outro duration is greater than 0', () => {
@@ -286,21 +340,26 @@ describe('SoundtrackPlayer', () => {
 					it('should add scheduled segment to layer 0', () => {
 						expect(service.layers[0]).toContain((service.scheduleOutroAt(soundtrack, when) as any));
 					});
+
+					it('should emit soundtrack:schedule-changed event', () => {
+						service.scheduleOutroAt(soundtrack, when);
+						expect(em.emit).toHaveBeenCalledWith('soundtrack:schedule-changed', service);
+					});
 				});
 			}));
 		}));
 	});
 
 	describe('.scheduleAfterLast()', () => {
-
+		// TODO: add tests
 	});
 
 	describe('.scheduleNext()', () => {
-
+		// TODO: add tests
 	});
 
 	describe('.clearSoundtracksAfter()', () => {
-
+		// TODO: add tests
 	});
 
 	describe('.getLastScheduledSoundtrack()', () => {
