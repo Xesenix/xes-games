@@ -1,0 +1,29 @@
+language: node_js
+node_js:
+- '10'
+- '9'
+- '8'
+branches:
+  only:
+  - master
+  - "/^greenkeeper/.*$/"
+cache:
+  yarn: true
+  directories:
+  - node_modules
+before_install:
+- export CHROME_BIN=chromium-browser
+- export DISPLAY=:99.0
+- sh -e /etc/init.d/xvfb start
+script:
+- npm run game-01:test
+- npm run game-01:build:prod
+after_success:
+- npm run report-coverage
+deploy:
+  provider: heroku
+  api_key:
+    secure: Tf89D8VvuInOwHe1KR1e1IpXAbdAoiM3X1KS6085hdES3LSI6i0vRcyeGBfn+GQw+nmkFF0rpbJqUehnK2fC0iehyZGtabq+F60QLl8cTBgDqxxracfPS7u++uxk7KqiH/SUMc8TECVMZ3vbOwzXEnPzCuGZ6X2bLQzzjGGqP2s5+J/Ojp2HuTJSpHuHpqaH6Gf2TLZTHloNQVyDs0rs/TFVBqqy4+4WD0F6zf0yvn9YxEhria73wrMmenp3f+kmKFCsZcvxkXKQ4oztiKEQlnVzU942R+SVM6t1hfXqtQWgd65C6632CnbKIKFvfJ4aIlVjBpicgNL6YugXH7YwcoaqYpDS1zgnpH4qq6XFd8JDm9ouypNesCuUrAXhoM/MsVThzrm7DziIySr2DZcCTzPBvxrwP1wxpgHoWSC8UvPJmt+Z8iwCD7pB7kxxG2i98dAxzUZSDOex8xBTOlPhNA+uFiqHQAPKJTWnDrkJ6OiIPCGsdWoml7iXdNjqV6t2zZlFzln4RIkDYulm7+NmXf5CsFmNAFVeInn9kdRZxkTvRX4cFP93/47bJx2gQx7UOdGl3APpFQ5h+sqe68VSTjzMZoqMNYyXgCrEFd8wo6d9SVdVlnKinrVN/C3D1z0MUOUTTjBH+yvBZHwgtW1mGzhJnuvMrs7VCXZn8mJCmrg=
+  app: audio-manager
+  on:
+    repo: Xesenix/xes-games
