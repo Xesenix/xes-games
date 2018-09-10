@@ -8,7 +8,7 @@ branches:
   - master
   - "/^greenkeeper/.*$/"
 cache:
-  yarn: true
+  yarn: false
   directories:
   - node_modules
 before_install:
