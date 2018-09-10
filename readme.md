@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.org/Xesenix/xes-games.svg?branch=master)](https://travis-ci.org/Xesenix/xes-games)
+[![Coverage Status](https://coveralls.io/repos/github/Xesenix/xes-games/badge.svg?branch=master)](https://coveralls.io/github/Xesenix/xes-games?branch=master)
+
 ## Babel 7 Typescipt
 
 [Migration guide](https://babeljs.io/docs/en/next/v7-migration)
