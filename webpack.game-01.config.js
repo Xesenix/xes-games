@@ -6,7 +6,7 @@ const { webpack } = require('xes-webpack-core');
 /**
  * Copy assets and fonts.
  */
-const CopyWebpackPlugin = require('copy-webpack-plugin');
+// const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = (config) => {
 	console.log(chalk.bold.yellow('Setting WEBPACK for game-01...'));
@@ -18,24 +18,6 @@ module.exports = (config) => {
 		'CANVAS_RENDERER': JSON.stringify(true),
 		'WEBGL_RENDERER': JSON.stringify(true),
 	}));
-
-	// VIS js css
-	console.log(chalk.bold.yellow('Adding loader for VIS JS assets...'));
-	config.module.rules.push({
-		test: /\.(svg|png|jpg|jpeg|gif)$/,
-		include: path.resolve('node_modules/vis/dist'),
-		use: {
-				loader: 'file-loader',
-				options: {
-						name: '[name].[ext]',
-						outputPath: 'assets/vis',
-				},
-		},
-	});
-
-	// VIS js has broken moment use implementation
-	// it needs global object just to not include useless locales
-	config.plugins.push(new webpackBase.ContextReplacementPlugin(/moment[\/\\]locale$/, /(en|pl)$/));
 
 	/*config.externals = {
 		...config.externals,

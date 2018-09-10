@@ -1,6 +1,7 @@
 const chalk = require('chalk');
 const path = require('path');
 const fs = require('fs');
+const webpackBase = require('webpack');
 const { application, webpack } = require('xes-webpack-core');
 
 const app = application.getEnvApp();
@@ -39,6 +40,24 @@ const configureWebpack = (config) => {
 			},
 		};
 	}
+
+	// VIS js css
+	console.log(chalk.bold.yellow('Adding loader for VIS JS assets...'));
+	config.module.rules.push({
+		test: /\.(svg|png|jpg|jpeg|gif)$/,
+		include: path.resolve('node_modules/vis/dist'),
+		use: {
+				loader: 'file-loader',
+				options: {
+						name: '[name].[ext]',
+						outputPath: 'assets/vis',
+				},
+		},
+	});
+
+	// VIS js has broken moment use implementation
+	// it needs global object just to not include useless locales
+	config.plugins.push(new webpackBase.ContextReplacementPlugin(/moment[\/\\]locale$/, /(en|pl)$/));
 
 	return config;
 };
