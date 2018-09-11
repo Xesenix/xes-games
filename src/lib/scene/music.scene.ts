@@ -24,7 +24,7 @@ export class MusicScene extends Phaser.Scene {
 		sm.preloadAudioAsset('soundtrack2', 'assets/soundtrack.wav');
 		sm.preloadAudioAsset('fx1', 'assets/fx_00.ogg');
 		sm.preloadAudioAsset('fx2', 'assets/fx_01.ogg');
-		sm.preloadAudioAsset('soundtrack', 'assets/soundtrack_sprite_00.wav');
+		sm.preloadAudioAsset('soundtrack', 'assets/soundtrack_sprite_00.ogg');
 
 		/*this.load.audio('soundtrack', [
 			'assets/soundtrack.wav',
