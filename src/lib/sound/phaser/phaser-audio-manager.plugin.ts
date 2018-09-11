@@ -30,6 +30,12 @@ export const phaserAudioManagerPluginFactory = <T extends IAudioConfigurationSta
 		console.log('PhaserAudioManagerPlugin:constructor');
 	}
 
+	/**
+	 * Phaser 3 loaders are scene specific so we need to set them in scene preloading method.
+	 * TODO: ensure that this works with multiple scenes.
+	 *
+	 * @param loader phaser asset loader
+	 */
 	public setLoader(loader: Phaser.Loader.LoaderPlugin): void {
 		if (!!(this.audioLoader as any).setLoader) {
 			(this.audioLoader as any).setLoader(loader);
@@ -45,7 +51,6 @@ export const phaserAudioManagerPluginFactory = <T extends IAudioConfigurationSta
 	public stop() {
 		console.log('PhaserAudioManagerPlugin:stop');
 		this.unsubscribe();
-		this.context.close();
 	}
 
 	public preload(): Promise<void> {

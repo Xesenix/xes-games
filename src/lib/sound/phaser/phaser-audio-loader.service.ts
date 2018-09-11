@@ -15,6 +15,12 @@ export class PhaserAudioLoaderService implements IAudioFileLoader {
 		this.context = context;
 	}
 
+	/**
+	 * Phaser 3 loaders are scene specific so we need to set them in scene preloading method.
+	 * TODO: ensure that this works with multiple scenes.
+	 *
+	 * @param loader phaser asset loader
+	 */
 	public setLoader(loader: Phaser.Loader.LoaderPlugin): void {
 		this.loader = loader;
 		// TODO: find better way to connect to phaser loader audio cache
