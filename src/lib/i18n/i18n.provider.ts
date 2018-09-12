@@ -12,15 +12,21 @@ import { i18n } from './i18n';
  * Also load translations if needed.
  */
 const syncLocaleWithStore = (store) => () => {
-	return new Promise((resolve) => {
+	return new Promise((resolve, reject) => {
 		const { language, languages } = store.getState();
+		const localesPath = process.env.LOCALES_DIR;
 		if (!languages[language].ready) {
-			import(`${process.env.LOCALES_DIR}/messages.${language}.po`).then((content) => {
-				i18n.addTranslations(language, 'messages', content);
-				i18n.setLocale(language);
-				store.dispatch(createLanguageReadyAction(language, true));
-				resolve();
-			});
+			if (localesPath) {
+				// This needs to be know at build time to prepare bundles with translations.
+				import(`${process.env.LOCALES_DIR}/messages.${language}.po`).then((content) => {
+					i18n.addTranslations(language, 'messages', content);
+					i18n.setLocale(language);
+					store.dispatch(createLanguageReadyAction(language, true));
+					resolve();
+				}, (err) => reject(`ERROR while loading locales path: '${localesPath}/messages.${language}.po'`));
+			} else {
+				reject('ERROR localesPath not set in env LOCALES_DIR');
+			}
 		} else {
 			i18n.setLocale(language);
 			resolve();
