@@ -24,7 +24,7 @@ ngrok http 8080
 ```
 
 
-## TODO:
+## FEATURES:
 
 - [ ] use zone.js for async tests
 - [ ] use react routing with guards checking if required services are ready
@@ -37,3 +37,8 @@ ngrok http 8080
 - [x] use phaser asset loader to wait for audio data
 - [ ] randomize soundtracks loops (soundtrack theme)
 - [x] played soundtracks debug visualization
+
+## DOCS:
+
+[Working with Phaser 3 scenes](https://phaser.io/phaser3/devlog/121)
+[Phaser 3 dynamic tilemap](https://itnext.io/modular-game-worlds-in-phaser-3-tilemaps-2-dynamic-platformer-3d68e73d494a)
