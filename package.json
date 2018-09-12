@@ -34,33 +34,34 @@
 		"game-01:build:dev": "cross-env APP=game-01 npm run build:dev",
 		"game-01:build:prod": "cross-env APP=game-01 npm run build:prod",
 		"game-01:xi18n": "cross-env APP=game-01 ts-node ./scripts/extract.ts",
+		"lib:tdd": "cross-env APP=lib npm run tdd",
+		"lib:test": "cross-env APP=lib npm run test",
 		"tsc": "tsc -p tsconfig.json --diagnostics --pretty",
 		"report-coverage": "cat ./coverage/lcov.info | coveralls"
 	},
 	"apps": {
-		"app": {
+		"lib": {
+			"rootDir": "src/lib",
+			"outDir": "dist/lib",
 			"main": [
-				"game-00/main.ts"
+				"index.ts"
 			],
 			"moduleImportPaths": [
 				"src"
 			],
 			"test": "main.test.ts",
 			"templateData": {
-				"title": "Ancient Maze",
+				"title": "Libraries",
 				"author": "Paweł Kapalla aka Xesenix"
 			},
-			"assets": [
-				"game-00/assets"
-			],
-			"styles": [
-				"game-00/styles/styles.scss"
-			],
-			"stylesImportPaths": [
-				"game-00/styes"
-			],
-			"localesDir": "game-00/locales",
-			"vendor": []
+			"assets": [],
+			"styles": [],
+			"stylesImportPaths": [],
+			"vendor": [],
+			"languages": [],
+			"localesExtractDirs": [
+				"src/lib"
+			]
 		},
 		"game-00": {
 			"rootDir": "src/game-00",
