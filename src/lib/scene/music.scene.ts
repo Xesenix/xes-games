@@ -1,7 +1,8 @@
-import { ISoundtrack } from './../sound-scape/interfaces';
 import { __ } from 'lib/i18n';
 import { IAudioManager } from 'lib/sound';
 import { ISoundtrackManager } from 'lib/sound-scape';
+
+import { ISoundtrack } from '../sound-scape/interfaces';
 
 export class MusicScene extends Phaser.Scene {
 	private soundtrack?: Phaser.Sound.BaseSound;

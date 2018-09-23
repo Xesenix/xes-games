@@ -19,7 +19,7 @@ script:
 - npm run game-01:test
 - npm run game-01:build:prod
 after_success:
-- npm run report-coverage
+- npm run game-01:report-coverage
 deploy:
   provider: heroku
   api_key:

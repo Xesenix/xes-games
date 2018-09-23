@@ -4,7 +4,7 @@ import 'reflect-metadata';
 
 Enzyme.configure({ adapter: new Adapter() });
 
-const excludeRegexp: RegExp = /\..*\/(main|index)\./;
+const excludeRegexp: RegExp = /.*\/(main|index|interfaces)\./;
 /**
  * We need to load all test files to be included in karma. And all others to generate test coverage.
  * @see https://github.com/webpack-contrib/karma-webpack#alternative-usage

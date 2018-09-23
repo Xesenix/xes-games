@@ -34,6 +34,7 @@
 		"game-01:build:dev": "cross-env APP=game-01 npm run build:dev",
 		"game-01:build:prod": "cross-env APP=game-01 npm run build:prod",
 		"game-01:xi18n": "cross-env APP=game-01 ts-node ./scripts/extract.ts",
+		"game-01:report-coverage": "cat ./coverage/game-01/lcov.info | coveralls",
 		"lib:tdd": "cross-env APP=lib npm run tdd",
 		"lib:test": "cross-env APP=lib npm run test",
 		"tsc": "tsc -p tsconfig.json --diagnostics --pretty",
@@ -58,10 +59,7 @@
 			"styles": [],
 			"stylesImportPaths": [],
 			"vendor": [],
-			"languages": [],
-			"localesExtractDirs": [
-				"src/lib"
-			]
+			"languages": []
 		},
 		"game-00": {
 			"rootDir": "src/game-00",
@@ -112,7 +110,7 @@
 				"en",
 				"pl"
 			],
-			"localesExtractDirs": [
+			"externalDirs": [
 				"src/lib"
 			]
 		}
@@ -173,7 +171,7 @@
 		"ts-node": "^7.0.0",
 		"vis": "^4.21.0",
 		"webpack-dev-server": "^3.1.4",
-		"xes-webpack-core": "^0.7.4"
+		"xes-webpack-core": "^0.8.1"
 	},
 	"engines": {
 		"node": ">= 8.0.0"
