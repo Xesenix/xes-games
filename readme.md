@@ -1,6 +1,24 @@
 [![Build Status](https://travis-ci.org/Xesenix/xes-games.svg?branch=master)](https://travis-ci.org/Xesenix/xes-games)
 [![Coverage Status](https://coveralls.io/repos/github/Xesenix/xes-games/badge.svg?branch=master)](https://coveralls.io/github/Xesenix/xes-games?branch=master)
 
+# Xes games
+
+This is set of applications testing various helper modules for creating games.
+
+## Audio testing application
+
+I'm testing here playing dynamic soundtracks depending on user input. When user is interacting with game area it triggers action soundtrack starting from intro then loop (why interactions continue) and outro when they end.
+
+[Demo](https://audio-manager.herokuapp.com/)
+
+### Sound module
+
+This module is used mainly for simple loading and playing sounds by using web audio API.
+
+### Sound Scape module
+
+This module is used mainly for creating dynamic soundtrack.
+
 ## Babel 7 Typescipt
 
 [Migration guide](https://babeljs.io/docs/en/next/v7-migration)
@@ -40,5 +58,5 @@ ngrok http 8080
 
 ## DOCS:
 
-[Working with Phaser 3 scenes](https://phaser.io/phaser3/devlog/121)
-[Phaser 3 dynamic tilemap](https://itnext.io/modular-game-worlds-in-phaser-3-tilemaps-2-dynamic-platformer-3d68e73d494a)
+- [Working with Phaser 3 scenes](https://phaser.io/phaser3/devlog/121)
+- [Phaser 3 dynamic tilemap](https://itnext.io/modular-game-worlds-in-phaser-3-tilemaps-2-dynamic-platformer-3d68e73d494a)
