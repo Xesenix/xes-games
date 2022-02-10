@@ -145,7 +145,7 @@
     "inversify-vanillajs-helpers": "^2.0.0",
     "mkdirp": "^0.5.1",
     "node-gettext": "^2.0.0",
-    "node-sass": "^4.14.1",
+    "node-sass": "^7.0.0",
     "parallel-webpack": "^2.3.0",
     "path-exists": "^3.0.0",
     "po-gettext-loader": "^0.1.1",
